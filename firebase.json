@@ -9,7 +9,10 @@
     "rewrites": [
       {
         "source": "/api/wow-token",
-        "function": "getwowtokenprice"
+        "run": {
+          "serviceId": "getwowtokenprice",
+          "region": "us-central1"
+        }
       },
       {
         "source": "**",

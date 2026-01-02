@@ -20,10 +20,3 @@ jobs:
         run: |
           cd functions
           npm ci
-
-      - name: Deploy to Firebase (Hosting & Functions)
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy
-        env:
-          GCP_SA_KEY: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_DANTAES_FARMERS }}"

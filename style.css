@@ -7,11 +7,30 @@
   --wow-border: #2a2e3b;
 }
 
-html,
+html {
+  background-color: var(--wow-dark);
+}
+
 body {
   min-height: 100%;
   margin: 0;
-  background-color: var(--wow-dark);
+  position: relative;
+  /* background-color: transparent; (implied) */
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='120' height='120' patternUnits='userSpaceOnUse'%3E%3C!-- Row 1 --%3E%3Crect x='0' y='0' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='15' cy='15' r='15' fill='%23ffffff' fill-opacity='0.1'/%3E%3Crect x='30' y='0' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Cpath d='M30 30 L60 30 L60 0 Z' fill='%23ffffff' fill-opacity='0.1'/%3E%3Crect x='60' y='0' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='75' cy='15' r='8' fill='%23ffffff' fill-opacity='0.1'/%3E%3Cpath d='M90 0 L120 0 L120 30 L90 30 Z' fill='%23ffffff' fill-opacity='0.1'/%3E%3Cpath d='M90 30 A30 30 0 0 1 120 0 L120 30 Z' fill='%23ffffff' fill-opacity='0.1'/%3E%3C!-- Row 2 --%3E%3Crect x='0' y='30' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Cpath d='M0 30 L30 30 L0 60 Z' fill='%23ffffff' fill-opacity='0.1'/%3E%3Crect x='30' y='30' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Cpath d='M60 60 A30 30 0 0 0 30 30 L30 60 Z' fill='%23ffffff' fill-opacity='0.1'/%3E%3Crect x='60' y='30' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='75' cy='45' r='15' fill='%23ffffff' fill-opacity='0.1'/%3E%3Crect x='90' y='30' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Cpath d='M90 60 L120 30 L120 60 Z' fill='%23ffffff' fill-opacity='0.1'/%3E%3C!-- Row 3 --%3E%3Crect x='0' y='60' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='15' cy='75' r='10' fill='%23ffffff' fill-opacity='0.1'/%3E%3Crect x='30' y='60' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Cpath d='M30 60 L60 60 L30 90 Z' fill='%23ffffff' fill-opacity='0.1'/%3E%3Crect x='60' y='60' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Cpath d='M60 90 A30 30 0 0 1 90 60 L60 60 Z' fill='%23ffffff' fill-opacity='0.1'/%3E%3Crect x='90' y='60' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='105' cy='75' r='15' fill='%23ffffff' fill-opacity='0.1'/%3E%3C!-- Row 4 --%3E%3Crect x='0' y='90' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Cpath d='M0 120 L30 90 L30 120 Z' fill='%23ffffff' fill-opacity='0.1'/%3E%3Crect x='30' y='90' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Ccircle cx='45' cy='105' r='15' fill='%23ffffff' fill-opacity='0.1'/%3E%3Crect x='60' y='90' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Cpath d='M60 90 L90 90 L60 120 Z' fill='%23ffffff' fill-opacity='0.1'/%3E%3Crect x='90' y='90' width='30' height='30' fill='%23ffffff' fill-opacity='0.1'/%3E%3Cpath d='M120 90 A30 30 0 0 1 90 120 L120 120 Z' fill='%23ffffff' fill-opacity='0.1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='120' height='120' fill='url(%23grid)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+  mask-image: radial-gradient(circle at center, transparent 1%, rgba(0, 0, 0, 0.281) 10%);
+  -webkit-mask-image: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.329) 300%);
 }
 
 body {
@@ -23,8 +42,8 @@ body {
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 0.5rem;
+  height: 0.5rem;
 }
 
 ::-webkit-scrollbar-track {
@@ -33,7 +52,7 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: var(--wow-border);
-  border-radius: 4px;
+  border-radius: 0.25rem;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -47,7 +66,7 @@ body {
 }
 
 .input-wrapper:focus-within {
-  transform: translateY(-1px);
+  transform: translateY(-0.0625rem);
 }
 
 .input-wrapper:focus-within i {
@@ -56,37 +75,37 @@ body {
 
 .input-wrapper:focus-within input {
   border-color: var(--wow-gold);
-  box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.2);
+  box-shadow: 0 0 0 0.0625rem rgba(251, 191, 36, 0.2);
 }
 
 /* Charts & Tooltips */
 .chart-tooltip {
   position: absolute;
   background: #1f2937;
-  border: 1px solid #374151;
-  padding: 8px 12px;
-  border-radius: 6px;
+  border: 0.0625rem solid #374151;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
   font-size: 0.85em;
   color: #fff;
   pointer-events: none;
   display: none;
   z-index: 100;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1),
+    0 0.125rem 0.25rem -0.0625rem rgba(0, 0, 0, 0.06);
 }
 
 /* Gold Icons */
 .gold-icon {
-  width: 14px;
-  height: 14px;
+  width: 0.875rem;
+  height: 0.875rem;
   vertical-align: text-bottom;
-  margin-left: 2px;
+  margin-left: 0.125rem;
   display: inline-block;
 }
 
 [id^="kpi-"] .gold-icon {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 /* Animations */
@@ -106,7 +125,7 @@ body {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(0.625rem);
   }
   to {
     opacity: 1;
@@ -182,41 +201,41 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 /* WoW Tooltip Style */
 .wow-item-tooltip {
-    background: rgba(8, 11, 23, 0.95);
-    border: 2px solid #353945;
-    border-radius: 4px;
-    padding: 12px 16px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.8), inset 0 0 5px rgba(0,0,0,0.5);
-    min-width: 250px;
-    line-height: 1.4;
-    font-size: 13px;
-    color: #fff;
+  background: rgba(8, 11, 23, 0.95);
+  border: 0.125rem solid #353945;
+  border-radius: 0.25rem;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 0 0.9375rem rgba(0, 0, 0, 0.8),
+    inset 0 0 0.3125rem rgba(0, 0, 0, 0.5);
+  min-width: 15.625rem;
+  line-height: 1.4;
+  font-size: 0.8125rem;
+  color: #fff;
 }
 
 .wow-item-tooltip .item-name {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 2px;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.125rem;
 }
 
 .wow-item-tooltip .item-level {
-    color: #ffd100;
+  color: #ffd100;
 }
 
 .wow-item-tooltip .item-description {
-    color: #ffd100;
-    margin-top: 6px;
-    font-style: italic;
+  color: #ffd100;
+  margin-top: 0.375rem;
+  font-style: italic;
 }
 
 .wow-item-tooltip .item-sell-price {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
 }
 
 .wow-item-tooltip .item-sell-price img {
-    height: 14px;
+  height: 0.875rem;
 }
-

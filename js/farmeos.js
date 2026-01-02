@@ -282,50 +282,51 @@ function renderFarmeosTable(dataToRender = null) {
     // Update headers with sort buttons
     if (thead) {
         thead.innerHTML = `
-            <th class="py-3 px-4">
+            <th class="py-1.5 px-2 md:py-3 md:px-4">
                 <button onclick="sortTable('name')" class="flex items-center hover:text-white transition-colors">
                     Ítem ${getSortIcon('name')}
                 </button>
             </th>
-            <th class="py-3 px-4 text-center">
-                <button onclick="sortTable('price')" class="flex items-center mx-auto hover:text-white transition-colors">
+            <th class="py-1.5 px-2 md:py-3 md:px-4 text-left">
+                <button onclick="sortTable('price')" class="flex items-center hover:text-white transition-colors">
                     Precio Subasta ${getSortIcon('price')}
                 </button>
             </th>
-            <th class="py-3 px-4 text-center">
-                <button onclick="sortTable('quantity')" class="flex items-center mx-auto hover:text-white transition-colors">
+            <th class="py-1.5 px-2 md:py-3 md:px-4 text-left">
+                <button onclick="sortTable('quantity')" class="flex items-center hover:text-white transition-colors">
                     Disponible ${getSortIcon('quantity')}
                 </button>
             </th>
-            <th class="py-3 px-4 text-right">Tutorial</th>
+            <th class="py-1.5 px-2 md:py-3 md:px-4 text-left">Tutorial</th>
         `;
     }
     
     tbody.innerHTML = data.map(item => `
         <tr class="hover:bg-white/[0.02] transition-colors">
-            <td class="py-3 px-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded border-2 border-wow-border bg-wow-dark overflow-hidden flex-shrink-0">
+            <td class="py-1.5 px-2 md:py-3 md:px-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded border border-wow-border bg-wow-dark overflow-hidden flex-shrink-0">
                         <img src="${item.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg'}" 
                              class="w-full h-full object-cover" alt="${item.name}">
                     </div>
-                    <span class="font-bold text-white">${item.name}</span>
+                    <span class="font-bold text-white text-xs md:text-base text-wrap leading-tight max-w-[120px] md:max-w-none">${item.name}</span>
                 </div>
             </td>
-            <td class="py-3 px-4 text-center">
-                <div id="price-${item.itemId}" class="font-bold text-gray-500 animate-pulse">Cargando...</div>
+            <td class="py-1.5 px-2 md:py-3 md:px-4 text-left whitespace-nowrap">
+                <div id="price-${item.itemId}" class="font-bold text-gray-500 animate-pulse text-xs md:text-base">Cargando...</div>
             </td>
-            <td class="py-3 px-4 text-center">
-                <span id="qty-${item.itemId}" class="text-gray-600">--</span>
+            <td class="py-1.5 px-2 md:py-3 md:px-4 text-left whitespace-nowrap">
+                <span id="qty-${item.itemId}" class="text-gray-600 text-xs md:text-base">--</span>
             </td>
-            <td class="py-3 px-4 text-right">
+            <td class="py-1.5 px-2 md:py-3 md:px-4 text-left">
                 ${item.youtubeUrl ? `
                     <a href="${item.youtubeUrl}" target="_blank" 
-                       class="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-xs font-semibold text-gray-300">
+                       class="inline-flex items-center gap-1.5 px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded md:rounded-lg transition-colors text-[10px] md:text-sm font-semibold text-gray-300">
                         <i class="fab fa-youtube"></i>
-                        Ver Tutorial
+                        <span class="hidden md:inline">Ver Tutorial</span>
+                        <span class="md:hidden">Ver</span>
                     </a>
-                ` : '<span class="text-gray-600 text-xs">Próximamente...</span>'}
+                ` : '<span class="text-gray-600 text-[10px] md:text-xs">Próximamente...</span>'}
             </td>
         </tr>
     `).join('');
@@ -341,36 +342,37 @@ function renderFarmeosTableFast(dataToRender) {
         const cachedPrice = priceCache[item.itemId];
         const priceDisplay = cachedPrice 
             ? formatGold(cachedPrice.priceWithDecimals || cachedPrice.price)
-            : '<span class="animate-pulse text-gray-500">Cargando...</span>';
+            : '<span class="animate-pulse text-gray-500 text-xs">Cargando...</span>';
         const qtyDisplay = cachedPrice 
             ? cachedPrice.quantity.toLocaleString('es-ES')
             : '--';
         
         return `
         <tr class="hover:bg-white/[0.02] transition-colors">
-            <td class="py-3 px-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded border-2 border-wow-border bg-wow-dark overflow-hidden flex-shrink-0">
+            <td class="py-1.5 px-2 md:py-3 md:px-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 md:w-10 md:h-10 rounded border border-wow-border bg-wow-dark overflow-hidden flex-shrink-0">
                         <img src="${item.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg'}" 
                              class="w-full h-full object-cover" alt="${item.name}">
                     </div>
-                    <span class="font-bold text-white">${item.name}</span>
+                    <span class="font-bold text-white text-xs md:text-base text-wrap leading-tight max-w-[120px] md:max-w-none">${item.name}</span>
                 </div>
             </td>
-            <td class="py-3 px-4 text-center">
-                <div class="font-bold text-white">${priceDisplay}</div>
+            <td class="py-1.5 px-2 md:py-3 md:px-4 text-left whitespace-nowrap">
+                <div class="font-bold text-white text-xs md:text-base">${priceDisplay}</div>
             </td>
-            <td class="py-3 px-4 text-center">
-                <span class="text-gray-400">${qtyDisplay}</span>
+            <td class="py-1.5 px-2 md:py-3 md:px-4 text-left whitespace-nowrap">
+                <span class="text-gray-400 text-xs md:text-base">${qtyDisplay}</span>
             </td>
-            <td class="py-3 px-4 text-right">
+            <td class="py-1.5 px-2 md:py-3 md:px-4 text-left">
                 ${item.youtubeUrl ? `
                     <a href="${item.youtubeUrl}" target="_blank" 
-                       class="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors text-xs font-semibold text-gray-300">
+                       class="inline-flex items-center gap-1.5 px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded md:rounded-lg transition-colors text-[10px] md:text-sm font-semibold text-gray-300">
                         <i class="fab fa-youtube"></i>
-                        Ver Tutorial
+                        <span class="hidden md:inline">Ver Tutorial</span>
+                        <span class="md:hidden">Ver</span>
                     </a>
-                ` : '<span class="text-gray-600 text-xs">Próximamente...</span>'}
+                ` : '<span class="text-gray-600 text-[10px] md:text-xs">Próximamente...</span>'}
             </td>
         </tr>
         `;
@@ -380,22 +382,22 @@ function renderFarmeosTableFast(dataToRender) {
     const thead = tbody.closest('table').querySelector('thead tr');
     if (thead) {
         thead.innerHTML = `
-            <th class="py-3 px-4">
+            <th class="py-1.5 px-2 md:py-3 md:px-4">
                 <button onclick="sortTable('name')" class="flex items-center hover:text-white transition-colors">
                     Ítem ${getSortIcon('name')}
                 </button>
             </th>
-            <th class="py-3 px-4 text-center">
-                <button onclick="sortTable('price')" class="flex items-center mx-auto hover:text-white transition-colors">
+            <th class="py-1.5 px-2 md:py-3 md:px-4 text-left">
+                <button onclick="sortTable('price')" class="flex items-center hover:text-white transition-colors">
                     Precio Subasta ${getSortIcon('price')}
                 </button>
             </th>
-            <th class="py-3 px-4 text-center">
-                <button onclick="sortTable('quantity')" class="flex items-center mx-auto hover:text-white transition-colors">
+            <th class="py-1.5 px-2 md:py-3 md:px-4 text-left">
+                <button onclick="sortTable('quantity')" class="flex items-center hover:text-white transition-colors">
                     Disponible ${getSortIcon('quantity')}
                 </button>
             </th>
-            <th class="py-3 px-4 text-right">Tutorial</th>
+            <th class="py-1.5 px-2 md:py-3 md:px-4 text-left">Tutorial</th>
         `;
     }
 }

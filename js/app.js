@@ -17,9 +17,11 @@ function saveLocalCache() {
 
 // --- HELPER FUNCTIONS ---
 
-function formatGold(num) {
+function formatGold(num, fullFormat = false) {
     let val = "";
-    if (num >= 1000000) {
+    if (fullFormat) {
+        val = Math.round(num).toLocaleString('es-ES');
+    } else if (num >= 1000000) {
         val = (num / 1000000).toFixed(1) + 'M';
     } else if (num >= 1000) {
         val = (num / 1000).toFixed(1) + 'k';
@@ -60,6 +62,8 @@ function getQualityBgClass(quality) {
     if (!quality) return 'bg-q-common';
     return `bg-q-${quality.toLowerCase()}`;
 }
+
+
 
 // Global scope for tooltips
 const tooltipEl = document.createElement('div');
@@ -269,7 +273,7 @@ function updateKPIs() {
     const setHtml = (id, val) => { const el = document.getElementById(id); if(el) el.innerHTML = val; };
     const setText = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
 
-    setHtml('kpi-income', formatGold(totalIncome));
+    setHtml('kpi-income', formatGold(totalIncome, true));
     
     if (topItem) {
         setText('kpi-top-item', topItem[0]);
@@ -288,39 +292,224 @@ function updateKPIs() {
     fetchTokenPrice();
 }
 
-function renderMainChart() {
-    const container = document.getElementById('main-chart-container');
-    if(!container || ledgerData.length === 0) return;
+// Filtros globales
+let chartTimeframe = 'week'; // 'day', 'week', 'month', 'year'
 
-    // 1. Agrupar por fecha para calcular totales y Top Item
-    const dailyStats = {};
+window.setChartFilter = function(filter) {
+    chartTimeframe = filter;
     
-    ledgerData.forEach(d => {
-        if(!dailyStats[d.date]) {
-            dailyStats[d.date] = { 
-                total: 0, 
-                items: {} 
-            };
+    // Update UI
+    ['day', 'week', 'month', 'year'].forEach(f => {
+        const btn = document.getElementById(`filter-btn-${f}`);
+        if(btn) {
+            if(f === filter) {
+                btn.classList.add('bg-wow-blue', 'text-white', 'shadow');
+                btn.classList.remove('text-gray-400', 'hover:text-white');
+            } else {
+                btn.classList.remove('bg-wow-blue', 'text-white', 'shadow');
+                btn.classList.add('text-gray-400', 'hover:text-white');
+            }
         }
-        dailyStats[d.date].total += d.total;
-        
-        // Trackear items por día
-        if(!dailyStats[d.date].items[d.name]) dailyStats[d.date].items[d.name] = 0;
-        dailyStats[d.date].items[d.name] += d.total;
     });
 
-    const sortedDates = Object.keys(dailyStats).sort((a,b) => new Date(a) - new Date(b));
+    // Auto-set based on current date
+    // Note: This forces the filter to "this week/month/year". 
+    // If the data is old, the chart might look empty. 
+    // Usually dashboards show "Current Period".
+    const now = new Date();
+    const fmt = (date) => {
+        // Adjust for timezone offset to avoid previous day
+        const offset = date.getTimezoneOffset();
+        const adjustedDate = new Date(date.getTime() - (offset*60*1000));
+        return adjustedDate.toISOString().split('T')[0];
+    };
+
+    if (filter === 'week') {
+        // Current ISO week (Mon-Sun)
+        const day = now.getDay() || 7; 
+        const start = new Date(now);
+        start.setDate(now.getDate() - day + 1);
+        const end = new Date(start);
+        end.setDate(start.getDate() + 6);
+        
+        filters.dateFrom = fmt(start);
+        filters.dateTo = fmt(end);
+    } else if (filter === 'month') {
+        const start = new Date(now.getFullYear(), now.getMonth(), 1);
+        const end = new Date(now.getFullYear(), now.getMonth() + 1, 0); // Last day
+        filters.dateFrom = fmt(start);
+        filters.dateTo = fmt(end);
+    } else if (filter === 'year') {
+        const start = new Date(now.getFullYear(), 0, 1);
+        const end = new Date(now.getFullYear(), 11, 31);
+        filters.dateFrom = fmt(start);
+        filters.dateTo = fmt(end);
+    } else if (filter === 'day') {
+        filters.dateFrom = fmt(now);
+        filters.dateTo = fmt(now);
+    }
+
+    // Update Inputs
+    const fromInput = document.getElementById('filter-date-from');
+    const toInput = document.getElementById('filter-date-to');
+    if(fromInput) fromInput.value = filters.dateFrom;
+    if(toInput) toInput.value = filters.dateTo;
+
+    applyFilters();
+}
+
+let filters = {
+    dateFrom: null,
+    dateTo: null,
+    search: '',
+    currentPage: 1,
+    itemsPerPage: 7
+};
+
+function applyFilters() {
+    filters.currentPage = 1; // Reset page on filter
+    renderItemsTable();
+    updateKPIs();
+    renderMainChart();
+    renderTopCategories();
+}
+
+// Helper to get week number
+function getWeekNumber(d) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+    return { year: d.getUTCFullYear(), week: weekNo };
+}
+
+// Helper to get date range from week number
+function getDateRangeFromWeek(w, y) {
+    const d = new Date(Date.UTC(y, 0, 1 + (w - 1) * 7));
+    const dayOfWeek = d.getUTCDay();
+    const ISOweekStart = d;
+    if (dayOfWeek <= 4)
+        ISOweekStart.setUTCDate(d.getUTCDate() - d.getUTCDay() + 1);
+    else
+        ISOweekStart.setUTCDate(d.getUTCDate() + 8 - d.getUTCDay());
     
-    // 2. Generar historial con acumulados y Top Item
+    // Adjust to Monday start
+    const weekStart = new Date(ISOweekStart);
+    const weekEnd = new Date(ISOweekStart);
+    weekEnd.setUTCDate(weekEnd.getUTCDate() + 6);
+    
+    const format = (date) => {
+        const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        return `${date.getUTCDate()} ${months[date.getUTCMonth()]}`;
+    };
+    return `${format(weekStart)} - ${format(weekEnd)}`;
+}
+
+// Helper to handle click on chart points
+window.handleChartClick = function(key) {
+    // Force hide tooltip immediately
+    window.hideChartTooltip();
+
+    // Determine context based on current timeframe
+    if (chartTimeframe === 'year') {
+        // key is YYYY-MM
+        const [y, m] = key.split('-').map(Number);
+        const start = new Date(y, m - 1, 1);
+        const end = new Date(y, m, 0);
+        
+        const fmt = (date) => {
+            const offset = date.getTimezoneOffset();
+            const adjusted = new Date(date.getTime() - (offset*60*1000));
+            return adjusted.toISOString().split('T')[0];
+        };
+        
+        filters.dateFrom = fmt(start);
+        filters.dateTo = fmt(end);
+        
+    } else {
+        // key is YYYY-MM-DD
+        filters.dateFrom = key;
+        filters.dateTo = key;
+    }
+    
+    // Update UI Inputs to reflect the drill-down
+    const fromInput = document.getElementById('filter-date-from');
+    const toInput = document.getElementById('filter-date-to');
+    if(fromInput) fromInput.value = filters.dateFrom;
+    if(toInput) toInput.value = filters.dateTo;
+    
+    // IMPORTANT: Do NOT call applyFilters(). We want to keep the Chart showing the wider context (Week/Month)
+    // while the Table and KPIs focus on the specific day/month selected.
+    filters.currentPage = 1;
+    renderItemsTable();
+    updateKPIs(); // Optional: update KPIs to show daily stats, or keep them broader? User likely wants daily detail.
+
+    // Scroll to table for better UX
+    const tableContainer = document.getElementById('daily-performance-container');
+    if(tableContainer) tableContainer.scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderMainChart() {
+    const container = document.getElementById('main-chart-container');
+    if(!container) return;
+    
+    if (ledgerData.length === 0) {
+        container.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">No hay datos</div>';
+        return;
+    }
+
+    // 1. Filtrar datos (respetar filtros de fechas si existen)
+    let filteredData = ledgerData.filter(d => {
+        if (filters.dateFrom && d.date < filters.dateFrom) return false;
+        if (filters.dateTo && d.date > filters.dateTo) return false;
+        return true;
+    });
+
+    // 2. Agrupar datos según Timeframe REFACTORIZADO para granularidad
+    const aggregated = {};
+    
+    filteredData.forEach(d => {
+        let key;
+        const [y, m, day] = d.date.split('-').map(Number);
+        
+        // "Week" y "Month" views now use Daily Granularity
+        if (chartTimeframe === 'week' || chartTimeframe === 'month' || chartTimeframe === 'day') {
+            key = d.date; // YYYY-MM-DD
+        } else if (chartTimeframe === 'year') {
+            // Year view uses Monthly Granularity
+            key = `${y}-${m.toString().padStart(2, '0')}`; // YYYY-MM
+        }
+        
+        const dateObj = new Date(y, m - 1, day);
+
+        if(!aggregated[key]) {
+            aggregated[key] = {
+                label: key,
+                total: 0,
+                items: {},
+                dateObj: dateObj // Para ordenar
+            };
+        }
+        aggregated[key].total += d.total;
+        
+        // Trackear items
+        if(!aggregated[key].items[d.name]) aggregated[key].items[d.name] = 0;
+        aggregated[key].items[d.name] += d.total;
+    });
+
+    const sortedKeys = Object.keys(aggregated).sort((a,b) => {
+        return new Date(a) - new Date(b); // Standard string sort works for YYYY-MM-DD and YYYY-MM actually, but Date is safer
+    });
+
+    // 3. Generar historial
     let runningIncome = 0;
-    const history = sortedDates.map(date => {
-        const stats = dailyStats[date];
+    const history = sortedKeys.map(key => {
+        const stats = aggregated[key];
         runningIncome += stats.total;
         
-        // Encontrar top item del día
+        // Top Item
         let topItemName = "N/A";
         let topItemVal = 0;
-        
         Object.entries(stats.items).forEach(([name, val]) => {
             if(val > topItemVal) {
                 topItemVal = val;
@@ -328,23 +517,44 @@ function renderMainChart() {
             }
         });
         
-        return { 
-            date, 
-            income: runningIncome, 
-            dailyIncome: stats.total,
+        // Friendly Label Logic
+        let friendlyLabel = key;
+        const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        
+        if (chartTimeframe === 'year') {
+             // Key is YYYY-MM
+             const [y, m] = key.split('-');
+             friendlyLabel = `${months[parseInt(m)-1]}`;
+        } else {
+            // Key is YYYY-MM-DD for week/month/day
+            const [y, m, day] = key.split('-').map(Number);
+            const localDate = new Date(y, m - 1, day);
+            friendlyLabel = localDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }).replace('.', '');
+        }
+        
+        return {
+            key,
+            label: friendlyLabel,
+            income: runningIncome, // Cumulative
+            periodIncome: stats.total, // Income in this period
             topItem: topItemName,
             topItemVal: topItemVal
         };
     });
+
+    if (history.length === 0) {
+         container.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">No hay datos en este rango</div>';
+         return;
+    }
 
     const w = container.clientWidth;
     const h = container.clientHeight;
     if (!w || h < 100) return;
 
     const p = 40;
-    const maxVal = history[history.length - 1].income * 1.1;
+    const maxVal = history[history.length - 1].income * 1.1 || 1000;
 
-    // 3. Generar coordenadas
+    // Generar coordenadas
     const getX = (i) => p + (i / (history.length - 1 || 1)) * (w - p * 2);
     const getY = (v) => h - p - (v / maxVal) * (h - p * 2);
 
@@ -368,7 +578,7 @@ function renderMainChart() {
         }
     });
 
-    // 4. Renderizar SVG con gradientes y tooltips
+    // Render SVG
     container.innerHTML = `
         <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}">
             <defs>
@@ -377,38 +587,31 @@ function renderMainChart() {
                     <stop offset="100%" stop-color="#0074e0" stop-opacity="0"/>
                 </linearGradient>
             </defs>
-            
-            <!-- Grid lines -->
             <line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" stroke="#374151" stroke-width="1" />
             <line x1="${p}" y1="${p}" x2="${p}" y2="${h-p}" stroke="#374151" stroke-width="1" />
-            
-            <!-- Labels -->
             <text x="${p-5}" y="${h-p}" text-anchor="end" fill="#6B7280" font-size="10">0</text>
             <text x="${p-5}" y="${p+10}" text-anchor="end" fill="#6B7280" font-size="10">${formatCurrency(Math.floor(maxVal/1000))}k</text>
 
-            <!-- Area & Line -->
             <path d="${areaIncome}" fill="url(#grad-income)" />
             <path d="${incomePath}" fill="none" stroke="#0074e0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
             
-            <!-- Points for dates with hover -->
             ${history.map((d, i) => {
-                const dateFormatted = new Date(d.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+                const esc = (str) => str.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                const dailyHtml = esc(formatGold(d.periodIncome, true));
+                const totalHtml = esc(formatGold(d.income, true));
+                const itemValHtml = esc(formatGold(d.topItemVal, true));
+                const safeItemName = esc(d.topItem);
                 
-                // Formatear valores para pasar al tooltip
-                const dailyHtml = formatGold(d.dailyIncome).replace(/"/g, "'");
-                const totalHtml = formatGold(d.income).replace(/"/g, "'");
-                const itemValHtml = formatGold(d.topItemVal).replace(/"/g, "'");
-
-                // Escapar nombre del item por si tiene comillas
-                const safeItemName = d.topItem.replace(/'/g, "\\'").replace(/"/g, "&quot;");
-
+                // Click interaction: Always available now
+                const clickAttr = `onclick="window.handleChartClick('${d.key}')" style="cursor: pointer;"`;
+                
                 return `
-                    <g class="chart-point" style="cursor: pointer;" 
-                       onmousemove="window.showChartTooltip(event, '${dateFormatted}', '${dailyHtml}', '${totalHtml}', '${safeItemName}', '${itemValHtml}')"
+                    <g class="chart-point" ${clickAttr}
+                       onmousemove="window.showChartTooltip(event, '${d.label}', '${dailyHtml}', '${totalHtml}', '${safeItemName}', '${itemValHtml}')"
                        onmouseleave="window.hideChartTooltip()">
                         <circle cx="${getX(i)}" cy="${getY(d.income)}" r="6" fill="#0074e0" opacity="0" class="hover-area" />
                         <circle cx="${getX(i)}" cy="${getY(d.income)}" r="4" fill="#0074e0" class="point-dot transition-all duration-200" />
-                        <text x="${getX(i)}" y="${h-p+15}" text-anchor="middle" fill="#6B7280" font-size="9" style="pointer-events: none;">${d.date.split('-').slice(1).reverse().join('/')}</text>
+                        <text x="${getX(i)}" y="${h-p+15}" text-anchor="middle" fill="#6B7280" font-size="9" style="pointer-events: none;">${d.label}</text>
                     </g>
                 `;
             }).join('')}
@@ -521,18 +724,20 @@ function getColorClass(cat) {
 }
 
 // Filtros globales
-let filters = {
-    dateFrom: null,
-    dateTo: null,
-    search: ''
-};
+// let filters = { // Moved to top with chartTimeframe
+//     dateFrom: null,
+//     dateTo: null,
+//     search: '',
+//     currentPage: 1,
+//     itemsPerPage: 7
+// };
 
-function applyFilters() {
-    renderItemsTable();
-    updateKPIs();
-    renderMainChart();
-    renderTopCategories();
-}
+// function applyFilters() { // Moved to top with chartTimeframe
+//     renderItemsTable();
+//     updateKPIs();
+//     renderMainChart();
+//     renderTopCategories();
+// }
 
 function renderItemsTable() {
     const container = document.getElementById('daily-performance-container');
@@ -556,10 +761,18 @@ function renderItemsTable() {
 
     // 2. Ordenar fechas (más reciente primero)
     const sortedDates = Object.keys(groups).sort((a,b) => new Date(b) - new Date(a));
+    
+    // 3. Paginación
+    const totalItems = sortedDates.length;
+    const totalPages = Math.ceil(totalItems / filters.itemsPerPage);
+    const startIndex = (filters.currentPage - 1) * filters.itemsPerPage;
+    const endIndex = startIndex + filters.itemsPerPage;
+    const visibleDates = sortedDates.slice(startIndex, endIndex);
 
-    sortedDates.forEach((date, index) => {
+    visibleDates.forEach((date, index) => {
         const items = groups[date];
-        const isFirst = index === 0; // Solo la primera (más reciente) abierta
+        // Solo abrir el primero si estamos en la pagina 1 y es el primmer elemento
+        const isFirst = (index === 0 && filters.currentPage === 1); 
         
         // Colapsar duplicados por nombre en el mismo día
         const collapsed = {};
@@ -573,11 +786,12 @@ function renderItemsTable() {
         const itemsArr = Object.values(collapsed).sort((a,b) => b.sumTotal - a.sumTotal);
         const dayTotal = itemsArr.reduce((sum, it) => sum + it.sumTotal, 0);
 
-        // Crear la Ficha (Card) colapsable
         const card = document.createElement('div');
-        card.className = "bg-wow-card border border-wow-border rounded-xl shadow-lg overflow-hidden fade-in";
+        card.className = "bg-wow-card border border-wow-border rounded-xl shadow-lg overflow-hidden fade-in mb-4";
         
-        const dateFriendly = new Date(date).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        const [y, m, d] = date.split('-').map(Number);
+        const localDate = new Date(y, m - 1, d);
+        const dateFriendly = localDate.toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         const cardId = `card-${date.replace(/\-/g, '')}`;
 
         card.innerHTML = `
@@ -593,37 +807,37 @@ function renderItemsTable() {
                     </div>
                 </div>
                 <div class="text-sm font-bold text-wow-gold bg-wow-gold/10 px-3 py-1.5 rounded-full">
-                    ${formatGold(dayTotal)}
+                    ${formatGold(dayTotal, true)}
                 </div>
             </div>
-            <div id="${cardId}" class="overflow-hidden transition-all duration-300 ${isFirst ? 'max-h-[2000px]' : 'max-h-0'}">
-                <div class="p-4 pt-0 border-t border-wow-border/30">
-                    <table class="w-full text-left text-sm">
-                        <thead class="text-[10px] uppercase text-gray-500 border-b border-wow-border">
+            <div id="${cardId}" class="daily-card-content overflow-hidden transition-all duration-300 ${isFirst ? 'max-h-[2000px]' : 'max-h-0'}">
+                <div class="p-3 pt-0 border-t border-wow-border/30 md:p-6 md:pt-0">
+                    <table class="w-full text-left text-xs md:text-base">
+                        <thead class="text-[10px] md:text-sm uppercase text-gray-500 border-b border-wow-border">
                             <tr>
-                                <th class="py-2 px-2">Item</th>
-                                <th class="py-2 px-2 text-center">Cant.</th>
-                                <th class="py-2 px-2 text-right">Precio Medio</th>
-                                <th class="py-2 px-2 text-right">Ganancia</th>
+                                <th class="py-1.5 px-1 md:py-4 md:px-4 text-left">Item</th>
+                                <th class="py-1.5 px-1 md:py-4 md:px-4 text-left">Cant.</th>
+                                <th class="py-1.5 px-1 md:py-4 md:px-4 text-left">Precio Medio</th>
+                                <th class="py-1.5 px-1 md:py-4 md:px-4 text-left">Ganancia</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-wow-border/30">
                             ${itemsArr.map(item => `
                                 <tr class="hover:bg-white/[0.02] transition-colors">
-                                    <td class="py-2 px-2">
+                                    <td class="py-1.5 px-1 md:py-4 md:px-4 text-left">
                                         <div class="flex items-center gap-2">
-                                            <div class="relative w-7 h-7 flex-shrink-0 bg-wow-dark rounded border border-wow-border overflow-hidden">
+                                            <div class="relative w-6 h-6 md:w-10 md:h-10 flex-shrink-0 bg-wow-dark rounded border border-wow-border overflow-hidden">
                                                 <img src="${item.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg'}" class="w-full h-full object-cover">
                                             </div>
                                             <div class="flex flex-col">
-                                                <span class="font-medium text-white text-xs">${item.name}</span>
-                                                <span class="text-[8px] uppercase opacity-40 ${getColorClass(item.cat)}">${item.cat}</span>
+                                                <span class="font-medium text-white text-[11px] md:text-base leading-tight">${item.name}</span>
+                                                <span class="text-[8px] md:text-xs uppercase opacity-40 ${getColorClass(item.cat)}">${item.cat}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-2 px-2 text-center text-gray-400 text-xs">${item.sumQty}</td>
-                                    <td class="py-2 px-2 text-right text-white/60 text-xs">${formatGold(Math.round(item.sumTotal / item.sumQty))}</td>
-                                    <td class="py-2 px-2 text-right font-bold text-wow-gold text-xs">${formatGold(item.sumTotal)}</td>
+                                    <td class="py-1.5 px-1 md:py-4 md:px-4 text-left text-gray-400 text-[11px] md:text-base">${item.sumQty}</td>
+                                    <td class="py-1.5 px-1 md:py-4 md:px-4 text-left text-white/60 text-[11px] md:text-base">${formatGold(Math.round(item.sumTotal / item.sumQty), true)}</td>
+                                    <td class="py-1.5 px-1 md:py-4 md:px-4 text-left font-bold text-wow-gold text-[11px] md:text-base">${formatGold(item.sumTotal, true)}</td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -633,6 +847,31 @@ function renderItemsTable() {
         `;
         container.appendChild(card);
     });
+
+    if (totalItems > 0) {
+        // Render Pagination Controls
+        const totalPages = Math.ceil(totalItems / filters.itemsPerPage);
+        const controls = document.createElement('div');
+        controls.className = "flex justify-center items-center gap-4 mt-6";
+        controls.innerHTML = `
+            <button 
+                onclick="changePage(-1)" 
+                class="px-4 py-2 bg-wow-dark border border-wow-border rounded hover:border-wow-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                ${filters.currentPage === 1 ? 'disabled' : ''}>
+                <i class="fas fa-chevron-left"></i> Anterior
+            </button>
+            <span class="text-sm text-gray-400">
+                Página <span class="text-white font-bold">${filters.currentPage}</span> de ${totalPages}
+            </span>
+            <button 
+                onclick="changePage(1)" 
+                class="px-4 py-2 bg-wow-dark border border-wow-border rounded hover:border-wow-blue transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                ${filters.currentPage === totalPages ? 'disabled' : ''}>
+                Siguiente <i class="fas fa-chevron-right"></i>
+            </button>
+        `;
+        container.appendChild(controls);
+    }
 
     if (sortedDates.length === 0) {
         container.innerHTML = `
@@ -644,21 +883,84 @@ function renderItemsTable() {
     }
 }
 
+window.changePage = function(delta) {
+    const newPage = filters.currentPage + delta;
+    const totalItems = Object.keys(ledgerData.filter(d => {
+        if (filters.dateFrom && d.date < filters.dateFrom) return false;
+        if (filters.dateTo && d.date > filters.dateTo) return false;
+        if (filters.search && !d.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
+        return true;
+    }).reduce((groups, d) => {
+        if(!groups[d.date]) groups[d.date] = [];
+        return groups;
+    }, {})).length;
+    const totalPages = Math.ceil(totalItems / filters.itemsPerPage);
+
+    if (newPage > 0 && newPage <= totalPages) {
+        filters.currentPage = newPage;
+        renderItemsTable();
+        // Scroll to top of list
+        const container = document.getElementById('daily-performance-container');
+        if(container) {
+             const yOffset = -100; // Offset for header
+             const y = container.getBoundingClientRect().top + window.pageYOffset + yOffset;
+             window.scrollTo({top: y, behavior: 'smooth'});
+        }
+    }
+}
+
 window.toggleCard = function(cardId) {
-    const content = document.getElementById(cardId);
-    const icon = document.getElementById(`icon-${cardId}`);
+    const clickedContent = document.getElementById(cardId);
     
-    if (content.classList.contains('max-h-0')) {
-        content.classList.remove('max-h-0');
-        content.classList.add('max-h-[2000px]');
-        icon.classList.remove('fa-chevron-right');
-        icon.classList.add('fa-chevron-down');
-    } else {
+    // Determinar si se va a abrir (si está cerrado actualmente)
+    const isOpening = clickedContent.classList.contains('max-h-0');
+
+    // CERRAR TODOS
+    const allContents = document.querySelectorAll('.daily-card-content');
+    allContents.forEach(content => {
         content.classList.add('max-h-0');
         content.classList.remove('max-h-[2000px]');
-        icon.classList.add('fa-chevron-right');
-        icon.classList.remove('fa-chevron-down');
+        
+        // Reset icon
+        const icon = document.getElementById(`icon-${content.id}`);
+        if(icon) {
+            icon.classList.add('fa-chevron-right');
+            icon.classList.remove('fa-chevron-down');
+        }
+    });
+
+    // ABRIR SÓLO EL RIQUEADO (si correspondía)
+    if (isOpening) {
+        const icon = document.getElementById(`icon-${cardId}`);
+        clickedContent.classList.remove('max-h-0');
+        clickedContent.classList.add('max-h-[2000px]');
+        
+        if (icon) {
+            icon.classList.remove('fa-chevron-right');
+            icon.classList.add('fa-chevron-down');
+        }
     }
+};
+
+window.focusDay = function(dateStr) {
+    const cardId = `card-${dateStr.replace(/-/g, '')}`;
+    const cardContent = document.getElementById(cardId);
+    
+    if (!cardContent) return;
+    
+    // Si ya está abierto, solo scrollear
+    if (!cardContent.classList.contains('max-h-0')) {
+        cardContent.parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
+    
+    // Si está cerrado, usar toggleCard para abrirlo (y cerrar los demás)
+    toggleCard(cardId);
+    
+    // Esperar un poco a que la animación empiece para scrollear
+    setTimeout(() => {
+        cardContent.parentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
 };
 
 window.openItemHistory = function(itemName) {

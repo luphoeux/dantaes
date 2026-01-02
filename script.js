@@ -379,3 +379,53 @@ function calculate() {
 
 // Initialize
 calculate();
+
+// --- AUTO FETCH WOW TOKEN (FIREBASE BRIDGE) ---
+async function autoFetchToken() {
+    const tokenInput = document.getElementById('tokenPrice');
+    const updateLabel = document.getElementById('tokenLastUpdate');
+    const timeDisplay = document.getElementById('lastUpdateTime');
+
+    const HOURLY_MS = 60 * 60 * 1000;
+    const now = Date.now();
+    
+    // Check Cache
+    const cachedData = localStorage.getItem('wowTokenCache');
+    if (cachedData) {
+        const { price, timestamp } = JSON.parse(cachedData);
+        if (now - timestamp < HOURLY_MS) {
+            console.log("Using cached WoW Token price");
+            tokenInput.value = price.toLocaleString('es-ES');
+            updateLabel.classList.remove('hidden');
+            timeDisplay.textContent = new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            calculate();
+            return;
+        }
+    }
+
+    try {
+        console.log("Fetching live WoW Token price...");
+        const response = await fetch('/api/wow-token');
+        const data = await response.json();
+        
+        if (data && data.price) {
+            const goldPrice = Math.floor(data.price / 10000); // UI expects gold, API gives copper-like units
+            tokenInput.value = goldPrice.toLocaleString('es-ES');
+            
+            // Save to Cache
+            localStorage.setItem('wowTokenCache', JSON.stringify({
+                price: goldPrice,
+                timestamp: now
+            }));
+
+            updateLabel.classList.remove('hidden');
+            timeDisplay.textContent = new Date(now).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            calculate();
+        }
+    } catch (error) {
+        console.error("Error fetching token:", error);
+        tokenInput.placeholder = "Ingresa el precio...";
+    }
+}
+
+autoFetchToken();

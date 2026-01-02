@@ -8,9 +8,17 @@
     ],
     "rewrites": [
       {
+        "source": "/api/wow-token",
+        "function": "getwowtokenprice"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
     ]
+  },
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs20"
   }
 }

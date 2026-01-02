@@ -1,5 +1,5 @@
-// Set default date to Jan 5, 2026
-document.getElementById('deadlineDate').value = "2026-01-05";
+// Set default date to March 2, 2026 (Midnight expansion)
+document.getElementById('deadlineDate').value = "2026-03-02";
 
 // Global State
 let manualDaily = false;

@@ -1,8 +1,14 @@
 node_modules/
 .vscode/
-package-lock.json
+# package-lock.json # Descomentar si quieres versionar el lockfile (recomendado)
 .firebase/
 firebase-debug.log*
 firestore-debug.log*
 ui-debug.log*
 *.log
+.DS_Store
+
+# Firebase Secrets (Nunca subir esto)
+.secret.local
+functions/.secret.local
+functions/node_modules/

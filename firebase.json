@@ -9,10 +9,15 @@
     "rewrites": [
       {
         "source": "/api/wow-token",
-        "run": {
-          "serviceId": "getwowtokenprice",
-          "region": "us-central1"
-        }
+        "function": "getwowtokenprice"
+      },
+      {
+        "source": "/api/item",
+        "function": "getitemdetails"
+      },
+      {
+        "source": "/api/auction-price",
+        "function": "getauctionprice"
       },
       {
         "source": "**",

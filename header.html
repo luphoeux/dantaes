@@ -1,13 +1,15 @@
 <header class="w-full bg-wow-card/90 backdrop-blur-md border-b border-wow-border px-6 py-4 flex justify-between items-center sticky top-0 z-50 shrink-0">
     <div class="flex items-center gap-4">
         <h1 class="text-xl font-bold text-white flex items-center gap-2 text-nowrap">
-            <img src="https://yt3.googleusercontent.com/-loYY52HGYTJb0xvspOwcIAbA-_CzK4INqRrZzcA_LIu4d97oaEw6-u07bS3aAA3eV4iKO1SYw=s160-c-k-c0x00ffffff-no-rj" class="w-8 h-8 rounded-full shadow-md" alt="Dantaes">
+            <img src="channels4_profile.jpg" class="w-8 h-8 rounded-full shadow-md" alt="Dantaes">
             Farmers de Azeroth
         </h1>
     </div>
     <nav class="flex gap-6" id="main-nav">
+        <a href="inicio.html" id="nav-inicio" class="text-gray-500 hover:text-white transition-colors text-sm font-bold">Inicio</a>
         <a href="index.html" id="nav-index" class="text-gray-500 hover:text-white transition-colors text-sm font-bold">Libro de ingresos</a>
         <a href="calculadora.html" id="nav-calc" class="text-gray-500 hover:text-white transition-colors text-sm font-bold">Calculadora de Farmeo</a>
+        <a href="farmeos.html" id="nav-farmeos" class="text-gray-500 hover:text-white transition-colors text-sm font-bold">Farmeos Sugeridos</a>
     </nav>
 </header>
 
@@ -19,8 +21,12 @@
         const activeClass = ["text-wow-gold", "border-b-2", "border-wow-gold", "pb-1"];
         
         let activeId = "nav-index";
-        if (page === "calculadora.html") {
+        if (page === "inicio.html") {
+            activeId = "nav-inicio";
+        } else if (page === "calculadora.html") {
             activeId = "nav-calc";
+        } else if (page === "farmeos.html") {
+            activeId = "nav-farmeos";
         }
         
         const activeLink = document.getElementById(activeId);

@@ -1,4 +1,19 @@
-import { ledgerData } from './data.js';
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2CquzL6RCPdBne9xwX4c400vHeIn018aY5vdV9k00PNuy0VIoeiaNTEIYL4XqWAgk__QjPTsFwx11/pub?gid=0&single=true&output=tsv';
+
+// Memoria volátil
+const itemMetadataCache = {};
+
+// Cargar caché desde localStorage al iniciar
+function loadLocalCache() {
+    const saved = localStorage.getItem('wow_item_metadata');
+    if (saved) {
+        Object.assign(itemMetadataCache, JSON.parse(saved));
+    }
+}
+
+function saveLocalCache() {
+    localStorage.setItem('wow_item_metadata', JSON.stringify(itemMetadataCache));
+}
 
 // --- HELPER FUNCTIONS ---
 
@@ -18,142 +33,390 @@ function formatCurrency(num) {
     return num.toLocaleString('es-ES');
 }
 
-// Global scope for tooltips
-window.showTooltip = function(evt, date, income, expense) {
-    const tt = document.getElementById('chart-tooltip');
-    if(!tt) return;
-    tt.style.display = 'block';
+async function fetchItemMetadata(itemId) {
+    if (itemMetadataCache[itemId]) return itemMetadataCache[itemId];
+    if (!itemId || itemId === 0) return null;
     
-    const clientX = evt.clientX || (window.event && window.event.clientX) || 0;
-    const clientY = evt.clientY || (window.event && window.event.clientY) || 0;
-    
-    // Adjust logic to be relative to container if needed, but fixed/absolute to body is easier
-    // With Tailwind layout, `position: absolute` inside chart container is tricky if container is relative.
-    // The previous CSS had chart-container relative.
-    
-    // Let's use simple offset inside the container for now, assuming the container is arguably large enough
-    // OR just offset from mouse.
-    
-    // Note: In refined index.html, chart container has `relative`.
-    // So `left/top` are relative to that container if `tt` is inside it.
-    // We need to calculate position relative to the container, OR move TT to body.
-    // Moving TT to body is safer for overflow.
-    // But currently TT is inside `main-chart-container`.
-    // So we need `evt.offsetX/Y` or similar.
-    
-    // Let's try direct mouse coordinates minus container offset?
-    // Start with simple offset from mouse pointer assuming the chart handles hover events
-    
-    // Since `tt` is absolutely positioned inside `relative` container:
-    // We need the mouse position relative to the element that fired the event (the rect).
-    // `evt.target` is the rect.
-    
-    // Simplified: Just use `evt.layerX` / `evt.layerY` if available or `offsetX`.
-    // But standard is `offsetX`.
-    
-    // However, since the SVG is full width/height, `offsetX` on the rect is relative to the rect?
-    // Let's stick to a safe approach:
-    // Actually, simply sticking it near the mouse pointer usually works if offsets are handled.
-    
-    // IMPORTANT: If `tt` is child of `container` (relative), `top` and `left` are relative to container.
-    // `evt.clientX` is viewport. We need to subtract container's BB.
-    const container = document.getElementById('main-chart-container');
-    const rect = container.getBoundingClientRect();
-    
-    let x = clientX - rect.left + 15;
-    let y = clientY - rect.top - 10;
-    
-    // Boundary check
-    if (x + 150 > rect.width) x = x - 170; // flip left
-    
-    tt.style.left = x + 'px';
-    tt.style.top = y + 'px';
-
-    if (expense !== undefined) {
-         tt.innerHTML = `
-            <div style="font-weight:600; margin-bottom:4px; border-bottom:1px solid #4B5563; padding-bottom:4px; color:#F3F4F6;">${date}</div>
-            <div style="color:#34D399; font-size:0.9em;">Ingresos: +${formatCurrency(income)}</div>
-            <div style="color:#EF4444; font-size:0.9em;">Gastos: -${formatCurrency(expense)}</div>
-         `;
-    } else {
-         tt.innerHTML = `<span>${date}</span>: ${income}`;
+    try {
+        const response = await fetch(`/api/item?id=${itemId}`);
+        const data = await response.json();
+        if (data && !data.error) {
+            itemMetadataCache[itemId] = data;
+            saveLocalCache();
+            return data;
+        }
+    } catch (e) {
+        console.error("Error fetching item metadata:", e);
     }
+    return null;
+}
+
+function getQualityClass(quality) {
+    if (!quality) return 'q-common';
+    return `q-${quality.toLowerCase()}`;
+}
+
+function getQualityBgClass(quality) {
+    if (!quality) return 'bg-q-common';
+    return `bg-q-${quality.toLowerCase()}`;
+}
+
+// Global scope for tooltips
+const tooltipEl = document.createElement('div');
+tooltipEl.id = 'custom-chart-tooltip';
+tooltipEl.className = 'fixed hidden pointer-events-none z-50 bg-wow-card/95 backdrop-blur border border-wow-border shadow-xl rounded-lg p-3 text-xs leading-5 transform transition-opacity duration-75';
+document.body.appendChild(tooltipEl);
+
+window.showChartTooltip = function(evt, date, dailyStr, totalStr, topItemName, topItemValStr) {
+    const el = document.getElementById('custom-chart-tooltip');
+    if(!el) return;
+    
+    // Contenido rico
+    el.innerHTML = `
+        <div class="font-bold text-white mb-2 pb-1 border-b border-white/10 flex justify-between items-center bg-wow-card/50 px-1 -mx-1 -mt-1 rounded-t">
+            <span>${date}</span>
+        </div>
+        
+        <div class="space-y-3">
+            <div class="grid grid-cols-2 gap-x-6 gap-y-1">
+                <span class="text-gray-400">Ingreso Diario:</span>
+                <span class="text-white font-mono text-right font-bold">${dailyStr}</span>
+                <span class="text-gray-400">Acumulado:</span>
+                <span class="text-wow-gold font-mono text-right font-bold">${totalStr}</span>
+            </div>
+
+            ${topItemName ? `
+            <div class="bg-white/5 rounded p-2 border border-white/5">
+                <div class="text-[10px] uppercase text-gray-500 font-bold mb-1">🔥 Top Item del Día</div>
+                <div class="flex justify-between items-center">
+                    <span class="text-wow-rare font-bold truncate max-w-[120px]" title="${topItemName}">${topItemName}</span>
+                    <span class="text-white text-xs">${topItemValStr}</span>
+                </div>
+            </div>
+            ` : ''}
+        </div>
+    `;
+    
+    // Posicionamiento
+    const x = evt.clientX + 15;
+    const y = evt.clientY + 15;
+    
+    // Ajustar si se sale de la pantalla
+    const rect = el.getBoundingClientRect();
+    const finalX = (x + rect.width > window.innerWidth) ? x - rect.width - 20 : x;
+    const finalY = (y + rect.height > window.innerHeight) ? y - rect.height - 20 : y;
+
+    el.style.left = `${finalX}px`;
+    el.style.top = `${finalY}px`;
+    el.classList.remove('hidden');
+    el.classList.add('opacity-100');
 };
 
-window.hideTooltip = function() {
-    const tt = document.getElementById('chart-tooltip');
-    if(tt) tt.style.display = 'none';
+window.hideChartTooltip = function() {
+    const el = document.getElementById('custom-chart-tooltip');
+    if(!el) return;
+    el.classList.add('hidden');
+    el.classList.remove('opacity-100');
 };
 
+// Cache global para precio de ficha
+let tokenPriceCache = null;
 
-// --- RENDER LOGIC ---
+// Función para obtener precio de ficha WoW (solo una llamada)
+async function fetchTokenPrice() {
+    if (tokenPriceCache !== null) {
+        updateTokenPriceUI(tokenPriceCache);
+        return tokenPriceCache;
+    }
+    
+    try {
+        const response = await fetch('/api/wow-token');
+        const data = await response.json();
+        
+        if (data && data.price) {
+            // La API devuelve el precio en cobre, convertir a oro
+            const priceInGold = Math.floor(data.price / 10000);
+            tokenPriceCache = priceInGold;
+            updateTokenPriceUI(priceInGold);
+            return priceInGold;
+        }
+    } catch (e) {
+        console.error("Error fetching token price:", e);
+        updateTokenPriceUI(null, true);
+    }
+    return null;
+}
+
+function updateTokenPriceUI(price, error = false) {
+    const el = document.getElementById('kpi-token-price');
+    const timeEl = document.getElementById('token-last-update');
+    if (!el) return;
+    
+    if (error) {
+        el.innerHTML = '<span class="text-sm text-red-400">Error</span>';
+        if (timeEl) timeEl.textContent = 'Última actualización: Error';
+    } else if (price) {
+        // Mostrar número completo con separadores de miles (ej: "290.799")
+        el.innerHTML = `<span class="flex items-center gap-1">${price.toLocaleString('es-ES')} <img src="https://wow.zamimg.com/images/icons/money-gold.gif" class="w-4 h-4" alt="oro"></span>`;
+        
+        // Actualizar hora
+        if (timeEl) {
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2, '0');
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            timeEl.textContent = `Última actualización: ${hours}:${minutes}`;
+        }
+    }
+}
+
+// Mapeo manual de nombres a IDs (si no hay columna ID en el Sheet)
+const ITEM_MAPS = {
+    "Tendón de zancaalta": 212470,
+    "Urditela": 212462,
+    "Madeja de urditela": 212471,
+    "Sombra primigenia": 22467,
+    "Carne en salmuera": 212472,
+    "Tejido del crepúsculo": 212463
+};
+
+let ledgerData = [];
+
+async function fetchLedgerData() {
+    try {
+        console.log("Sincronizando con Google Sheets...");
+        const response = await fetch(SHEET_URL);
+        const text = await response.text();
+        
+        // Parsear TSV
+        const lines = text.trim().split('\n');
+        const headers = lines[0].split('\t').map(h => h.trim());
+        
+        const rawData = lines.slice(1).map(line => {
+            const cols = line.split('\t');
+            const item = {};
+            headers.forEach((h, i) => item[h] = cols[i]?.trim());
+            return item;
+        });
+
+        // Convertir al formato de la app
+        ledgerData = rawData.map(d => {
+            const name = d["Item"];
+            const qty = parseInt(d["Cantidad"]) || 1;
+            
+            // Helper to clean and parse numbers from the sheet
+            const parseSheetNum = (val) => {
+                if (!val || val === "#NAME?" || val === "") return NaN;
+                const clean = val.toString().replace(/\s/g, '').replace(',', '.');
+                return parseFloat(clean);
+            };
+
+            const unitPrice = parseSheetNum(d["Precio Unitario"]) || 0;
+            let total = parseSheetNum(d["Total Oro"]);
+            
+            if (isNaN(total)) {
+                total = Math.round(unitPrice * qty);
+            } else {
+                total = Math.round(total);
+            }
+            
+            const id = parseInt(d["Id Wowhead"]) || ITEM_MAPS[name] || 0;
+            const icon = d["Link icono"] || null;
+            
+            return {
+                name: name,
+                qty: qty,
+                total: total,
+                price: Math.floor(total / qty) || unitPrice,
+                cat: (d["Categoria"] || "mat").toLowerCase(),
+                date: d["Fecha"],
+                jsDate: new Date(d["Fecha"]),
+                id: id,
+                icon: icon
+            };
+        }).sort((a,b) => b.jsDate - a.jsDate);
+
+        return true;
+    } catch (e) {
+        console.error("Error cargando el Sheet:", e);
+        return false;
+    }
+}
 
 function initDashboard() {
-    console.log("Initializing Tailwind Dashboard...");
-    
+    loadLocalCache();
+    fetchLedgerData().then(success => {
+        if (!success) console.warn("Usando datos locales por fallo en sincronización");
+        
+        // El resto se dispara por el flujo normal
+        updateKPIs();
+        renderMainChart();
+        renderTopCategories();
+        renderItemsTable();
+    });
+}
+
+function updateKPIs() {
     const totalIncome = ledgerData.reduce((sum, item) => sum + item.total, 0);
-    const totalExpense = Math.floor(totalIncome * 0.35); 
-    const netProfit = totalIncome - totalExpense;
-    const margin = totalIncome > 0 ? ((netProfit / totalIncome) * 100).toFixed(1) : 0;
+    
+    // Encontrar ítem top
+    const grouped = {};
+    ledgerData.forEach(d => {
+        if(!grouped[d.name]) grouped[d.name] = 0;
+        grouped[d.name] += d.total;
+    });
+    const topItem = Object.entries(grouped).sort((a,b) => b[1] - a[1])[0];
 
     const setHtml = (id, val) => { const el = document.getElementById(id); if(el) el.innerHTML = val; };
     const setText = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
 
     setHtml('kpi-income', formatGold(totalIncome));
-    setHtml('kpi-expense', formatGold(totalExpense));
-    setHtml('kpi-profit', formatGold(netProfit));
-    setText('kpi-margin', margin + '%');
-
-    renderMainChart();
-    renderTopCategories();
-    renderItemsTable();
+    
+    if (topItem) {
+        setText('kpi-top-item', topItem[0]);
+        setHtml('kpi-top-item-gold', formatGold(topItem[1]));
+        
+        // Buscar el ícono del ítem top
+        const topItemData = ledgerData.find(d => d.name === topItem[0]);
+        const iconContainer = document.getElementById('kpi-top-item-icon');
+        
+        if (iconContainer && topItemData && topItemData.icon) {
+            iconContainer.innerHTML = `<img src="${topItemData.icon}" class="w-full h-full object-cover" alt="${topItem[0]}">`;
+        }
+    }
+    
+    // Obtener precio de ficha (solo una vez)
+    fetchTokenPrice();
 }
 
 function renderMainChart() {
     const container = document.getElementById('main-chart-container');
-    if(!container) return;
+    if(!container || ledgerData.length === 0) return;
 
-    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'];
-    const chartData = months.map(m => {
-        const income = Math.floor(Math.random() * 500000) + 100000;
-        const expense = Math.floor(income * (0.2 + Math.random() * 0.3));
-        return { month: m, income, expense };
+    // 1. Agrupar por fecha para calcular totales y Top Item
+    const dailyStats = {};
+    
+    ledgerData.forEach(d => {
+        if(!dailyStats[d.date]) {
+            dailyStats[d.date] = { 
+                total: 0, 
+                items: {} 
+            };
+        }
+        dailyStats[d.date].total += d.total;
+        
+        // Trackear items por día
+        if(!dailyStats[d.date].items[d.name]) dailyStats[d.date].items[d.name] = 0;
+        dailyStats[d.date].items[d.name] += d.total;
+    });
+
+    const sortedDates = Object.keys(dailyStats).sort((a,b) => new Date(a) - new Date(b));
+    
+    // 2. Generar historial con acumulados y Top Item
+    let runningIncome = 0;
+    const history = sortedDates.map(date => {
+        const stats = dailyStats[date];
+        runningIncome += stats.total;
+        
+        // Encontrar top item del día
+        let topItemName = "N/A";
+        let topItemVal = 0;
+        
+        Object.entries(stats.items).forEach(([name, val]) => {
+            if(val > topItemVal) {
+                topItemVal = val;
+                topItemName = name;
+            }
+        });
+        
+        return { 
+            date, 
+            income: runningIncome, 
+            dailyIncome: stats.total,
+            topItem: topItemName,
+            topItemVal: topItemVal
+        };
     });
 
     const w = container.clientWidth;
     const h = container.clientHeight;
-    if (!w) return;
+    if (!w || h < 100) return;
 
-    const p = 30; 
-    const maxVal = Math.max(...chartData.map(d => Math.max(d.income, d.expense))) * 1.1;
+    const p = 40;
+    const maxVal = history[history.length - 1].income * 1.1;
 
-    let svgContent = '';
-    const barWidth = (w - p*2) / chartData.length / 3; 
+    // 3. Generar coordenadas
+    const getX = (i) => p + (i / (history.length - 1 || 1)) * (w - p * 2);
+    const getY = (v) => h - p - (v / maxVal) * (h - p * 2);
 
-    chartData.forEach((d, i) => {
-        const xBase = p + i * ((w - p*2) / chartData.length) + 20;
-        const hIncome = (d.income / maxVal) * (h - p*2);
-        const yIncome = h - p - hIncome;
-        const hExpense = (d.expense / maxVal) * (h - p*2);
-        const yExpense = h - p - hExpense;
+    let incomePath = "";
+    let areaIncome = "";
 
-        svgContent += `
-            <rect x="${xBase}" y="${yIncome}" width="${barWidth}" height="${hIncome}" fill="#0074e0" rx="3" 
-                  onmouseover="showTooltip(event, '${d.month}', ${d.income}, ${d.expense})" onmousemove="showTooltip(event, '${d.month}', ${d.income}, ${d.expense})" onmouseout="hideTooltip()"/>
-            <rect x="${xBase + barWidth + 6}" y="${yExpense}" width="${barWidth}" height="${hExpense}" fill="#ef4444" rx="3" 
-                  onmouseover="showTooltip(event, '${d.month}', ${d.income}, ${d.expense})" onmousemove="showTooltip(event, '${d.month}', ${d.income}, ${d.expense})" onmouseout="hideTooltip()"/>
-            
-            <text x="${xBase + barWidth}" y="${h - p + 20}" text-anchor="middle" fill="#6B7280" font-size="12" font-family="Inter">${d.month}</text>
-        `;
+    history.forEach((d, i) => {
+        const x = getX(i);
+        const yI = getY(d.income);
+        
+        if (i === 0) {
+            incomePath = `M ${x} ${yI}`;
+            areaIncome = `M ${x} ${h-p} L ${x} ${yI}`;
+        } else {
+            incomePath += ` L ${x} ${yI}`;
+            areaIncome += ` L ${x} ${yI}`;
+        }
+        
+        if (i === history.length - 1) {
+            areaIncome += ` L ${x} ${h-p} Z`;
+        }
     });
 
-    svgContent += `<line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" stroke="#374151" stroke-width="1" />`;
-
+    // 4. Renderizar SVG con gradientes y tooltips
     container.innerHTML = `
-        <div class="chart-tooltip" id="chart-tooltip" style="position: absolute;"></div>
-        <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
-            ${svgContent}
+        <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}">
+            <defs>
+                <linearGradient id="grad-income" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#0074e0" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="#0074e0" stop-opacity="0"/>
+                </linearGradient>
+            </defs>
+            
+            <!-- Grid lines -->
+            <line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" stroke="#374151" stroke-width="1" />
+            <line x1="${p}" y1="${p}" x2="${p}" y2="${h-p}" stroke="#374151" stroke-width="1" />
+            
+            <!-- Labels -->
+            <text x="${p-5}" y="${h-p}" text-anchor="end" fill="#6B7280" font-size="10">0</text>
+            <text x="${p-5}" y="${p+10}" text-anchor="end" fill="#6B7280" font-size="10">${formatCurrency(Math.floor(maxVal/1000))}k</text>
+
+            <!-- Area & Line -->
+            <path d="${areaIncome}" fill="url(#grad-income)" />
+            <path d="${incomePath}" fill="none" stroke="#0074e0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+            
+            <!-- Points for dates with hover -->
+            ${history.map((d, i) => {
+                const dateFormatted = new Date(d.date).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+                
+                // Formatear valores para pasar al tooltip
+                const dailyHtml = formatGold(d.dailyIncome).replace(/"/g, "'");
+                const totalHtml = formatGold(d.income).replace(/"/g, "'");
+                const itemValHtml = formatGold(d.topItemVal).replace(/"/g, "'");
+
+                // Escapar nombre del item por si tiene comillas
+                const safeItemName = d.topItem.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+                return `
+                    <g class="chart-point" style="cursor: pointer;" 
+                       onmousemove="window.showChartTooltip(event, '${dateFormatted}', '${dailyHtml}', '${totalHtml}', '${safeItemName}', '${itemValHtml}')"
+                       onmouseleave="window.hideChartTooltip()">
+                        <circle cx="${getX(i)}" cy="${getY(d.income)}" r="6" fill="#0074e0" opacity="0" class="hover-area" />
+                        <circle cx="${getX(i)}" cy="${getY(d.income)}" r="4" fill="#0074e0" class="point-dot transition-all duration-200" />
+                        <text x="${getX(i)}" y="${h-p+15}" text-anchor="middle" fill="#6B7280" font-size="9" style="pointer-events: none;">${d.date.split('-').slice(1).reverse().join('/')}</text>
+                    </g>
+                `;
+            }).join('')}
         </svg>
+        <style>
+            .chart-point:hover .hover-area { opacity: 0.2; }
+            .chart-point:hover .point-dot { r: 6; fill: #fbbf24; stroke: white; stroke-width: 2px; filter: drop-shadow(0 0 4px #fbbf24); }
+        </style>
     `;
 }
 
@@ -161,20 +424,72 @@ function renderTopCategories() {
     const container = document.getElementById('top-categories-list');
     if(!container) return;
 
+    // Agrupar por categoría usando datos reales
     const cats = {};
     let total = 0;
     ledgerData.forEach(d => {
-        if(!cats[d.cat]) cats[d.cat] = 0;
-        cats[d.cat] += d.total;
+        const category = d.cat || 'otros';
+        if(!cats[category]) cats[category] = 0;
+        cats[category] += d.total;
         total += d.total;
     });
 
-    const displayCats = [
-        { name: 'BoE', val: cats['boe'] || 0, color: 'bg-wow-blue' },
-        { name: 'Materials', val: cats['mat'] || 0, color: 'bg-wow-gold' },
-        { name: 'Transmog', val: cats['xmog'] || 0, color: 'bg-wow-blue' },
-        { name: 'Consumibles', val: (cats['mat'] || 0) * 0.5, color: 'bg-wow-gold' }, 
-    ].sort((a,b) => b.val - a.val);
+    // Mapeo de nombres de categorías (español latinoamericano)
+    const categoryNames = {
+        'cloth': 'Tela',
+        'leather': 'Cuero',
+        'metal & stone': 'Metal y Piedra',
+        'metal': 'Metal',
+        'stone': 'Piedra',
+        'cooking': 'Cocina',
+        'herb': 'Hierba',
+        'enchanting': 'Encantamiento',
+        'inscription': 'Inscripción',
+        'jewelcrafting': 'Joyería',
+        'parts': 'Partes',
+        'elemental': 'Elemental',
+        'optional reagents': 'Reactivos Opcionales',
+        'finishing reagents': 'Reactivos de Acabado',
+        'other': 'Otro',
+        'material': 'Materiales',
+        'mat': 'Materiales',
+        'boe': 'BoE',
+        'xmog': 'Transmog',
+        'otros': 'Otros'
+    };
+
+    const categoryColors = {
+        'cloth': 'bg-blue-500',
+        'leather': 'bg-amber-700',
+        'metal & stone': 'bg-gray-500',
+        'metal': 'bg-gray-400',
+        'stone': 'bg-gray-600',
+        'cooking': 'bg-orange-500',
+        'herb': 'bg-green-500',
+        'enchanting': 'bg-purple-500',
+        'inscription': 'bg-indigo-500',
+        'jewelcrafting': 'bg-pink-500',
+        'parts': 'bg-cyan-500',
+        'elemental': 'bg-blue-400',
+        'optional reagents': 'bg-yellow-500',
+        'finishing reagents': 'bg-lime-500',
+        'other': 'bg-gray-500',
+        'material': 'bg-wow-gold',
+        'mat': 'bg-wow-gold',
+        'boe': 'bg-purple-500',
+        'xmog': 'bg-green-500',
+        'otros': 'bg-gray-500'
+    };
+
+    // Convertir a array y ordenar por valor
+    const displayCats = Object.entries(cats)
+        .map(([key, val]) => ({
+            name: categoryNames[key.toLowerCase()] || key,
+            val: val,
+            color: categoryColors[key.toLowerCase()] || 'bg-gray-500'
+        }))
+        .sort((a,b) => b.val - a.val)
+        .slice(0, 5); // Top 5
 
     let html = '';
     displayCats.forEach(c => {
@@ -191,6 +506,11 @@ function renderTopCategories() {
             </div>
         `;
     });
+    
+    if (displayCats.length === 0) {
+        html = '<div class="text-center text-gray-500 text-sm">No hay datos disponibles</div>';
+    }
+    
     container.innerHTML = html;
 }
 
@@ -200,59 +520,146 @@ function getColorClass(cat) {
     return 'text-gray-400 bg-gray-400/10 border-gray-400/20';
 }
 
-function renderItemsTable() {
-    const tbody = document.getElementById('items-table-body');
-    if(!tbody) return;
-    tbody.innerHTML = '';
+// Filtros globales
+let filters = {
+    dateFrom: null,
+    dateTo: null,
+    search: ''
+};
 
-    const grouped = {};
-    ledgerData.forEach(d => {
-        if(!grouped[d.name]) grouped[d.name] = { ...d, count: 0, sumQty: 0, sumTotal: 0 };
-        grouped[d.name].count++;
-        grouped[d.name].sumQty += d.qty;
-        grouped[d.name].sumTotal += d.total;
+function applyFilters() {
+    renderItemsTable();
+    updateKPIs();
+    renderMainChart();
+    renderTopCategories();
+}
+
+function renderItemsTable() {
+    const container = document.getElementById('daily-performance-container');
+    if(!container) return;
+    container.innerHTML = '';
+
+    // Aplicar filtros
+    let filteredData = ledgerData.filter(d => {
+        if (filters.dateFrom && d.date < filters.dateFrom) return false;
+        if (filters.dateTo && d.date > filters.dateTo) return false;
+        if (filters.search && !d.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
+        return true;
     });
 
-    const itemsArr = Object.values(grouped).sort((a,b) => b.sumTotal - a.sumTotal);
+    // 1. Agrupar por fecha
+    const groups = {};
+    filteredData.forEach(d => {
+        if(!groups[d.date]) groups[d.date] = [];
+        groups[d.date].push(d);
+    });
 
-    itemsArr.forEach(item => {
-        const avgPrice = Math.round(item.sumTotal / item.sumQty);
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-white/[0.02] transition-colors group";
+    // 2. Ordenar fechas (más reciente primero)
+    const sortedDates = Object.keys(groups).sort((a,b) => new Date(b) - new Date(a));
+
+    sortedDates.forEach((date, index) => {
+        const items = groups[date];
+        const isFirst = index === 0; // Solo la primera (más reciente) abierta
         
-        tr.innerHTML = `
-            <td class="py-3 px-2">
-                <div class="flex items-center justify-between">
+        // Colapsar duplicados por nombre en el mismo día
+        const collapsed = {};
+        items.forEach(it => {
+            if(!collapsed[it.name]) collapsed[it.name] = { ...it, count: 0, sumQty: 0, sumTotal: 0 };
+            collapsed[it.name].count++;
+            collapsed[it.name].sumQty += it.qty;
+            collapsed[it.name].sumTotal += it.total;
+        });
+
+        const itemsArr = Object.values(collapsed).sort((a,b) => b.sumTotal - a.sumTotal);
+        const dayTotal = itemsArr.reduce((sum, it) => sum + it.sumTotal, 0);
+
+        // Crear la Ficha (Card) colapsable
+        const card = document.createElement('div');
+        card.className = "bg-wow-card border border-wow-border rounded-xl shadow-lg overflow-hidden fade-in";
+        
+        const dateFriendly = new Date(date).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        const cardId = `card-${date.replace(/\-/g, '')}`;
+
+        card.innerHTML = `
+            <div 
+                class="flex justify-between items-center p-4 cursor-pointer hover:bg-white/[0.02] transition-colors"
+                onclick="toggleCard('${cardId}')"
+            >
+                <div class="flex items-center gap-3">
+                    <i id="icon-${cardId}" class="fas fa-chevron-${isFirst ? 'down' : 'right'} text-wow-gold transition-transform"></i>
                     <div>
-                        <a href="https://www.wowhead.com/item=${item.id}" target="_blank" class="font-bold text-white hover:text-wow-blue transition-colors">
-                            ${item.name}
-                        </a>
-                        <span class="ml-2 px-1.5 py-0.5 text-[10px] uppercase font-bold border rounded ${getColorClass(item.cat)}">
-                            ${item.cat}
-                        </span>
-                    </div>
-                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onclick="openItemHistory('${item.name}')" class="w-7 h-7 bg-wow-gold/10 text-wow-gold rounded flex items-center justify-center hover:bg-wow-gold hover:text-white transition-all">
-                            <i class="fas fa-chart-line text-[10px]"></i>
-                        </button>
+                        <h3 class="font-bold text-white capitalize">${dateFriendly}</h3>
+                        <p class="text-xs text-gray-500">${itemsArr.length} ítems vendidos</p>
                     </div>
                 </div>
-            </td>
-            <td class="py-3 px-2 text-center text-gray-400 font-medium">${item.count}</td>
-            <td class="py-3 px-2 text-center text-gray-400 font-medium">${item.sumQty}</td>
-            <td class="py-3 px-2 text-right text-white/80">${formatGold(avgPrice)}</td>
-            <td class="py-3 px-2 text-right font-bold text-wow-gold">${formatGold(item.sumTotal)}</td>
+                <div class="text-sm font-bold text-wow-gold bg-wow-gold/10 px-3 py-1.5 rounded-full">
+                    ${formatGold(dayTotal)}
+                </div>
+            </div>
+            <div id="${cardId}" class="overflow-hidden transition-all duration-300 ${isFirst ? 'max-h-[2000px]' : 'max-h-0'}">
+                <div class="p-4 pt-0 border-t border-wow-border/30">
+                    <table class="w-full text-left text-sm">
+                        <thead class="text-[10px] uppercase text-gray-500 border-b border-wow-border">
+                            <tr>
+                                <th class="py-2 px-2">Item</th>
+                                <th class="py-2 px-2 text-center">Cant.</th>
+                                <th class="py-2 px-2 text-right">Precio Medio</th>
+                                <th class="py-2 px-2 text-right">Ganancia</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-wow-border/30">
+                            ${itemsArr.map(item => `
+                                <tr class="hover:bg-white/[0.02] transition-colors">
+                                    <td class="py-2 px-2">
+                                        <div class="flex items-center gap-2">
+                                            <div class="relative w-7 h-7 flex-shrink-0 bg-wow-dark rounded border border-wow-border overflow-hidden">
+                                                <img src="${item.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg'}" class="w-full h-full object-cover">
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="font-medium text-white text-xs">${item.name}</span>
+                                                <span class="text-[8px] uppercase opacity-40 ${getColorClass(item.cat)}">${item.cat}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-2 px-2 text-center text-gray-400 text-xs">${item.sumQty}</td>
+                                    <td class="py-2 px-2 text-right text-white/60 text-xs">${formatGold(Math.round(item.sumTotal / item.sumQty))}</td>
+                                    <td class="py-2 px-2 text-right font-bold text-wow-gold text-xs">${formatGold(item.sumTotal)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         `;
-        tbody.appendChild(tr);
+        container.appendChild(card);
     });
-    
-    // Suma Oro Total Ganado (Footer de la tabla)
-    const grandTotal = itemsArr.reduce((sum, item) => sum + item.sumTotal, 0);
-    const totalEl = document.getElementById('table-total-gold');
-    if(totalEl) totalEl.innerHTML = formatGold(grandTotal);
 
-    if(window.$WowheadPower) window.$WowheadPower.refreshLinks();
+    if (sortedDates.length === 0) {
+        container.innerHTML = `
+            <div class="bg-wow-card border border-wow-border rounded-xl p-8 shadow-lg text-center">
+                <i class="fas fa-search text-4xl text-gray-600 mb-3"></i>
+                <p class="text-gray-400">No se encontraron resultados con los filtros aplicados</p>
+            </div>
+        `;
+    }
 }
+
+window.toggleCard = function(cardId) {
+    const content = document.getElementById(cardId);
+    const icon = document.getElementById(`icon-${cardId}`);
+    
+    if (content.classList.contains('max-h-0')) {
+        content.classList.remove('max-h-0');
+        content.classList.add('max-h-[2000px]');
+        icon.classList.remove('fa-chevron-right');
+        icon.classList.add('fa-chevron-down');
+    } else {
+        content.classList.add('max-h-0');
+        content.classList.remove('max-h-[2000px]');
+        icon.classList.add('fa-chevron-right');
+        icon.classList.remove('fa-chevron-down');
+    }
+};
 
 window.openItemHistory = function(itemName) {
     const modal = document.getElementById('item-history-modal');
@@ -314,13 +721,11 @@ function renderItemHistoryChart(container, history) {
         else linePath += ` L ${x} ${y}`;
 
         circlesHtml += `
-            <circle cx="${x}" cy="${y}" r="6" fill="#fbbf24" stroke="#1c202a" stroke-width="2" style="cursor:pointer"
-                    onmouseover="showTooltip(event, '${d.date}', ${d.price}, ${d.qty})" onmousemove="showTooltip(event, '${d.date}', ${d.price}, ${d.qty})" onmouseout="hideTooltip()"/>
+            <circle cx="${x}" cy="${y}" r="6" fill="#fbbf24" stroke="#1c202a" stroke-width="2" style="cursor:pointer" />
         `;
     });
 
     container.innerHTML = `
-        <div class="chart-tooltip" id="chart-tooltip" style="position: absolute;"></div>
         <svg width="100%" height="100%" viewBox="0 0 ${w} ${h}">
             <line x1="${p}" y1="${h-p}" x2="${w-p}" y2="${h-p}" stroke="#374151" stroke-width="1" />
             <line x1="${p}" y1="${p}" x2="${p}" y2="${h-p}" stroke="#374151" stroke-width="1" />
@@ -334,6 +739,39 @@ function renderItemHistoryChart(container, history) {
 
 document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
+    
+    // Configurar fecha "hasta" con el día de hoy por defecto
+    const today = new Date().toISOString().split('T')[0];
+    const dateToInput = document.getElementById('filter-date-to');
+    if (dateToInput) {
+        dateToInput.value = today;
+    }
+    
+    // Event listeners para filtros
+    const dateFrom = document.getElementById('filter-date-from');
+    const dateTo = document.getElementById('filter-date-to');
+    const searchInput = document.getElementById('filter-search');
+    
+    if (dateFrom) {
+        dateFrom.addEventListener('change', (e) => {
+            filters.dateFrom = e.target.value;
+            applyFilters();
+        });
+    }
+    
+    if (dateTo) {
+        dateTo.addEventListener('change', (e) => {
+            filters.dateTo = e.target.value;
+            applyFilters();
+        });
+    }
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            filters.search = e.target.value;
+            applyFilters();
+        });
+    }
 });
 window.addEventListener('resize', () => {
     renderMainChart();

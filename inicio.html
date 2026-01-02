@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inicio - Farmers de Azeroth</title>
+    <link rel="icon" type="image/jpeg" href="channels4_profile.jpg">
+
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind Config -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wow: {
+                dark: "#0b0c10",
+                card: "#1a1d29",
+                border: "#2a2e3b",
+                blue: "#0074e0",
+                gold: "#ffd100",
+                success: "#22c55e",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <link rel="stylesheet" href="style.css" />
+    
+    <style>
+      /* Animación de olas */
+      .wave {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="%230074e0" fill-opacity="0.1"></path></svg>');
+        background-size: 1200px 100px;
+        animation: wave 10s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+        transform: translate3d(0, 0, 0);
+      }
+      
+      .wave:nth-of-type(2) {
+        bottom: 10px;
+        animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
+        opacity: 0.8;
+      }
+      
+      .wave:nth-of-type(3) {
+        bottom: 20px;
+        animation: wave 5s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.25s infinite, swell 5s ease -2.5s infinite;
+        opacity: 0.6;
+      }
+      
+      @keyframes wave {
+        0% { margin-left: 0; }
+        100% { margin-left: -1200px; }
+      }
+      
+      @keyframes swell {
+        0%, 100% { transform: translate3d(0,-10px,0); }
+        50% { transform: translate3d(0,5px,0); }
+      }
+      
+      /* Animación de fade in */
+      .fade-in {
+        animation: fadeIn 1s ease-in;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style>
+  </head>
+
+  <body class="bg-wow-dark text-white font-sans min-h-screen flex flex-col">
+    <div id="header-placeholder" class="shrink-0 sticky top-0 z-50"></div>
+
+    <main class="flex-1 flex flex-col bg-wow-dark relative overflow-hidden">
+      <!-- Animación de olas en el fondo -->
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="wave"></div>
+      
+      <!-- Contenido centrado -->
+      <div class="flex-1 flex items-center justify-center px-4 relative z-10">
+        <div class="text-center fade-in">
+          <!-- Icono de construcción -->
+          <div class="mb-8">
+            <i class="fas fa-hammer text-6xl text-wow-blue animate-pulse"></i>
+          </div>
+          
+          <!-- Título -->
+          <h1 class="text-4xl md:text-6xl font-bold mb-4">
+            En <span class="text-wow-gold">Construcción</span>
+          </h1>
+          
+          <!-- Descripción -->
+          <p class="text-gray-400 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+            Estamos trabajando en algo increíble. Mientras tanto, explora nuestras otras secciones.
+          </p>
+          
+          <!-- Botones de navegación -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="dashboard.html" 
+               class="px-6 py-3 bg-wow-blue hover:bg-blue-600 rounded-lg transition-colors font-semibold inline-flex items-center justify-center gap-2">
+              <i class="fas fa-chart-line"></i>
+              Dashboard
+            </a>
+            <a href="calculadora.html" 
+               class="px-6 py-3 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-colors font-semibold inline-flex items-center justify-center gap-2">
+              <i class="fas fa-calculator"></i>
+              Calculadora
+            </a>
+            <a href="farmeos.html" 
+               class="px-6 py-3 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-colors font-semibold inline-flex items-center justify-center gap-2">
+              <i class="fas fa-seedling"></i>
+              Farmeos Sugeridos
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div id="footer-placeholder" class="w-full shrink-0 relative z-10"></div>
+    </main>
+
+    <script>
+      // Load Header
+      fetch('header.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('header-placeholder').innerHTML = data;
+          const scripts = document.getElementById('header-placeholder').getElementsByTagName('script');
+          for (let i = 0; i < scripts.length; i++) {
+            eval(scripts[i].innerText);
+          }
+        })
+        .catch(error => console.error('Error loading header:', error));
+
+      // Load Footer
+      fetch('footer.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('footer-placeholder').innerHTML = data;
+        })
+        .catch(error => console.error('Error loading footer:', error));
+    </script>
+  </body>
+</html>

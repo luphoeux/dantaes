@@ -1,0 +1,128 @@
+/* ESTILOS CUSTOM (CSS PURO) - Farmers de Azeroth */
+
+:root {
+  --wow-gold: rgb(251 191 36);
+  --wow-dark: #0b0c10;
+  --wow-card: #1c202a;
+  --wow-border: #2a2e3b;
+}
+
+html, body {
+  min-height: 100%;
+  margin: 0;
+  background-color: var(--wow-dark);
+}
+
+body {
+  color: #d1d5db;
+  font-family: "Inter", sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--wow-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--wow-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f4455;
+}
+
+/* Input Fields & Wrappers */
+.input-wrapper {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.input-wrapper:focus-within {
+  transform: translateY(-1px);
+}
+
+.input-wrapper:focus-within i {
+  color: var(--wow-gold);
+}
+
+.input-wrapper:focus-within input {
+  border-color: var(--wow-gold);
+  box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.2);
+}
+
+/* Charts & Tooltips */
+.chart-tooltip {
+  position: absolute;
+  background: #1f2937;
+  border: 1px solid #374151;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85em;
+  color: #fff;
+  pointer-events: none;
+  display: none;
+  z-index: 100;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Gold Icons */
+.gold-icon {
+  width: 14px;
+  height: 14px;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+  display: inline-block;
+}
+
+[id^="kpi-"] .gold-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Animations */
+@keyframes spin-once {
+  0% {
+    transform: translateY(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+.clicked-spin {
+  animation: spin-once 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Calendar Icon Color */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(78%) sepia(35%) saturate(884%) hue-rotate(358deg) brightness(101%) contrast(101%);
+    cursor: pointer;
+}

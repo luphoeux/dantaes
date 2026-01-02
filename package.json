@@ -1,0 +1,22 @@
+{
+  "name": "farmers-de-azeroth",
+  "version": "1.0.0",
+  "description": "Dashboard de análisis de ventas para World of Warcraft",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "dev": "npx http-server ./ -p 8080 -c-1",
+    "login": "npx firebase login",
+    "deploy": "npx firebase deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "firebase-tools": "^15.1.0",
+    "http-server": "^14.1.1"
+  },
+  "dependencies": {
+    "firebase": "^12.7.0"
+  }
+}

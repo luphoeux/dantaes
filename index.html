@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmers de Azeroth - Dashboard</title>
+    
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Wowhead Tooltips -->
+    <script>var whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: false};</script>
+    <script src="https://wow.zamimg.com/widgets/power.js"></script>
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        wow: {
+                            dark: '#0b0c10',
+                            card: '#1c202a',
+                            border: '#2a2e3b',
+                            blue: '#0074e0',
+                            gold: '#fbbf24',
+                            blueLight: '#fbbf24',
+                            rare: '#3b82f6',
+                            epic: '#a335ee',
+                            legendary: '#ff8000',
+                            danger: '#ef4444',
+                            success: '#22c55e'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-wow-dark text-gray-300 font-sans">
+
+    <div id="header-placeholder" class="shrink-0 sticky top-0 z-50"></div>
+
+    <!-- MAIN WRAPPER -->
+    <main class="flex-1 flex flex-col bg-wow-dark relative">
+        <div class="flex-1 max-w-7xl w-full mx-auto p-6 md:p-8 space-y-8">
+
+            <!-- PAGE TITLE & DESCRIPTION -->
+            <div class="text-center md:text-left">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-2">
+                    Libro de <span class="text-wow-gold">ingresos diarios</span>
+                </h2>
+                <p class="text-gray-500 text-sm md:text-base max-w-2xl">
+                    Monitorea tus ventas en tiempo real, analiza tendencias de mercado y optimiza tu farmeo para dominar la economía de World of Warcraft.
+                </p>
+            </div>
+
+            <!-- HORIZONTAL FILTERS -->
+            <div class="bg-wow-card border border-wow-border rounded-xl p-4 shadow-lg">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end text-xs">
+                    <div class="space-y-1.5">
+                        <label class="font-bold text-gray-500 uppercase tracking-wider ml-1">Rango de Fechas</label>
+                        <div class="flex gap-2">
+                            <input type="date" class="flex-1 bg-[#0a0b10] border border-wow-border rounded-lg py-2 px-3 text-gray-300 focus:outline-none focus:border-wow-blue transition-colors" value="2026-01-01">
+                            <input type="date" class="flex-1 bg-[#0a0b10] border border-wow-border rounded-lg py-2 px-3 text-gray-300 focus:outline-none focus:border-wow-blue transition-colors" value="2026-01-31">
+                        </div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="font-bold text-gray-500 uppercase tracking-wider ml-1">Tipo de Venta</label>
+                        <select class="w-full bg-[#0a0b10] border border-wow-border rounded-lg py-2 px-3 text-gray-300 focus:outline-none focus:border-wow-blue transition-colors">
+                            <option>Todos</option>
+                            <option>Subasta</option>
+                            <option>Comercio</option>
+                            <option>Crafting Order</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="font-bold text-gray-500 uppercase tracking-wider ml-1">Categoría</label>
+                        <select class="w-full bg-[#0a0b10] border border-wow-border rounded-lg py-2 px-3 text-gray-300 focus:outline-none focus:border-wow-blue transition-colors">
+                            <option>Todas</option>
+                            <option>Mat</option>
+                            <option>BoE</option>
+                            <option>Transmog</option>
+                        </select>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="font-bold text-gray-500 uppercase tracking-wider ml-1">Filtro Rápido</label>
+                        <div class="relative w-full">
+                            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"></i>
+                            <input type="text" placeholder="Buscar item..." class="w-full bg-[#0a0b10] border border-wow-border rounded-lg py-2 pl-9 pr-3 text-gray-300 focus:outline-none focus:border-wow-blue transition-colors">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <!-- KPI ROW -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-wow-card border border-wow-border rounded-xl p-5 shadow-lg flex justify-between items-start hover:border-wow-blue/30 transition-colors">
+                        <div>
+                            <div class="text-xs font-semibold text-gray-500 uppercase mb-1">Ingresos Totales</div>
+                            <div class="text-2xl font-bold text-white" id="kpi-income">0</div>
+                        </div>
+                        <div class="w-10 h-10 rounded-lg bg-wow-blue/10 flex items-center justify-center text-wow-blue">
+                            <i class="fas fa-arrow-up text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="bg-wow-card border border-wow-border rounded-xl p-5 shadow-lg flex justify-between items-start hover:border-red-500/30 transition-colors">
+                        <div>
+                            <div class="text-xs font-semibold text-gray-500 uppercase mb-1">Gastos Totales</div>
+                            <div class="text-2xl font-bold text-white" id="kpi-expense">0</div>
+                        </div>
+                        <div class="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center text-red-500">
+                            <i class="fas fa-arrow-down text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="bg-wow-card border border-wow-border rounded-xl p-5 shadow-lg flex justify-between items-start hover:border-wow-gold/30 transition-colors">
+                        <div>
+                            <div class="text-xs font-semibold text-gray-500 uppercase mb-1">Beneficio Neto</div>
+                            <div class="text-2xl font-bold text-white" id="kpi-profit">0</div>
+                        </div>
+                        <div class="w-10 h-10 rounded-lg bg-wow-gold/10 flex items-center justify-center text-wow-gold">
+                            <i class="fas fa-wallet text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="bg-wow-card border border-wow-border rounded-xl p-5 shadow-lg flex justify-between items-start hover:border-wow-blue/30 transition-colors">
+                        <div>
+                            <div class="text-xs font-semibold text-gray-500 uppercase mb-1">% Margen</div>
+                            <div class="text-2xl font-bold text-white" id="kpi-margin">0%</div>
+                        </div>
+                        <div class="w-10 h-10 rounded-lg bg-wow-blue/10 flex items-center justify-center text-wow-blue">
+                            <i class="fas fa-percent text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RENDIMIENTO POR ÍTEM (MOVE HERE AS REQUESTED) -->
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="bg-wow-card border border-wow-border rounded-xl p-6 shadow-lg overflow-hidden">
+                        <h3 class="font-bold text-wow-gold mb-4 flex items-center gap-2">
+                            <i class="fas fa-list-ul"></i> Rendimiento por Ítem
+                        </h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="text-xs uppercase text-gray-500 border-b border-wow-border">
+                                    <tr>
+                                        <th class="py-3 px-2">Item</th>
+                                        <th class="py-3 px-2 text-center">Ventas</th>
+                                        <th class="py-3 px-2 text-center">Cant.</th>
+                                        <th class="py-3 px-2 text-right">Precio Medio</th>
+                                        <th class="py-3 px-2 text-right">Ganancia Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="items-table-body" class="divide-y divide-wow-border/50"></tbody>
+                                <tfoot class="border-t-2 border-wow-border bg-wow-dark/30">
+                                    <tr>
+                                        <td colspan="4" class="py-4 px-2 text-right font-bold text-gray-400 uppercase tracking-wider text-xs">Oro Total Ganado:</td>
+                                        <td id="table-total-gold" class="py-4 px-2 text-right font-bold text-wow-gold text-lg">0</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CHARTS ROW -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-wow-card border border-wow-border rounded-xl p-6 shadow-lg flex flex-col min-h-[350px]">
+                        <h3 class="font-bold text-white mb-6 flex items-center gap-2">
+                            <i class="fas fa-chart-bar text-gray-500"></i> Evolución (Ingresos vs Gastos)
+                        </h3>
+                        <div class="flex-1 relative" id="main-chart-container">
+                            <div class="chart-tooltip" id="chart-tooltip"></div>
+                        </div>
+                    </div>
+                    <div class="bg-wow-card border border-wow-border rounded-xl p-6 shadow-lg flex flex-col">
+                        <h3 class="font-bold text-white mb-6 flex items-center gap-2">
+                            <i class="fas fa-layer-group text-gray-500"></i> Top Categorías
+                        </h3>
+                        <div class="flex-1 space-y-4" id="top-categories-list"></div>
+                    </div>
+                </div>
+
+                <div class="pb-20"></div> <!-- Placeholder for padding -->
+            </div> <!-- Close space-y-6 -->
+        </div> <!-- Close max-w-7xl wrapper -->
+        <div id="footer-placeholder" class="w-full shrink-0"></div>
+    </main>
+
+    <!-- MODAL ITEM HISTORY -->
+    <div id="item-history-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="relative bg-wow-card border border-wow-border rounded-2xl w-full max-w-4xl max-h-[90vh] shadow-2xl overflow-hidden flex flex-col scale-95 opacity-0 transition-all duration-300" id="modal-container">
+            <div class="p-6 border-b border-wow-border flex justify-between items-center bg-wow-dark/50">
+                <h2 id="modal-item-title" class="text-xl font-bold text-white"></h2>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-white transition-colors text-2xl">&times;</button>
+            </div>
+            <div class="p-8 flex-1 overflow-y-auto">
+                <div class="h-[400px] w-full relative" id="item-chart"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import './js/app.js';
+        // Load Header
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-placeholder').innerHTML = data;
+                const scripts = document.getElementById('header-placeholder').getElementsByTagName('script');
+                for (let i = 0; i < scripts.length; i++) { eval(scripts[i].innerText); }
+            })
+            .catch(error => console.error('Error loading header:', error));
+
+        // Load Footer
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            })
+            .catch(error => console.error('Error loading footer:', error));
+    </script>
+</body>
+</html>

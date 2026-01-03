@@ -1,4 +1,5 @@
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ2CquzL6RCPdBne9xwX4c400vHeIn018aY5vdV9k00PNuy0VIoeiaNTEIYL4XqWAgk__QjPTsFwx11/pub?gid=0&single=true&output=tsv';
+const LOCAL_STORAGE_KEY_USER_ENTRIES = 'dantaes_user_entries';
 
 // Memoria volátil
 const itemMetadataCache = {};
@@ -18,6 +19,7 @@ function saveLocalCache() {
 // --- HELPER FUNCTIONS ---
 
 function formatGold(num, fullFormat = false) {
+    if (isNaN(num)) return '0';
     let val = "";
     if (fullFormat) {
         val = Math.round(num).toLocaleString('es-ES');
@@ -28,7 +30,7 @@ function formatGold(num, fullFormat = false) {
     } else {
         val = num.toLocaleString('es-ES');
     }
-    return `<span class="inline-flex items-center gap-1 whitespace-nowrap">${val}<img src="https://undermine.exchange/images/coin-gold.png" class="gold-icon" alt="g"></span>`;
+    return `<span class="inline-flex items-center gap-1 whitespace-nowrap">${val}<img src="https://wow.zamimg.com/images/icons/money-gold.gif" class="w-3 h-3 md:w-4 md:h-4" alt="g"></span>`;
 }
 
 function formatCurrency(num) {
@@ -204,40 +206,57 @@ async function fetchLedgerData() {
 
         // Convertir al formato de la app
         ledgerData = rawData.map(d => {
-            const name = d["Item"];
-            const qty = parseInt(d["Cantidad"]) || 1;
+            // Soporte dinámico para headers según la nueva imagen
+            const highlightedItem = d["Item destacado"] || d["Item Destacado"] || "";
+            const activities = d["Farmeo"] || d["Actividades"] || "";
+            const date = d["Fecha"] || d["Date"];
+            const icon = d["Link icono"] || d["Link Icono"] || d["Icono"] || null;
+            const observation = d["Observación"] || d["Observacion"] || "";
+            const link = d["Link sugerido del día"] || d["Link sugerido"] || d["Links sugeridos"] || "";
+            const id = parseInt(d["Id Wowhead"] || d["ID"]) || 0;
             
-            // Helper to clean and parse numbers from the sheet
             const parseSheetNum = (val) => {
                 if (!val || val === "#NAME?" || val === "") return NaN;
-                const clean = val.toString().replace(/\s/g, '').replace(',', '.');
-                return parseFloat(clean);
+                const clean = val.toString().replace(/[^0-9,.]/g, '').replace(/\s/g, '');
+                if (clean.includes('.') && clean.includes(',')) {
+                    return parseFloat(clean.replace(/\./g, '').replace(',', '.'));
+                }
+                const lastComma = clean.lastIndexOf(',');
+                const lastDot = clean.lastIndexOf('.');
+                if (lastComma > lastDot && lastComma > clean.length - 4) {
+                    return parseFloat(clean.replace(/\./g, '').replace(',', '.'));
+                }
+                return parseFloat(clean.replace(/,/g, ''));
             };
 
-            const unitPrice = parseSheetNum(d["Precio Unitario"]) || 0;
-            let total = parseSheetNum(d["Total Oro"]);
-            
-            if (isNaN(total)) {
-                total = Math.round(unitPrice * qty);
-            } else {
-                total = Math.round(total);
-            }
-            
-            const id = parseInt(d["Id Wowhead"]) || ITEM_MAPS[name] || 0;
-            const icon = d["Link icono"] || null;
+            let total = parseSheetNum(d["Oro ganado en total"] || d["Oro ganado en"] || d["Oro ganado"] || d["Total Oro"]);
             
             return {
-                name: name,
-                qty: qty,
-                total: total,
-                price: Math.floor(total / qty) || unitPrice,
-                cat: (d["Categoria"] || "mat").toLowerCase(),
-                date: d["Fecha"],
-                jsDate: new Date(d["Fecha"]),
+                name: highlightedItem || (activities ? activities.split(',')[0] : "Sin nombre"),
+                activities: activities,
+                total: isNaN(total) ? 0 : Math.round(total),
+                date: date,
+                jsDate: (function() {
+                    const parts = date.split('-');
+                    return new Date(parts[0], parts[1] - 1, parts[2]);
+                })(),
                 id: id,
-                icon: icon
+                icon: icon,
+                observation: observation,
+                link: link,
+                cat: highlightedItem || "Otros"
             };
-        }).sort((a,b) => b.jsDate - a.jsDate);
+        }).filter(d => (d.name || d.activities) && d.date).sort((a,b) => b.jsDate - a.jsDate);
+
+        // Cargar entradas locales
+        const savedEntries = localStorage.getItem(LOCAL_STORAGE_KEY_USER_ENTRIES);
+        if (savedEntries) {
+            const userEntries = JSON.parse(savedEntries).map(e => ({
+                ...e,
+                jsDate: new Date(e.date)
+            }));
+            ledgerData = [...userEntries, ...ledgerData].sort((a,b) => b.jsDate - a.jsDate);
+        }
 
         return true;
     } catch (e) {
@@ -251,6 +270,9 @@ function initDashboard() {
     fetchLedgerData().then(success => {
         if (!success) console.warn("Usando datos locales por fallo en sincronización");
         
+        // Poblar datalist de farmeos con ítems únicos del catálogo
+        populateFarmDatalist();
+
         // El resto se dispara por el flujo normal
         updateKPIs();
         renderMainChart();
@@ -259,36 +281,139 @@ function initDashboard() {
     });
 }
 
+function populateFarmDatalist() {
+    const datalist = document.getElementById('farmeos-options');
+    if (!datalist) return;
+    
+    // Obtener nombres únicos de los farmeos del catálogo
+    const uniqueFarms = [...new Set(ledgerData.map(d => d.name))].sort();
+    datalist.innerHTML = uniqueFarms.map(f => `<option value="${f}">`).join('');
+}
+
+// Handler para el nuevo formulario
+function initIncomeForm() {
+    const form = document.getElementById('income-form');
+    if (!form) return;
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const name = formData.get('farmName');
+        const gold = parseFloat(formData.get('goldEarned'));
+        const observation = formData.get('observation');
+        const link = formData.get('suggestedLink');
+        const today = new Date().toISOString().split('T')[0];
+
+        // Buscar icono del catálogo
+        const catalogEntry = ledgerData.find(d => d.name.toLowerCase() === name.toLowerCase());
+        const icon = catalogEntry ? catalogEntry.icon : 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
+        const id = catalogEntry ? catalogEntry.id : 0;
+
+        const newEntry = {
+            name,
+            total: gold,
+            qty: 1,
+            price: gold,
+            date: today,
+            jsDate: new Date(),
+            observation,
+            link,
+            icon,
+            id,
+            cat: catalogEntry ? catalogEntry.cat : 'otros',
+            isLocal: true // Identificador para entradas locales
+        };
+
+        // Guardar localmente
+        const savedEntries = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY_USER_ENTRIES) || '[]');
+        savedEntries.unshift(newEntry);
+        localStorage.setItem(LOCAL_STORAGE_KEY_USER_ENTRIES, JSON.stringify(savedEntries));
+
+        // Actualizar estado global y UI
+        ledgerData.unshift(newEntry);
+        form.reset();
+        applyFilters();
+    });
+}
+
 function updateKPIs() {
     const totalIncome = ledgerData.reduce((sum, item) => sum + item.total, 0);
-    
-    // Encontrar ítem top
-    const grouped = {};
-    ledgerData.forEach(d => {
-        if(!grouped[d.name]) grouped[d.name] = 0;
-        grouped[d.name] += d.total;
-    });
-    const topItem = Object.entries(grouped).sort((a,b) => b[1] - a[1])[0];
-
     const setHtml = (id, val) => { const el = document.getElementById(id); if(el) el.innerHTML = val; };
-    const setText = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
-
     setHtml('kpi-income', formatGold(totalIncome, true));
     
-    if (topItem) {
-        setText('kpi-top-item', topItem[0]);
-        setHtml('kpi-top-item-gold', formatGold(topItem[1]));
-        
-        // Buscar el ícono del ítem top
-        const topItemData = ledgerData.find(d => d.name === topItem[0]);
-        const iconContainer = document.getElementById('kpi-top-item-icon');
-        
-        if (iconContainer && topItemData && topItemData.icon) {
-            iconContainer.innerHTML = `<img src="${topItemData.icon}" class="w-full h-full object-cover" alt="${topItem[0]}">`;
+    // --- TOP DAY CARD (Replacing Top Item) ---
+    const dayTotals = {};
+    const dayData = {};
+    ledgerData.forEach(d => {
+        if(!dayTotals[d.date]) {
+            dayTotals[d.date] = 0;
+            dayData[d.date] = [];
         }
+        dayTotals[d.date] += d.total;
+        dayData[d.date].push(d);
+    });
+
+    let bestDate = null;
+    let maxTotal = -1;
+    Object.keys(dayTotals).forEach(date => {
+        if(dayTotals[date] > maxTotal) {
+            maxTotal = dayTotals[date];
+            bestDate = date;
+        }
+    });
+
+    const topItemContainer = document.getElementById('kpi-top-item');
+    if (topItemContainer && bestDate) {
+        const topDayEntries = dayData[bestDate];
+        const dateObj = new Date(bestDate + 'T00:00:00'); 
+        const dateFriendly = dateObj.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' });
+        
+        topItemContainer.innerHTML = `
+            <div class="flex flex-col h-full bg-wow-gold/5 overflow-hidden">
+                <div class="bg-wow-gold/10 px-4 py-2 flex justify-between items-center border-b border-wow-gold/20">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-trophy text-wow-gold text-xs"></i>
+                        <span class="text-[10px] uppercase text-wow-gold font-bold tracking-widest">Día de Oro Récord</span>
+                    </div>
+                    <span class="text-[10px] text-white/60 font-bold capitalize">${dateFriendly}</span>
+                </div>
+                <div class="p-4 space-y-4 max-h-[250px] overflow-y-auto custom-scrollbar flex-1">
+                    ${topDayEntries.map(entry => `
+                        <div class="flex items-start gap-4 pb-4 border-b border-wow-gold/5 last:border-0 last:pb-0">
+                            <div class="relative flex-shrink-0">
+                                <div class="w-14 h-14 rounded-xl border border-wow-gold/20 overflow-hidden shadow-md">
+                                    <img src="${entry.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg'}" class="w-full h-full object-cover">
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex justify-between items-start gap-2">
+                                    <h4 class="text-white font-black text-[11px] uppercase tracking-tight truncate">${entry.name}</h4>
+                                    <span class="text-wow-gold font-mono font-bold text-[11px] whitespace-nowrap">${formatGold(entry.total, true)}</span>
+                                </div>
+                                <div class="mt-1 flex flex-col gap-1">
+                                    ${entry.activities ? entry.activities.split(',').map(act => `
+                                        <div class="text-[8px] text-white/40 border-l border-wow-blue/20 pl-2 py-0.5 italic">
+                                            ${act.trim()}
+                                        </div>
+                                    `).join('') : ''}
+                                </div>
+                                ${entry.observation ? `
+                                    <p class="mt-2 text-[9px] text-gray-500 italic leading-tight border-t border-white/5 pt-1">
+                                        ${entry.observation}
+                                    </p>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="bg-wow-gold/5 px-4 py-2 border-t border-wow-gold/10 text-right mt-auto">
+                    <span class="text-[10px] text-gray-500 uppercase mr-2">Cifra Récord:</span>
+                    <span class="text-wow-gold font-bold font-mono text-sm">${formatGold(maxTotal, true)}</span>
+                </div>
+            </div>
+        `;
     }
     
-    // Obtener precio de ficha (solo una vez)
     fetchTokenPrice();
 }
 
@@ -366,13 +491,58 @@ let filters = {
     itemsPerPage: 7
 };
 
+function updateResetButtonVisibility() {
+    const resetBtn = document.getElementById('reset-filters-container');
+    const hasFilters = filters.search || filters.dateFrom || filters.dateTo || chartTimeframe !== 'week';
+    if (resetBtn) {
+        if (hasFilters) resetBtn.classList.remove('hidden');
+        else resetBtn.classList.add('hidden');
+    }
+}
+
 function applyFilters() {
     filters.currentPage = 1; // Reset page on filter
+    updateResetButtonVisibility();
     renderItemsTable();
     updateKPIs();
     renderMainChart();
     renderTopCategories();
 }
+
+window.resetFilters = function() {
+    // Reset global filters object
+    filters.search = '';
+    filters.dateFrom = null;
+    filters.dateTo = null;
+    filters.currentPage = 1;
+    chartTimeframe = 'week';
+
+    // Clear UI inputs
+    const searchInput = document.getElementById('filter-search');
+    const dateFromInput = document.getElementById('filter-date-from');
+    const dateToInput = document.getElementById('filter-date-to');
+    
+    if (searchInput) searchInput.value = '';
+    if (dateFromInput) dateFromInput.value = '';
+    if (dateToInput) dateToInput.value = '';
+
+    // Reset chart timeframe buttons UI
+    ['day', 'week', 'month', 'year'].forEach(f => {
+        const btn = document.getElementById(`filter-btn-${f}`);
+        if(btn) {
+            if(f === 'week') {
+                btn.classList.add('bg-wow-blue', 'text-white', 'shadow');
+                btn.classList.remove('text-gray-400', 'hover:text-white');
+            } else {
+                btn.classList.remove('bg-wow-blue', 'text-white', 'shadow');
+                btn.classList.add('text-gray-400', 'hover:text-white');
+            }
+        }
+    });
+
+    applyFilters();
+};
+window.applyFilters = applyFilters;
 
 // Helper to get week number
 function getWeekNumber(d) {
@@ -441,8 +611,9 @@ window.handleChartClick = function(key) {
     // IMPORTANT: Do NOT call applyFilters(). We want to keep the Chart showing the wider context (Week/Month)
     // while the Table and KPIs focus on the specific day/month selected.
     filters.currentPage = 1;
+    updateResetButtonVisibility(); // Show reset button since we now have date filters
     renderItemsTable();
-    updateKPIs(); // Optional: update KPIs to show daily stats, or keep them broader? User likely wants daily detail.
+    updateKPIs(); 
 
     // Scroll to table for better UX
     const tableContainer = document.getElementById('daily-performance-container');
@@ -748,15 +919,33 @@ function renderItemsTable() {
     let filteredData = ledgerData.filter(d => {
         if (filters.dateFrom && d.date < filters.dateFrom) return false;
         if (filters.dateTo && d.date > filters.dateTo) return false;
-        if (filters.search && !d.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
+        
+        if (filters.search) {
+            const s = filters.search.toLowerCase();
+            const inName = d.name?.toLowerCase().includes(s);
+            const inActivities = d.activities?.toLowerCase().includes(s);
+            const inObservation = d.observation?.toLowerCase().includes(s);
+            const inDate = d.date?.includes(s);
+            const inCat = d.cat?.toLowerCase().includes(s);
+            
+            if (!inName && !inActivities && !inObservation && !inDate && !inCat) return false;
+        }
         return true;
     });
 
     // 1. Agrupar por fecha
     const groups = {};
     filteredData.forEach(d => {
-        if(!groups[d.date]) groups[d.date] = [];
-        groups[d.date].push(d);
+        // Normalizar fecha a YYYY-MM-DD usando componentes locales para evitar desfases
+        let dateKey = d.date;
+        if (d.jsDate && !isNaN(d.jsDate.getTime())) {
+            const y = d.jsDate.getFullYear();
+            const m = (d.jsDate.getMonth() + 1).toString().padStart(2, '0');
+            const day = d.jsDate.getDate().toString().padStart(2, '0');
+            dateKey = `${y}-${m}-${day}`;
+        }
+        if(!groups[dateKey]) groups[dateKey] = [];
+        groups[dateKey].push(d);
     });
 
     // 2. Ordenar fechas (más reciente primero)
@@ -771,8 +960,8 @@ function renderItemsTable() {
 
     visibleDates.forEach((date, index) => {
         const items = groups[date];
-        // Solo abrir el primero si estamos en la pagina 1 y es el primmer elemento
-        const isFirst = (index === 0 && filters.currentPage === 1); 
+        // Forzamos que siempre esté abierto quitando la lógica de isFirst variable
+        const isFirst = true; 
         
         // Colapsar duplicados por nombre en el mismo día
         const collapsed = {};
@@ -796,52 +985,145 @@ function renderItemsTable() {
 
         card.innerHTML = `
             <div 
-                class="flex justify-between items-center p-4 cursor-pointer hover:bg-white/[0.02] transition-colors"
-                onclick="toggleCard('${cardId}')"
+                class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-wow-dark/40 border-b border-wow-border/30 gap-3"
             >
                 <div class="flex items-center gap-3">
-                    <i id="icon-${cardId}" class="fas fa-chevron-${isFirst ? 'down' : 'right'} text-wow-gold transition-transform"></i>
+                    <i class="fas fa-calendar-alt text-wow-gold"></i>
                     <div>
                         <h3 class="font-bold text-white capitalize">${dateFriendly}</h3>
-                        <p class="text-xs text-gray-500">${itemsArr.length} ítems vendidos</p>
+                        <p class="text-xs text-gray-500">${itemsArr.length} registros</p>
                     </div>
                 </div>
                 <div class="text-sm font-bold text-wow-gold bg-wow-gold/10 px-3 py-1.5 rounded-full">
                     ${formatGold(dayTotal, true)}
                 </div>
             </div>
-            <div id="${cardId}" class="daily-card-content overflow-hidden transition-all duration-300 ${isFirst ? 'max-h-[2000px]' : 'max-h-0'}">
-                <div class="p-3 pt-0 border-t border-wow-border/30 md:p-6 md:pt-0">
-                    <table class="w-full text-left text-xs md:text-base">
-                        <thead class="text-[10px] md:text-sm uppercase text-gray-500 border-b border-wow-border">
+            <div id="${cardId}" class="daily-card-content transition-all duration-300 max-h-none">
+                <!-- VISTA ESCRITORIO: Tabla Original -->
+                <div class="hidden lg:block p-6 pt-0 border-t border-wow-border/30">
+                    <table class="w-full text-left text-base table-fixed">
+                        <thead class="text-sm uppercase text-gray-500 border-b border-wow-border">
                             <tr>
-                                <th class="py-1.5 px-1 md:py-4 md:px-4 text-left">Item</th>
-                                <th class="py-1.5 px-1 md:py-4 md:px-4 text-left">Cant.</th>
-                                <th class="py-1.5 px-1 md:py-4 md:px-4 text-left">Precio Medio</th>
-                                <th class="py-1.5 px-1 md:py-4 md:px-4 text-left">Ganancia</th>
+                                <th class="py-4 px-4 text-left w-[25%]">Farmeo</th>
+                                <th class="py-4 px-4 text-left w-[20%]">Oro Ganado</th>
+                                <th class="py-4 px-4 text-left w-[40%]">Observación</th>
+                                <th class="py-4 px-4 text-center w-[15%]">Link</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-wow-border/30">
-                            ${itemsArr.map(item => `
+                            ${itemsArr.map((item, index) => {
+                                let thumbUrl = 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
+                                if (item.link && (item.link.includes('youtube.com') || item.link.includes('youtu.be'))) {
+                                    const videoId = item.link.includes('v=') ? item.link.split('v=')[1].split('&')[0] : item.link.split('/').pop();
+                                    thumbUrl = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+                                }
+                                return `
                                 <tr class="hover:bg-white/[0.02] transition-colors">
-                                    <td class="py-1.5 px-1 md:py-4 md:px-4 text-left">
-                                        <div class="flex items-center gap-2">
-                                            <div class="relative w-6 h-6 md:w-10 md:h-10 flex-shrink-0 bg-wow-dark rounded border border-wow-border overflow-hidden">
+                                    <td class="py-4 px-4 text-left align-top">
+                                        <div class="flex items-start gap-3">
+                                            <div class="relative w-10 h-10 flex-shrink-0 bg-wow-dark rounded border border-wow-border overflow-hidden">
                                                 <img src="${item.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg'}" class="w-full h-full object-cover">
                                             </div>
-                                            <div class="flex flex-col">
-                                                <span class="font-medium text-white text-[11px] md:text-base leading-tight">${item.name}</span>
-                                                <span class="text-[8px] md:text-xs uppercase opacity-40 ${getColorClass(item.cat)}">${item.cat}</span>
+                                            <div class="flex flex-col min-w-0 pt-1">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="font-bold text-white text-base leading-tight truncate" title="${item.name}">${item.name}</span>
+                                                    ${item.activities ? `
+                                                        <button onclick="toggleActivities('acts-dt-${date}-${index}')" class="text-wow-blue hover:text-white transition-colors text-xs">
+                                                            <i id="icon-acts-dt-${date}-${index}" class="fas fa-plus-circle"></i>
+                                                        </button>
+                                                    ` : ''}
+                                                </div>
+                                                <div id="acts-dt-${date}-${index}" class="mt-2 flex flex-col gap-1 hidden">
+                                                    ${item.activities ? item.activities.split(',').map(act => `
+                                                        <div class="text-[10px] text-white/50 border-l border-wow-blue/30 pl-2 py-0.5 italic">
+                                                            ${act.trim()}
+                                                        </div>
+                                                    `).join('') : ''}
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-1.5 px-1 md:py-4 md:px-4 text-left text-gray-400 text-[11px] md:text-base">${item.sumQty}</td>
-                                    <td class="py-1.5 px-1 md:py-4 md:px-4 text-left text-white/60 text-[11px] md:text-base">${formatGold(Math.round(item.sumTotal / item.sumQty), true)}</td>
-                                    <td class="py-1.5 px-1 md:py-4 md:px-4 text-left font-bold text-wow-gold text-[11px] md:text-base">${formatGold(item.sumTotal, true)}</td>
+                                    <td class="py-4 px-4 text-left font-bold text-wow-gold text-base align-top pt-5">${formatGold(item.sumTotal, true)}</td>
+                                    <td class="py-4 px-4 text-left text-gray-400 text-base italic align-top pt-5 truncate" title="${item.observation || ''}">${item.observation || '-'}</td>
+                                    <td class="py-4 px-4 text-center align-top pt-5">
+                                        ${item.link ? `
+                                            <a href="${item.link}" target="_blank" class="group relative inline-block w-28 h-16 rounded-lg overflow-hidden border border-wow-border hover:border-wow-blue transition-all shadow-lg">
+                                                <img src="${thumbUrl}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                                                <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                                    <i class="fas fa-play text-white text-sm drop-shadow-lg opacity-80 group-hover:opacity-100 group-hover:scale-125 transition-all"></i>
+                                                </div>
+                                            </a>
+                                        ` : '<span class="text-gray-600">-</span>'}
+                                    </td>
                                 </tr>
-                            `).join('')}
+                                `;
+                            }).join('')}
                         </tbody>
                     </table>
+                </div>
+
+                <!-- VISTA MÓVIL: Fichas Verticales -->
+                <div class="lg:hidden divide-y divide-wow-border/20">
+                             ${itemsArr.map((item, index) => {
+                                let thumbUrl = null;
+                                if (item.link && (item.link.includes('youtube.com') || item.link.includes('youtu.be'))) {
+                                    const videoId = item.link.includes('v=') ? item.link.split('v=')[1].split('&')[0] : item.link.split('/').pop();
+                                    thumbUrl = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+                                }
+
+                                return `
+                                <div class="p-4 md:p-5 hover:bg-white/[0.02] transition-colors group">
+                                    <div class="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-6">
+                                        <!-- Información Principal -->
+                                        <div class="flex items-center gap-5">
+                                            <div class="relative w-12 h-12 md:w-16 md:h-16 flex-shrink-0 bg-wow-dark rounded-xl border border-wow-border overflow-hidden shadow-lg group-hover:border-wow-blue/40 transition-all">
+                                                <img src="${item.icon || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg'}" class="w-full h-full object-cover">
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center gap-3">
+                                                    <h4 class="font-black text-white text-lg uppercase tracking-tight truncate">${item.name}</h4>
+                                                    ${item.activities ? `
+                                                        <button onclick="toggleActivities('acts-mb-${date}-${index}')" class="text-wow-blue hover:text-white transition-colors">
+                                                            <i id="icon-acts-mb-${date}-${index}" class="fas fa-plus-circle"></i>
+                                                        </button>
+                                                    ` : ''}
+                                                </div>
+                                                <div id="acts-mb-${date}-${index}" class="flex flex-col gap-1 hidden my-2">
+                                                    ${item.activities ? item.activities.split(',').map(act => `
+                                                        <div class="text-[10px] text-white/40 border-l border-wow-blue/20 pl-3 py-0.5 italic">
+                                                            ${act.trim()}
+                                                        </div>
+                                                    `).join('') : ''}
+                                                </div>
+                                                <div class="text-wow-gold font-mono font-black text-xl md:text-2xl leading-none flex items-center gap-2 mt-1">
+                                                    ${formatGold(item.sumTotal, true)}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Detalles Verticales (Ficha) -->
+                                        <div class="flex flex-col space-y-3 pt-4 lg:pt-0 border-t lg:border-t-0 lg:border-l border-wow-border/20 lg:pl-6">
+                                            <div class="grid grid-cols-[100px_1fr] gap-3 items-start">
+                                                <span class="text-[10px] font-bold text-gray-600 uppercase tracking-widest pt-1">Observación</span>
+                                                <p class="text-xs md:text-sm text-gray-400 italic leading-snug line-clamp-2" title="${item.observation || ''}">${item.observation || 'Ninguna'}</p>
+                                            </div>
+                                            
+                                            ${item.link ? `
+                                            <div class="grid grid-cols-[100px_1fr] gap-3 items-center">
+                                                <span class="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Guía</span>
+                                                <a href="${item.link}" target="_blank" class="block w-24 h-14 md:w-28 md:h-16 rounded-xl overflow-hidden border border-wow-border hover:border-wow-blue transition-all shadow-lg relative group/link">
+                                                    <img src="${thumbUrl || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg'}" class="w-full h-full object-cover grayscale-[0.2] group-hover/link:grayscale-0 transition-all">
+                                                    <div class="absolute inset-0 bg-black/40 flex items-center justify-center group-hover/link:bg-black/10 transition-all">
+                                                        <i class="fas fa-play text-white text-xs drop-shadow-md"></i>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            ` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                                `;
+                             }).join('')}
                 </div>
             </div>
         `;
@@ -888,7 +1170,16 @@ window.changePage = function(delta) {
     const totalItems = Object.keys(ledgerData.filter(d => {
         if (filters.dateFrom && d.date < filters.dateFrom) return false;
         if (filters.dateTo && d.date > filters.dateTo) return false;
-        if (filters.search && !d.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
+        
+        if (filters.search) {
+            const s = filters.search.toLowerCase();
+            const inName = d.name?.toLowerCase().includes(s);
+            const inActivities = d.activities?.toLowerCase().includes(s);
+            const inObservation = d.observation?.toLowerCase().includes(s);
+            const inDate = d.date?.includes(s);
+            const inCat = d.cat?.toLowerCase().includes(s);
+            if (!inName && !inActivities && !inObservation && !inDate && !inCat) return false;
+        }
         return true;
     }).reduce((groups, d) => {
         if(!groups[d.date]) groups[d.date] = [];
@@ -998,6 +1289,79 @@ window.closeModal = function() {
     }, 300);
 };
 
+window.openVideoModal = function(linksStr) {
+    const modal = document.getElementById('video-modal');
+    const container = document.getElementById('video-modal-content');
+    const modalCont = document.getElementById('video-modal-container');
+    
+    if (!modal || !container || !modalCont) return;
+
+    const links = linksStr.split('-').map(l => l.trim()).filter(l => l.length > 0);
+    
+    let html = '<div class="grid grid-cols-1 gap-4">';
+    links.forEach((link, index) => {
+        // Embed de YouTube si es link de youtube
+        if (link.includes('youtube.com') || link.includes('youtu.be')) {
+            const videoId = link.includes('v=') ? link.split('v=')[1].split('&')[0] : link.split('/').pop();
+            html += `
+                <div class="space-y-2">
+                    <p class="text-xs text-gray-400 font-bold uppercase">Video ${index + 1}</p>
+                    <div class="aspect-video w-full rounded-lg overflow-hidden border border-wow-border">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+            `;
+        } else {
+            html += `
+                <a href="${link}" target="_blank" class="flex items-center justify-between p-4 bg-wow-dark border border-wow-border rounded-lg hover:border-wow-blue transition-all group">
+                    <span class="text-white">Ver link externo ${index + 1}</span>
+                    <i class="fas fa-external-link-alt text-wow-blue group-hover:scale-110 transition-transform"></i>
+                </a>
+            `;
+        }
+    });
+    html += '</div>';
+    
+    container.innerHTML = html;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    
+    setTimeout(() => {
+        modalCont.classList.remove('scale-95', 'opacity-0');
+        modalCont.classList.add('scale-100', 'opacity-100');
+    }, 10);
+};
+
+window.closeVideoModal = function() {
+    const modal = document.getElementById('video-modal');
+    const modalCont = document.getElementById('video-modal-container');
+    
+    if (!modal || !modalCont) return;
+
+    modalCont.classList.remove('scale-100', 'opacity-100');
+    modalCont.classList.add('scale-95', 'opacity-0');
+    
+    setTimeout(() => {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+        document.getElementById('video-modal-content').innerHTML = ''; // Limpiar iframes
+    }, 300);
+};
+
+window.toggleActivities = function(id) {
+    const el = document.getElementById(id);
+    const icon = document.getElementById('icon-' + id);
+    if(!el) return;
+    
+    if(el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+        if(icon) icon.classList.replace('fa-plus-circle', 'fa-minus-circle');
+    } else {
+        el.classList.add('hidden');
+        if(icon) icon.classList.replace('fa-minus-circle', 'fa-plus-circle');
+    }
+};
+
 function renderItemHistoryChart(container, history) {
     const w = container.clientWidth || 800;
     const h = container.clientHeight || 400;
@@ -1041,6 +1405,7 @@ function renderItemHistoryChart(container, history) {
 
 document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
+    initIncomeForm();
     
     // Configurar fecha "hasta" con el día de hoy por defecto
     const today = new Date().toISOString().split('T')[0];

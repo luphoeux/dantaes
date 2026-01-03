@@ -71,93 +71,69 @@
               Monitoreo de ventas en el año 2026. Lo actualizamos cada vez que estemos en vivo.
             </p>
           </div>
-
-          <div class="w-full lg:w-[400px] aspect-video rounded-xl overflow-hidden shadow-lg border border-wow-border bg-black shrink-0">
-              <iframe
-                  src="https://player.twitch.tv/?channel=dantaess&parent=localhost&parent=dantaes-farmers.web.app&muted=true"
-                  height="100%"
-                  width="100%"
-                  allowfullscreen>
-              </iframe>
-          </div>
         </div>
 
 
 
         <div class="space-y-6">
           <!-- KPI ROW -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div
-              class="bg-wow-card border border-wow-border rounded-xl p-5 shadow-lg flex justify-between items-start hover:border-wow-blue/30 transition-colors"
-            >
-              <div>
-                <div class="text-xs font-semibold text-gray-500 uppercase mb-1">
-                  Ingresos Totales
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6 items-stretch">
+            <!-- Columna 1: Estadísticas (Apiladas) -->
+            <div class="flex flex-col gap-4">
+                <!-- Ingresos Totales -->
+                <div class="flex-1 bg-wow-card border border-wow-border rounded-xl p-5 shadow-lg flex justify-between items-center hover:border-wow-blue/30 transition-colors">
+                  <div>
+                    <div class="text-[10px] font-semibold text-gray-500 uppercase mb-1">Ingresos Totales</div>
+                    <div class="text-xl font-bold text-white uppercase" id="kpi-income">0</div>
+                  </div>
+                  <div class="w-12 h-12 rounded-xl bg-wow-blue/10 flex items-center justify-center text-wow-blue shrink-0 shadow-inner">
+                    <i class="fas fa-arrow-up text-lg"></i>
+                  </div>
                 </div>
-                <div class="text-2xl font-bold text-white" id="kpi-income">
-                  0
+                
+                <!-- Precio Ficha WoW -->
+                <div class="flex-1 bg-wow-card border border-wow-border rounded-xl p-5 shadow-lg flex justify-between items-center hover:border-purple-500/30 transition-colors">
+                  <div>
+                    <div class="text-[10px] font-semibold text-gray-500 uppercase mb-1 flex items-center gap-1">
+                      Precio Ficha
+                      <a href="https://wowtokenprices.com/" target="_blank" class="text-blue-400 hover:text-blue-300">
+                        <i class="fas fa-external-link-alt text-[8px]"></i>
+                      </a>
+                    </div>
+                    <div class="text-xl font-bold text-white uppercase" id="kpi-token-price">
+                      <span class="text-xs animate-pulse">---</span>
+                    </div>
+                  </div>
+                  <div class="w-12 h-12 rounded-xl border border-wow-border flex items-center justify-center bg-wow-dark overflow-hidden shrink-0 shadow-lg">
+                    <img src="https://blz-contentstack-images.akamaized.net/v3/assets/bltf408a0557f4e4998/bltfdc0e2810eb08204/63223137e7bdcf0dd996c9b5/WoWTokenBrown.jpg?imwidth=1088&imdensity=1" class="w-full h-full object-cover"/>
+                  </div>
                 </div>
-              </div>
-              <div
-                class="w-10 h-10 rounded-lg bg-wow-blue/10 flex items-center justify-center text-wow-blue"
-              >
-                <i class="fas fa-arrow-up text-sm"></i>
-              </div>
             </div>
-            
-            <div
-              class="bg-wow-card border border-wow-border rounded-xl p-5 shadow-lg flex justify-between items-start hover:border-wow-gold/30 transition-colors"
-            >
-              <div class="flex-1 min-w-0">
-                <div class="text-xs font-semibold text-gray-500 uppercase mb-1">
-                  Ítem Top
+
+            <!-- Columna 2: Día de Oro Récord -->
+            <div class="h-full">
+                <div id="kpi-top-item" class="h-full bg-wow-card border border-wow-border rounded-xl overflow-hidden shadow-lg hover:border-wow-gold/30 transition-colors">
+                    <div class="animate-pulse h-full flex flex-col items-center justify-center text-gray-700 space-y-2">
+                        <i class="fas fa-trophy text-2xl"></i>
+                        <span class="text-[10px] uppercase tracking-widest font-bold">Analizando Récords...</span>
+                    </div>
                 </div>
-                <div class="text-lg font-bold text-white truncate" id="kpi-top-item">
-                  --
-                </div>
-                <div class="text-xs text-gray-500 mt-1" id="kpi-top-item-gold">
-                  0 oro
-                </div>
-              </div>
-              <div
-                id="kpi-top-item-icon"
-                class="w-10 h-10 rounded border-2 border-wow-border flex items-center justify-center bg-wow-dark flex-shrink-0 overflow-hidden"
-              >
-                <i class="fas fa-crown text-wow-gold text-sm"></i>
-              </div>
             </div>
-            
-            <div
-              class="bg-wow-card border border-wow-border rounded-xl p-5 shadow-lg flex justify-between items-start hover:border-purple-500/30 transition-colors"
-            >
-              <div>
-                <div class="text-xs font-semibold text-gray-500 uppercase mb-1 flex items-center gap-1">
-                  Precio Ficha WoW
-                  <a href="https://wowtokenprices.com/" target="_blank" class="text-blue-400 hover:text-blue-300 transition-colors">
-                    <i class="fas fa-external-link-alt text-[8px]"></i>
-                  </a>
+
+            <!-- Columna 3: Twitch de Dantaes -->
+            <div class="h-full">
+                <div class="w-full h-full min-h-[220px] rounded-xl overflow-hidden shadow-lg border border-wow-border bg-black relative">
+                    <iframe
+                        src="https://player.twitch.tv/?channel=dantaess&parent=localhost&parent=dantaes-farmers.web.app&muted=true"
+                        height="100%"
+                        width="100%"
+                        allowfullscreen
+                        class="absolute inset-0">
+                    </iframe>
                 </div>
-                <div class="text-2xl font-bold text-white" id="kpi-token-price">
-                  <span class="text-sm animate-pulse">Cargando...</span>
-                </div>
-                <div class="text-[9px] text-gray-600 mt-1.5 italic" id="token-last-update">
-                  Última actualización: --:--
-                </div>
-              </div>
-              <div
-                class="w-10 h-10 rounded border-2 border-wow-border flex items-center justify-center bg-wow-dark overflow-hidden flex-shrink-0"
-              >
-                <img 
-                  src="https://blz-contentstack-images.akamaized.net/v3/assets/bltf408a0557f4e4998/bltfdc0e2810eb08204/63223137e7bdcf0dd996c9b5/WoWTokenBrown.jpg?imwidth=1088&imdensity=1" 
-                  alt="WoW Token" 
-                  class="w-full h-full object-cover"
-                />
-              </div>
             </div>
           </div>
-
-          </div>
-
+          
           <!-- CHARTS ROW -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div
@@ -186,7 +162,7 @@
             </div>
           </div>
 
-          <!-- FILITROS REUBICADOS -->
+          <!-- FILTROS REUBICADOS -->
           <div class="mb-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="bg-wow-card border border-wow-border rounded-xl p-4 shadow-lg">
@@ -205,18 +181,26 @@
                   class="w-full bg-[#0a0b10] border border-wow-border rounded-lg py-2 px-3 text-gray-300 text-sm focus:outline-none focus:border-wow-blue transition-colors"
                 />
               </div>
-              <div class="bg-wow-card border border-wow-border rounded-xl p-4 shadow-lg">
-                <label class="text-xs text-gray-500 uppercase mb-2 block">Buscar Ítem</label>
+              <div class="bg-wow-card border border-wow-border rounded-xl p-4 shadow-lg relative">
+                <label class="text-xs text-gray-500 uppercase mb-2 block">Buscar en todo</label>
                 <div class="relative w-full">
                   <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-600"></i>
                   <input
                     id="filter-search"
                     type="text"
-                    placeholder="Nombre del ítem..."
+                    placeholder="Ítem, actividad, fecha, nota..."
                     class="w-full bg-[#0a0b10] border border-wow-border rounded-lg py-2 pl-9 pr-3 text-gray-300 text-sm focus:outline-none focus:border-wow-blue transition-colors"
                   />
                 </div>
               </div>
+            </div>
+            
+            <!-- Botón Limpiar Filtros -->
+            <div id="reset-filters-container" class="hidden mt-4 flex justify-end">
+                <button onclick="resetFilters()" class="flex items-center gap-2 px-4 py-2 bg-wow-gold/10 hover:bg-wow-gold/20 text-wow-gold border border-wow-gold/30 rounded-lg transition-all text-sm font-bold">
+                    <i class="fas fa-times-circle"></i>
+                    Limpiar Filtros y Restablecer
+                </button>
             </div>
           </div>
 
@@ -268,6 +252,38 @@
         </div>
         <div class="p-8 flex-1 overflow-y-auto">
           <div class="h-[400px] w-full relative" id="item-chart"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL VIDEO MULTIPLE -->
+    <div
+      id="video-modal"
+      class="fixed inset-0 z-[110] hidden items-center justify-center p-4"
+    >
+      <div
+        class="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        onclick="closeVideoModal()"
+      ></div>
+      <div
+        class="relative bg-wow-card border border-wow-border rounded-2xl w-full max-w-2xl max-h-[90vh] shadow-2xl overflow-hidden flex flex-col scale-95 opacity-0 transition-all duration-300"
+        id="video-modal-container"
+      >
+        <div
+          class="p-4 border-b border-wow-border flex justify-between items-center bg-wow-dark/50"
+        >
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fas fa-video text-wow-gold"></i> Videos Sugeridos
+          </h2>
+          <button
+            onclick="closeVideoModal()"
+            class="text-gray-500 hover:text-white transition-colors text-2xl"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="p-6 flex-1 overflow-y-auto custom-scrollbar" id="video-modal-content">
+          <!-- Se inyecta dinámicamente -->
         </div>
       </div>
     </div>

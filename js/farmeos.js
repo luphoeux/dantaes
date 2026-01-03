@@ -455,7 +455,7 @@ function updateCountdown() {
         if (hours > 0) {
             el.textContent = `${timeStr} (próxima: ${hours}h ${minutes}m)`;
         } else if (minutes > 0) {
-            el.textContent = `${timeStr} (próxima: ${minutes}m ${seconds}s)`;
+            el.textContent = `${timeStr} (pr0xima: ${minutes}m ${seconds}s)`;
         } else {
             el.textContent = `${timeStr} (próxima: ${seconds}s)`;
         }

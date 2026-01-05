@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Addons & Macros - Farmers de Azeroth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        // Load Header
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                const scripts = document.getElementById('header-container').getElementsByTagName('script');
+                for(let i=0; i<scripts.length; i++) {
+                    eval(scripts[i].innerText);
+                }
+            });
+
+        // Load Footer
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .notebook-line {
+            background-image: linear-gradient(#333 1px, transparent 1px);
+            background-size: 100% 2em;
+            line-height: 2em;
+        }
+    </style>
+</head>
+<body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
+
+    <!-- Header Container -->
+    <div id="header-container" class="sticky top-0 z-50"></div>
+
+    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20">
+        <!-- Back Button -->
+        <a href="primeros-pasos.html" class="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors group">
+            <div class="w-8 h-8 rounded-full bg-wow-card border border-wow-border flex items-center justify-center group-hover:border-wow-gold transition-colors">
+                <i class="fas fa-arrow-left text-sm"></i>
+            </div>
+            <span class="font-medium">Volver a Primeros Pasos</span>
+        </a>
+
+                        <section id="addons-macros" class="content-section  fade-in">
+                    <header class="mb-8 border-b border-wow-border pb-6 flex items-center justify-between">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full mb-3">
+                                <span class="text-xs text-blue-400 font-bold uppercase tracking-wider">Herramientas</span>
+                            </div>
+                            <h1 class="text-4xl font-bold text-white mb-2">Addons & Macros</h1>
+                            <p class="text-gray-400">Optimiza tu interfaz y automatiza acciones.</p>
+                        </div>
+                        <i class="fas fa-cog text-6xl text-blue-500/20"></i>
+                    </header>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Addons -->
+                        <div class="bg-wow-card border border-wow-border rounded-xl p-6">
+                            <h3 class="text-xl font-bold mb-4 text-white flex items-center gap-2"><i class="fas fa-plug text-blue-400"></i> Addons Esenciales</h3>
+                            <ul class="space-y-4">
+                                <li class="flex items-start gap-3 p-3 rounded bg-gray-800/30">
+                                    <div class="mt-1"><i class="fas fa-check-circle text-green-500"></i></div>
+                                    <div>
+                                        <span class="font-bold text-white block">TradeSkillMaster (TSM)</span>
+                                        <p class="text-xs text-gray-400">El sistema operativo del goblin. Subastas, crafteo y mail.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3 p-3 rounded bg-gray-800/30">
+                                    <div class="mt-1"><i class="fas fa-check-circle text-green-500"></i></div>
+                                    <div>
+                                        <span class="font-bold text-white block">LootAppraiser</span>
+                                        <p class="text-xs text-gray-400">Trackea el valor de tu farmeo en tiempo real.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start gap-3 p-3 rounded bg-gray-800/30">
+                                    <div class="mt-1"><i class="fas fa-check-circle text-green-500"></i></div>
+                                    <div>
+                                        <span class="font-bold text-white block">Routes + FarmHud</span>
+                                        <p class="text-xs text-gray-400">Dibuja rutas de farmeo en tu pantalla.</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Macros -->
+                        <div class="bg-wow-card border border-wow-border rounded-xl p-6">
+                             <h3 class="text-xl font-bold mb-4 text-white flex items-center gap-2"><i class="fas fa-keyboard text-gray-400"></i> Macros Útiles</h3>
+                             <div class="space-y-4">
+                                <div>
+                                    <div class="text-xs text-gray-500 mb-1">Macro de Venta de Grises</div>
+                                    <div class="bg-gray-900 rounded p-3 font-mono text-[10px] text-green-400 border border-gray-700 overflow-x-auto whitespace-pre-wrap">/run local c,i,n,v=0;for b=0,4 do for s=1,GetContainerNumSlots(b) do i={GetContainerItemInfo(b,s)} n=i[7] if n and string.find(n,"Grey Item Name") then UseContainerItem(b,s) end end end</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-gray-500 mb-1">Macro de Mouseover Farm</div>
+                                    <div class="bg-gray-900 rounded p-3 font-mono text-[10px] text-green-400 border border-gray-700">/cast [@mouseover,exists] [] HechizoDeFarm</div>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </section>
+    </main>
+    <div id="footer-placeholder"></div>
+
+    
+    <script>
+        // Load Header
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                const scripts = document.getElementById('header-container').getElementsByTagName('script');
+                for(let i=0; i<scripts.length; i++) {
+                    eval(scripts[i].innerText);
+                }
+            });
+
+        // Load Footer
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+</body>
+</html>
+

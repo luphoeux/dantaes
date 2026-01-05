@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profesiones - Investigación de Farmeo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wow: {
+                dark: "#0b0c10",
+                card: "#1a1d29",
+                border: "#2a2e3b",
+                blue: "#0074e0",
+                gold: "#ffd100",
+                success: "#22c55e",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .notebook-line {
+            background-image: linear-gradient(#333 1px, transparent 1px);
+            background-size: 100% 2em;
+            line-height: 2em;
+        }
+        .profession-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
+
+    <!-- Header Container -->
+    <div id="header-container" class="sticky top-0 z-50"></div>
+
+    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20">
+
+        <!-- INDEX VIEW (GRID) -->
+        <div id="profession-index" class="fade-in">
+            <header class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Profesiones de Azeroth</h1>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto">Selecciona una especialidad para ver las notas de investigación, rutas y consejos.</p>
+            </header>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <!-- Farming -->
+                <a href="herboristeria.html" class="profession-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-green-500/5 rounded-bl-full group-hover:bg-green-500/10 transition-colors"></div>
+                    <i class="fas fa-leaf text-4xl text-green-500 mb-4 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-xl font-bold text-white mb-1">Herboristería</h3>
+                    <p class="text-sm text-gray-400">Recolección de plantas</p>
+                </a>
+
+                <a href="mineria.html" class="profession-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full group-hover:bg-blue-500/10 transition-colors"></div>
+                    <i class="fas fa-gem text-4xl text-blue-400 mb-4 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-xl font-bold text-white mb-1">Minería</h3>
+                    <p class="text-sm text-gray-400">Menas y gemas</p>
+                </a>
+
+                <a href="desuello.html" class="profession-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-full group-hover:bg-orange-500/10 transition-colors"></div>
+                    <i class="fas fa-cut text-4xl text-orange-400 mb-4 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-xl font-bold text-white mb-1">Desuello</h3>
+                    <p class="text-sm text-gray-400">Pieles y cueros</p>
+                </a>
+
+                <!-- Crafting -->
+                <a href="alquimia.html" class="profession-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-green-500/5 rounded-bl-full group-hover:bg-green-500/10 transition-colors"></div>
+                    <i class="fas fa-flask text-4xl text-green-400 mb-4 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-xl font-bold text-white mb-1">Alquimia</h3>
+                    <p class="text-sm text-gray-400">Frascos y pociones</p>
+                </a>
+
+                <a href="herreria.html" class="profession-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-gray-500/5 rounded-bl-full group-hover:bg-gray-500/10 transition-colors"></div>
+                    <i class="fas fa-hammer text-4xl text-gray-400 mb-4 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-xl font-bold text-white mb-1">Herrería</h3>
+                    <p class="text-sm text-gray-400">Placas y armas</p>
+                </a>
+
+                <a href="joyeria.html" class="profession-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-bl-full group-hover:bg-cyan-500/10 transition-colors"></div>
+                    <i class="fas fa-ring text-4xl text-cyan-400 mb-4 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-xl font-bold text-white mb-1">Joyería</h3>
+                    <p class="text-sm text-gray-400">Gemas y collares</p>
+                </a>
+
+                <a href="ingenieria.html" class="profession-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-red-500/5 rounded-bl-full group-hover:bg-red-500/10 transition-colors"></div>
+                    <i class="fas fa-cog text-4xl text-red-500 mb-4 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-xl font-bold text-white mb-1">Ingeniería</h3>
+                    <p class="text-sm text-gray-400">Juguetes y monturas</p>
+                </a>
+
+                <a href="inscripcion.html" class="profession-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-500/5 rounded-bl-full group-hover:bg-yellow-500/10 transition-colors"></div>
+                    <i class="fas fa-scroll text-4xl text-yellow-400 mb-4 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-xl font-bold text-white mb-1">Inscripción</h3>
+                    <p class="text-sm text-gray-400">Cartas y bastones</p>
+                </a>
+
+                <a href="sastreria.html" class="profession-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-pink-500/5 rounded-bl-full group-hover:bg-pink-500/10 transition-colors"></div>
+                    <i class="fas fa-tshirt text-4xl text-pink-400 mb-4 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-xl font-bold text-white mb-1">Sastrería</h3>
+                    <p class="text-sm text-gray-400">Tela y bolsas</p>
+                </a>
+
+                <a href="peleteria.html" class="profession-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-600/5 rounded-bl-full group-hover:bg-yellow-600/10 transition-colors"></div>
+                    <i class="fas fa-vest text-4xl text-yellow-600 mb-4 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-xl font-bold text-white mb-1">Peletería</h3>
+                    <p class="text-sm text-gray-400">Cuero y mallas</p>
+                </a>
+
+                <a href="encantamiento.html" class="profession-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full group-hover:bg-purple-500/10 transition-colors"></div>
+                    <i class="fas fa-magic text-4xl text-purple-500 mb-4 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-xl font-bold text-white mb-1">Encantamiento</h3>
+                    <p class="text-sm text-gray-400">Mejoras de equipo</p>
+                </a>
+
+                <a href="pesca-cocina.html" class="profession-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-blue-300/5 rounded-bl-full group-hover:bg-blue-300/10 transition-colors"></div>
+                    <i class="fas fa-fish text-4xl text-blue-300 mb-4 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-xl font-bold text-white mb-1">Pesca y Cocina</h3>
+                    <p class="text-sm text-gray-400">Comidas y buffs</p>
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // Load Header
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                const scripts = document.getElementById('header-container').getElementsByTagName('script');
+                for(let i=0; i<scripts.length; i++) {
+                    eval(scripts[i].innerText);
+                }
+            });
+    </script>
+</body>
+</html>

@@ -5,7 +5,6 @@ document.getElementById('deadlineDate').value = "2026-03-02";
 let manualDaily = false;
 
 // Constants for Dates
-const DATE_BRUTO = '2026-01-05';
 const DATE_MIDNIGHT = '2026-03-02';
 
 // --- FUNCIONES DE INTERFAZ (UI) ---
@@ -23,26 +22,18 @@ function setDeadline(dateStr) {
 
 // Helper to update button visuals based on current date
 function updateButtonStates(currentDate) {
-    const btnBruto = document.getElementById('btnBrutosaurio');
     const btnMid = document.getElementById('btnMidnight');
 
-    const brutoActive = ['bg-yellow-900/40', 'border-yellow-500', 'text-yellow-200', 'shadow-[0_0_10px_rgba(234,179,8,0.2)]'];
-    const brutoInactive = ['bg-[#2a220e]', 'border-yellow-900/30', 'text-wow-gold/60', 'hover:text-wow-gold', 'hover:border-yellow-900/60'];
+    if (!btnMid) return;
 
     const midActive = ['bg-purple-900/40', 'border-purple-500', 'text-purple-200', 'shadow-[0_0_10px_rgba(168,85,247,0.2)]'];
     const midInactive = ['bg-[#181226]', 'border-purple-900/30', 'text-purple-400/60', 'hover:text-purple-400', 'hover:border-purple-900/60'];
 
-    btnBruto.classList.remove(...brutoActive, ...brutoInactive);
     btnMid.classList.remove(...midActive, ...midInactive);
 
-    if (currentDate === DATE_BRUTO) {
-        btnBruto.classList.add(...brutoActive);
-        btnMid.classList.add(...midInactive);
-    } else if (currentDate === DATE_MIDNIGHT) {
-        btnBruto.classList.add(...brutoInactive);
+    if (currentDate === DATE_MIDNIGHT) {
         btnMid.classList.add(...midActive);
     } else {
-        btnBruto.classList.add(...brutoInactive);
         btnMid.classList.add(...midInactive);
     }
 }
@@ -110,7 +101,8 @@ function resetForm() {
     document.getElementById('currentGold').value = "0";
     document.getElementById('dailyFarm').value = "0";
     document.getElementById('usdCost').value = "90";
-    document.getElementById('deadlineDate').value = "2026-01-05";
+    document.getElementById('deadlineDate').value = "2026-03-02";
+
     
     manualDaily = false;
     document.getElementById('syncBtn').classList.add('hidden');

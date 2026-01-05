@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmeos - Investigación de Farmeo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wow: {
+                dark: "#0b0c10",
+                card: "#1a1d29",
+                border: "#2a2e3b",
+                blue: "#0074e0",
+                gold: "#ffd100",
+                success: "#22c55e",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .notebook-line {
+            background-image: linear-gradient(#333 1px, transparent 1px);
+            background-size: 100% 2em;
+            line-height: 2em;
+        }
+        .farm-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
+
+    <!-- Header Container -->
+    <div id="header-container" class="sticky top-0 z-50"></div>
+
+    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20">
+
+        <!-- INDEX VIEW (GRID) -->
+        <div id="farm-index" class="fade-in">
+            <header class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Rutas de Farmeo</h1>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto">Explora las mejores estrategias para generar oro, con o sin profesiones.</p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                
+                <!-- Sin Profesión -->
+                <a href="farmeos-sin-profesion.html" class="farm-card bg-wow-card border border-wow-border p-8 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-bl-full group-hover:bg-green-500/10 transition-colors"></div>
+                    <i class="fas fa-hiking text-5xl text-green-400 mb-6 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-2xl font-bold text-white mb-2">Sin Profesión</h3>
+                    <p class="text-sm text-gray-400">Grindeo puro, Rares y Tesoros de mundo. Ideal para empezar.</p>
+                </a>
+
+                <!-- Solo Farms -->
+                <a href="farmeos-solo.html" class="farm-card bg-wow-card border border-wow-border p-8 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-bl-full group-hover:bg-blue-500/10 transition-colors"></div>
+                    <i class="fas fa-user-ninja text-5xl text-blue-400 mb-6 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-2xl font-bold text-white mb-2">Solo Farms</h3>
+                    <p class="text-sm text-gray-400">Dungeons y Raids antiguas optimizadas para limpiar rápido.</p>
+                </a>
+
+                <!-- Flipping -->
+                <a href="flipping.html" class="farm-card bg-wow-card border border-wow-border p-8 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-wow-gold/5 rounded-bl-full group-hover:bg-wow-gold/10 transition-colors"></div>
+                    <i class="fas fa-chart-line text-5xl text-wow-gold mb-6 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-2xl font-bold text-white mb-2">Flipping</h3>
+                    <p class="text-sm text-gray-400">Los mejores items actualmente recomendados con precios de subasta live.</p>
+                </a>
+
+                <!-- Midnight -->
+                <a href="farmeos-midnight.html" class="farm-card bg-wow-card border border-wow-border p-8 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-bl-full group-hover:bg-purple-500/10 transition-colors"></div>
+                    <i class="fas fa-moon text-5xl text-purple-400 mb-6 group-hover:scale-110 transition-transform block"></i>
+                    <h3 class="text-2xl font-bold text-white mb-2">Midnight (Futuro)</h3>
+                    <p class="text-sm text-gray-400">Especulación y preparativos para la próxima expansión.</p>
+                </a>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Scripts -->
+    <script>
+        // Load Header
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                const scripts = document.getElementById('header-container').getElementsByTagName('script');
+                for(let i=0; i<scripts.length; i++) {
+                    eval(scripts[i].innerText);
+                }
+            });
+    </script>
+</body>
+</html>

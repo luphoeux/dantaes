@@ -5,8 +5,9 @@ let farmeosData = [];
 let priceCache = {};
 let sortState = { column: null, ascending: true };
 
-// LocalStorage para persistir precios
+// LocalStorage para persistir precios y datos
 const STORAGE_KEY = 'farmeos_prices';
+const DATA_KEY = 'farmeos_data';
 const STORAGE_EXPIRY = 6 * 60 * 60 * 1000; // 6 horas
 
 function loadPricesFromStorage() {
@@ -36,8 +37,35 @@ function savePricesToStorage() {
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (e) {
-        console.error('Error saving to localStorage:', e);
+        console.error('Error saving prices to localStorage:', e);
     }
+}
+
+function saveDataToStorage(data) {
+    try {
+        localStorage.setItem(DATA_KEY, JSON.stringify({
+            items: data,
+            timestamp: Date.now()
+        }));
+    } catch (e) {
+        console.error('Error saving data to localStorage:', e);
+    }
+}
+
+function loadDataFromStorage() {
+    try {
+        const stored = localStorage.getItem(DATA_KEY);
+        if (stored) {
+            const data = JSON.parse(stored);
+            if (data.items) {
+                farmeosData = data.items;
+                return true;
+            }
+        }
+    } catch (e) {
+        console.error('Error loading data from localStorage:', e);
+    }
+    return false;
 }
 
 // Helpers
@@ -62,73 +90,85 @@ function formatGold(amount) {
 
 // Fetch farmeos from Google Sheet
 async function fetchFarmeosData() {
-    try {
-        const response = await fetch(FARMEOS_SHEET_URL);
-        const text = await response.text();
-        const lines = text.trim().split('\n');
-        const headers = lines[0].split('\t');
-        
-        const rawData = lines.slice(1).map(line => {
-            const values = line.split('\t');
-            const obj = {};
-            headers.forEach((h, i) => obj[h.trim()] = values[i]?.trim() || '');
-            return obj;
-        });
-
-        farmeosData = rawData
-            .map(d => ({
-                name: d['Item'] || d['Nombre'] || d['Ítem'],
-                itemId: parseInt(d['Id Wowhead'] || d['ID'] || d['Id']) || 0,
-                icon: d['Link icono'] || d['Icono'] || d['Link Icono'] || '',
-                youtubeUrl: d['Link YouTube'] || d['Tutorial'] || d['YouTube'] || d['Link Youtube'] || ''
-            }))
-            .filter(item => item.name && item.itemId > 0); // Solo items con nombre e ID válido
-
-        console.log(`Loaded ${farmeosData.length} farmeos válidos de ${rawData.length} filas`);
-        
-        // Cargar precios desde localStorage primero
-        const hasStoredPrices = loadPricesFromStorage();
-        
-        // Renderizar tabla
+    // 1. Cargar cache para renderizado INSTANTÁNEO
+    const hasCachedData = loadDataFromStorage();
+    const hasStoredPrices = loadPricesFromStorage();
+    
+    if (hasCachedData) {
         renderFarmeosTable();
-        
-        // Si hay precios guardados, mostrarlos inmediatamente
-        if (hasStoredPrices) {
-            farmeosData.forEach(item => {
-                if (priceCache[item.itemId]) {
-                    updateItemPrice(item.itemId, priceCache[item.itemId]);
-                }
-            });
-            
-            // Mostrar hora de última actualización desde localStorage
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) {
-                const data = JSON.parse(stored);
-                if (data.lastUpdate) {
-                    const el = document.getElementById('last-update-time');
-                    if (el) el.textContent = data.lastUpdate;
-                }
-            }
-            
-            // DETECTAR ITEMS NUEVOS:
-            // Filtrar items que están en la hoja pero NO en el caché
-            const newItems = farmeosData.filter(item => !priceCache[item.itemId]);
-            
-            if (newItems.length > 0) {
-                console.log(`⚠️ Detectados ${newItems.length} items nuevos sin precio. Buscando sus datos...`);
-                // Solo buscamos los nuevos para no sobrecargar
-                fetchAllPrices(newItems); 
-            } else {
-                console.log('Precios cargados desde localStorage - Todos los items están al día');
-            }
+    }
 
-        } else {
-            // Solo actualizar desde API si NO hay caché
-            console.log('No hay caché - Cargando precios desde API...');
-            fetchAllPrices(farmeosData);
+    // 2. Determinar si realmente necesitamos descargar datos
+    // Si tenemos items Y tenemos precios para todos, y no han expirado, NO descargamos nada
+    const missingPrices = farmeosData.filter(item => !priceCache[item.itemId]);
+    
+    // Comprobar expiración de la lista de items (1 hora para el Sheet)
+    const storedData = localStorage.getItem(DATA_KEY);
+    const dataAge = storedData ? (Date.now() - JSON.parse(storedData).timestamp) : Infinity;
+    const needsSheetUpdate = dataAge > 3600000; // 1 hora
+
+    if (!needsSheetUpdate && hasStoredPrices && missingPrices.length === 0) {
+        console.log('✅ Todo está cargado localmente y al día. Saltando descargas.');
+        updateLastUpdateTimeFromCache();
+        return;
+    }
+
+    try {
+        // Solo descargamos el Sheet si es necesario
+        if (needsSheetUpdate || !hasCachedData) {
+            console.log('Fetch: Actualizando lista de items desde Google Sheets...');
+            const response = await fetch(FARMEOS_SHEET_URL);
+            const text = await response.text();
+            const lines = text.trim().split('\n');
+            const headers = lines[0].split('\t');
+            
+            const rawData = lines.slice(1).map(line => {
+                const values = line.split('\t');
+                const obj = {};
+                headers.forEach((h, i) => obj[h.trim()] = values[i]?.trim() || '');
+                return obj;
+            });
+
+            const newFarmeosData = rawData
+                .map(d => ({
+                    name: d['Item'] || d['Nombre'] || d['Ítem'],
+                    itemId: parseInt(d['Id Wowhead'] || d['ID'] || d['Id']) || 0,
+                    icon: d['Link icono'] || d['Icono'] || d['Link Icono'] || '',
+                    youtubeUrl: d['Link YouTube'] || d['Tutorial'] || d['YouTube'] || d['Link Youtube'] || ''
+                }))
+                .filter(item => item.name && item.itemId > 0);
+
+            if (JSON.stringify(newFarmeosData) !== JSON.stringify(farmeosData)) {
+                farmeosData = newFarmeosData;
+                saveDataToStorage(farmeosData);
+                renderFarmeosTable();
+            }
         }
+
+        // 3. Actualizar solo lo que falta o todo si no hay precios
+        const itemsToUpdate = farmeosData.filter(item => !priceCache[item.itemId]);
+        
+        if (itemsToUpdate.length > 0) {
+            console.log(`Fetch: Actualizando ${itemsToUpdate.length} precios...`);
+            fetchAllPrices(itemsToUpdate); 
+        } else {
+            console.log('✅ Precios al día');
+            updateLastUpdateTimeFromCache();
+        }
+
     } catch (e) {
         console.error('Error loading farmeos:', e);
+    }
+}
+
+function updateLastUpdateTimeFromCache() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
+        const data = JSON.parse(stored);
+        if (data.lastUpdate) {
+            const el = document.getElementById('last-update-time');
+            if (el) el.textContent = data.lastUpdate;
+        }
     }
 }
 
@@ -167,7 +207,7 @@ async function fetchAuctionPrice(itemId, retries = 2) {
 // Procesar en lotes para evitar sobrecarga
 // Procesar en lotes para evitar sobrecarga
 async function fetchAllPrices(itemsToFetch = farmeosData) {
-    const BATCH_SIZE = 3; // Procesar 3 items a la vez
+    const BATCH_SIZE = 6; // Procesar 6 items a la vez para mayor velocidad
     // Filtrar items válidos de la lista proporcionada
     const items = itemsToFetch.filter(item => item.itemId);
     
@@ -184,10 +224,7 @@ async function fetchAllPrices(itemsToFetch = farmeosData) {
         
         await Promise.all(promises);
         
-        // Pequeña pausa entre lotes
-        if (i + BATCH_SIZE < items.length) {
-            await new Promise(resolve => setTimeout(resolve, 100));
-        }
+        // Eliminado el delay artificial para carga más rápida
     }
     
     // Guardar en localStorage después de actualizar
@@ -301,7 +338,19 @@ function renderFarmeosTable(dataToRender = null) {
         `;
     }
     
-    tbody.innerHTML = data.map(item => `
+    tbody.innerHTML = data.map(item => {
+        // Check if we have cached price for this item
+        const cachedPrice = priceCache[item.itemId];
+        const priceDisplay = cachedPrice 
+            ? formatGold(cachedPrice.priceWithDecimals || cachedPrice.price)
+            : '<span class="animate-pulse text-gray-500 text-xs md:text-base">Cargando...</span>';
+        const qtyDisplay = cachedPrice 
+            ? cachedPrice.quantity.toLocaleString('es-ES')
+            : '--';
+        const priceClass = cachedPrice ? 'text-white' : 'text-gray-500 animate-pulse';
+        const qtyClass = cachedPrice ? 'text-gray-400' : 'text-gray-600';
+        
+        return `
         <tr class="hover:bg-white/[0.02] transition-colors">
             <td class="py-1.5 px-2 md:py-3 md:px-4">
                 <div class="flex items-center gap-2">
@@ -313,10 +362,10 @@ function renderFarmeosTable(dataToRender = null) {
                 </div>
             </td>
             <td class="py-1.5 px-2 md:py-3 md:px-4 text-left whitespace-nowrap">
-                <div id="price-${item.itemId}" class="font-bold text-gray-500 animate-pulse text-xs md:text-base">Cargando...</div>
+                <div id="price-${item.itemId}" class="font-bold ${priceClass} text-xs md:text-base">${priceDisplay}</div>
             </td>
             <td class="py-1.5 px-2 md:py-3 md:px-4 text-left whitespace-nowrap">
-                <span id="qty-${item.itemId}" class="text-gray-600 text-xs md:text-base">--</span>
+                <span id="qty-${item.itemId}" class="${qtyClass} text-xs md:text-base">${qtyDisplay}</span>
             </td>
             <td class="py-1.5 px-2 md:py-3 md:px-4 text-left">
                 ${item.youtubeUrl ? `
@@ -329,7 +378,8 @@ function renderFarmeosTable(dataToRender = null) {
                 ` : '<span class="text-gray-600 text-[10px] md:text-xs">Próximamente...</span>'}
             </td>
         </tr>
-    `).join('');
+        `;
+    }).join('');
 }
 
 // Versión rápida que solo actualiza tbody (para ordenamiento)
@@ -455,7 +505,7 @@ function updateCountdown() {
         if (hours > 0) {
             el.textContent = `${timeStr} (próxima: ${hours}h ${minutes}m)`;
         } else if (minutes > 0) {
-            el.textContent = `${timeStr} (pr0xima: ${minutes}m ${seconds}s)`;
+            el.textContent = `${timeStr} (próxima: ${minutes}m ${seconds}s)`;
         } else {
             el.textContent = `${timeStr} (próxima: ${seconds}s)`;
         }

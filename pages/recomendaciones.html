@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendaciones - Farmers de Azeroth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        // Load Header
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                const scripts = document.getElementById('header-container').getElementsByTagName('script');
+                for(let i=0; i<scripts.length; i++) {
+                    eval(scripts[i].innerText);
+                }
+            });
+
+        // Load Footer
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .notebook-line {
+            background-image: linear-gradient(#333 1px, transparent 1px);
+            background-size: 100% 2em;
+            line-height: 2em;
+        }
+    </style>
+</head>
+<body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
+
+    <!-- Header Container -->
+    <div id="header-container" class="sticky top-0 z-50"></div>
+
+    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20">
+        <!-- Back Button -->
+        <a href="primeros-pasos.html" class="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors group">
+            <div class="w-8 h-8 rounded-full bg-wow-card border border-wow-border flex items-center justify-center group-hover:border-wow-gold transition-colors">
+                <i class="fas fa-arrow-left text-sm"></i>
+            </div>
+            <span class="font-medium">Volver a Primeros Pasos</span>
+        </a>
+
+                        <section id="recomendaciones" class="content-section  fade-in">
+                    <header class="mb-8 border-b border-wow-border pb-6 flex items-center justify-between">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full mb-3">
+                                <span class="text-xs text-red-400 font-bold uppercase tracking-wider">Estrategia</span>
+                            </div>
+                            <h1 class="text-4xl font-bold text-white mb-2">Recomendaciones</h1>
+                            <p class="text-gray-400">Pasos clave para iniciar con buen pie.</p>
+                        </div>
+                        <i class="fas fa-star text-6xl text-red-500/20"></i>
+                    </header>
+                    <div class="space-y-4">
+                        <div class="bg-wow-card border border-wow-border p-6 rounded-xl flex gap-4 items-start hover:border-red-500/30 transition-colors">
+                            <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 text-xl font-bold text-red-500">1</div>
+                            <div>
+                                <h3 class="font-bold text-white text-lg">Doble Recolección al Inicio</h3>
+                                <p class="text-gray-400 mt-1">Empieza con Herboristería y Minería. Cero inversión, 100% ganancia pura. Perfecto para crear tu primer capital.</p>
+                            </div>
+                        </div>
+                        <div class="bg-wow-card border border-wow-border p-6 rounded-xl flex gap-4 items-start hover:border-red-500/30 transition-colors">
+                            <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 text-xl font-bold text-red-500">2</div>
+                            <div>
+                                <h3 class="font-bold text-white text-lg">Reputaciones Tempranas</h3>
+                                <p class="text-gray-400 mt-1">Sube reputaciones al inicio de la expansión. Los contratos, recetas de nivel alto y cosméticos valen fortunas las primeras semanas.</p>
+                            </div>
+                        </div>
+                        <div class="bg-wow-card border border-wow-border p-6 rounded-xl flex gap-4 items-start hover:border-red-500/30 transition-colors">
+                            <div class="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 text-xl font-bold text-red-500">3</div>
+                            <div>
+                                <h3 class="font-bold text-white text-lg">Comunidad</h3>
+                                <p class="text-gray-400 mt-1">Únete a discords de goldmaking (como el nuestro). La información fluye rápido y descubrirás spots antes de que los nerfeen.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+    </main>
+    <div id="footer-placeholder"></div>
+
+    
+    <script>
+        // Load Header
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                const scripts = document.getElementById('header-container').getElementsByTagName('script');
+                for(let i=0; i<scripts.length; i++) {
+                    eval(scripts[i].innerText);
+                }
+            });
+
+        // Load Footer
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+</body>
+</html>
+

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Farmers de Azeroth - Dashboard</title>
-    <link rel="icon" type="image/jpeg" href="channels4_profile.jpg">
+    <link rel="icon" type="image/jpeg" href="/channels4_profile.jpg">
 
     <!-- Tailwind CSS (via CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -50,9 +50,9 @@
     </script>
 
     <!-- Custom Style -->
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/style.css" />
   </head>
-  <body class="text-gray-300 font-sans">
+  <body class="bg-wow-dark text-gray-300 font-sans">
     <div id="header-placeholder" class="shrink-0 sticky top-0 z-50"></div>
 
     <!-- MAIN WRAPPER -->
@@ -65,7 +65,7 @@
             <h2
               class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-2"
             >
-              Libro de <span class="text-wow-gold">ingresos 2026</span>
+              Oro <span class="text-wow-gold">Ganado 2026</span>
             </h2>
             <p class="text-gray-500 text-sm md:text-base max-w-2xl">
               Monitoreo de ventas en el año 2026. Lo actualizamos cada vez que estemos en vivo.
@@ -291,9 +291,9 @@
 
 
     <script type="module">
-      import "./js/app.js";
+      import "/js/app.js";
       // Load Header
-      fetch("header.html")
+      fetch("/components/header.html")
         .then((response) => response.text())
         .then((data) => {
           document.getElementById("header-placeholder").innerHTML = data;
@@ -307,7 +307,7 @@
         .catch((error) => console.error("Error loading header:", error));
 
       // Load Footer
-      fetch("footer.html")
+      fetch("/components/footer.html")
         .then((response) => response.text())
         .then((data) => {
           document.getElementById("footer-placeholder").innerHTML = data;

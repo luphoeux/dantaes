@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oro Ganado 2026 - Investigación de Farmeo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wow: {
+                dark: "#0b0c10",
+                card: "#1a1d29",
+                border: "#2a2e3b",
+                blue: "#0074e0",
+                gold: "#ffd100",
+                success: "#22c55e",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
+
+    <!-- Header Container -->
+    <div id="header-container" class="sticky top-0 z-50"></div>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8 mt-20">
+        
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 text-white">Oro Ganado 2026</h1>
+            <p class="text-xl text-gray-400 max-w-2xl mx-auto">Registro histórico de mis ganancias y métricas anuales.</p>
+        </header>
+
+        <div class="max-w-4xl mx-auto text-center py-20 bg-wow-card border border-wow-border rounded-xl">
+            <i class="fas fa-coins text-6xl text-yellow-500 mb-6 animate-bounce"></i>
+            <h2 class="text-3xl font-bold text-white mb-4">Próximamente...</h2>
+            <p class="text-gray-400">Aquí se mostrarán los gráficos y tablas de rendimiento de oro del año 2026.</p>
+        </div>
+
+    </main>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <script>
+        // Load Header and Footer
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                const scripts = document.getElementById('header-container').getElementsByTagName('script');
+                for(let i=0; i<scripts.length; i++) {
+                    eval(scripts[i].innerText);
+                }
+            });
+
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(data => document.getElementById('footer-container').innerHTML = data);
+    </script>
+</body>
+</html>

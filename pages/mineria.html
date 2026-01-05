@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minería - Farmers de Azeroth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wow: {
+                dark: "#0b0c10",
+                card: "#1a1d29",
+                border: "#2a2e3b",
+                blue: "#0074e0",
+                gold: "#ffd100",
+                success: "#22c55e",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .notebook-line {
+            background-image: linear-gradient(#333 1px, transparent 1px);
+            background-size: 100% 2em;
+            line-height: 2em;
+        }
+    </style>
+</head>
+<body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
+
+    <!-- Header Container -->
+    <div id="header-container" class="sticky top-0 z-50"></div>
+
+    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20">
+        <!-- Back Button -->
+        <a href="profesiones.html" class="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors group">
+            <div class="w-8 h-8 rounded-full bg-wow-card border border-wow-border flex items-center justify-center group-hover:border-wow-gold transition-colors">
+                <i class="fas fa-arrow-left text-sm"></i>
+            </div>
+            <span class="font-medium">Volver a Profesiones</span>
+        </a>
+
+                         <section id="mineria" class="profession-section ">
+                    <header class="mb-8 border-b border-wow-border pb-6 flex items-center justify-between">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full mb-3">
+                                <span class="text-xs text-blue-400 font-bold uppercase tracking-wider">Recolección</span>
+                            </div>
+                            <h1 class="text-4xl font-bold text-white mb-2">Minería</h1>
+                            <p class="text-gray-400">Extracción de minerales y piedras preciosas.</p>
+                        </div>
+                        <i class="fas fa-gem text-6xl text-blue-500/20"></i>
+                    </header>
+                    <div class="bg-wow-card border border-wow-border p-12 rounded-xl text-center">
+                        <i class="fas fa-hard-hat text-4xl text-yellow-500 mb-4"></i>
+                        <h3 class="text-xl font-bold text-white">Datos en procesamiento...</h3>
+                        <p class="text-gray-400 mt-2">Recopilando rutas de minería del libro.</p>
+                    </div>
+                </section>
+    </main>
+
+    <script>
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                const scripts = document.getElementById('header-container').getElementsByTagName('script');
+                for(let i=0; i<scripts.length; i++) {
+                    eval(scripts[i].innerText);
+                }
+            });
+    </script>
+</body>
+</html>

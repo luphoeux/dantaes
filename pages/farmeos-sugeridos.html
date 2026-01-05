@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flipping - Farmers de Azeroth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wow: {
+                dark: "#0b0c10",
+                card: "#1a1d29",
+                border: "#2a2e3b",
+                blue: "#0074e0",
+                gold: "#ffd100",
+                success: "#22c55e",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #2a2e3b; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #3f4451; }
+    </style>
+</head>
+<body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
+
+    <!-- Header Container -->
+    <div id="header-container" class="sticky top-0 z-50"></div>
+
+    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20">
+        <!-- Back Button -->
+        <a href="farmeos.html" class="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors group">
+            <div class="w-8 h-8 rounded-full bg-wow-card border border-wow-border flex items-center justify-center group-hover:border-wow-gold transition-colors">
+                <i class="fas fa-arrow-left text-sm"></i>
+            </div>
+            <span class="font-medium">Volver a Farmeos</span>
+        </a>
+
+        <header class="mb-8 border-b border-wow-border pb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+                <h1 class="text-4xl font-bold text-white mb-2">Flipping</h1>
+                <p class="text-gray-400">Ítems recomendados para farmear con precios actualizados de la casa de subastas (NA)</p>
+            </div>
+            
+            <div class="flex flex-col items-end gap-1">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-wow-blue/10 border border-wow-blue/20 rounded-lg text-xs font-medium text-wow-blue">
+                    <i class="fas fa-sync-alt animate-spin-slow"></i>
+                    <span>Sincronizando con Blizzard</span>
+                </div>
+                <div class="text-[10px] text-gray-600 italic">
+                    Última actualización: <span id="last-update-time">--:--</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dynamic Table -->
+        <div class="bg-wow-card border border-wow-border rounded-xl overflow-hidden shadow-xl mb-8">
+            <div class="overflow-x-auto custom-scrollbar">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-black/40 text-gray-400 text-[10px] md:text-xs uppercase tracking-widest border-b border-wow-border">
+                            <th class="py-1.5 px-2 md:py-3 md:px-4 font-bold">Ítem</th>
+                            <th class="py-1.5 px-2 md:py-3 md:px-4 font-bold text-left">Precio Subasta</th>
+                            <th class="py-1.5 px-2 md:py-3 md:px-4 font-bold text-left">Disponible</th>
+                            <th class="py-1.5 px-2 md:py-3 md:px-4 font-bold text-left">Tutorial</th>
+                        </tr>
+                    </thead>
+                    <tbody id="farmeos-table-body" class="divide-y divide-wow-border/50">
+                        <tr>
+                            <td colspan="4" class="py-20 text-center">
+                                <div class="flex flex-col items-center gap-3 text-wow-gold">
+                                    <i class="fas fa-cog fa-spin text-3xl"></i>
+                                    <span class="animate-pulse font-medium">Cargando farmeos sugeridos...</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="bg-wow-blue/5 border border-wow-blue/20 rounded-xl p-6 flex gap-4 items-start">
+            <i class="fas fa-info-circle text-wow-blue text-xl mt-1"></i>
+            <div class="text-sm text-gray-400 leading-relaxed">
+                <strong class="text-wow-blue block mb-1">Sobre la actualización:</strong>
+                Los precios se actualizan automáticamente cada hora de 08:00 a 23:00. Durante la madrugada los precios se mantienen cacheados para optimizar rendimiento.
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script type="module" src="/js/farmeos.js"></script>
+    <script>
+        // Load Header
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                const scripts = document.getElementById('header-container').getElementsByTagName('script');
+                for(let i=0; i<scripts.length; i++) {
+                    eval(scripts[i].innerText);
+                }
+            });
+
+        // Load Footer
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+</body>
+</html>

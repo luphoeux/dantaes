@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primeros Pasos - Farmers de Azeroth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wow: {
+                dark: "#0b0c10",
+                card: "#1a1d29",
+                border: "#2a2e3b",
+                blue: "#0074e0",
+                gold: "#ffd100",
+                success: "#22c55e",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hub-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
+
+    <!-- Header Container -->
+    <div id="header-container" class="sticky top-0 z-50"></div>
+
+    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Guía de Primeros Pasos</h1>
+            <p class="text-xl text-gray-400 max-w-2xl mx-auto">Conceptos básicos y herramientas esenciales para comenzar tu carrera como Farmer en World of Warcraft.</p>
+        </header>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            
+            <!-- Consejos -->
+            <a href="consejos.html" class="hub-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-orange-500/5 rounded-bl-full group-hover:bg-orange-500/10 transition-colors"></div>
+                <i class="fas fa-lightbulb text-4xl text-orange-400 mb-4 group-hover:scale-110 transition-transform block"></i>
+                <h3 class="text-xl font-bold text-white mb-1">Consejos Generales</h3>
+                <p class="text-sm text-gray-400">Mindset y reglas fundamentales del oro.</p>
+            </a>
+
+            <!-- Recomendaciones -->
+            <a href="recomendaciones.html" class="hub-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-red-500/5 rounded-bl-full group-hover:bg-red-500/10 transition-colors"></div>
+                <i class="fas fa-star text-4xl text-red-400 mb-4 group-hover:scale-110 transition-transform block"></i>
+                <h3 class="text-xl font-bold text-white mb-1">Recomendaciones</h3>
+                <p class="text-sm text-gray-400">Estrategias iniciales y pasos clave.</p>
+            </a>
+
+            <!-- Alterarmy -->
+            <a href="alterarmy.html" class="hub-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-bl-full group-hover:bg-purple-500/10 transition-colors"></div>
+                <i class="fas fa-users text-4xl text-purple-400 mb-4 group-hover:scale-110 transition-transform block"></i>
+                <h3 class="text-xl font-bold text-white mb-1">Alterarmy</h3>
+                <p class="text-sm text-gray-400">Escala tu producción con múltiples personajes.</p>
+            </a>
+
+            <!-- Addons & Macros -->
+            <a href="addons-macros.html" class="hub-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-blue-500/5 rounded-bl-full group-hover:bg-blue-500/10 transition-colors"></div>
+                <i class="fas fa-cog text-4xl text-blue-400 mb-4 group-hover:scale-110 transition-transform block"></i>
+                <h3 class="text-xl font-bold text-white mb-1">Addons & Macros</h3>
+                <p class="text-sm text-gray-400">Optimiza tu interfaz y automatiza tareas.</p>
+            </a>
+
+            <!-- Consumibles -->
+            <a href="consumibles.html" class="hub-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-green-500/5 rounded-bl-full group-hover:bg-green-500/10 transition-colors"></div>
+                <i class="fas fa-flask text-4xl text-green-400 mb-4 group-hover:scale-110 transition-transform block"></i>
+                <h3 class="text-xl font-bold text-white mb-1">Consumibles</h3>
+                <p class="text-sm text-gray-400">Buffs esenciales para recolectar más rápido.</p>
+            </a>
+
+            <!-- Páginas Útiles -->
+            <a href="paginas-utiles.html" class="hub-card bg-wow-card border border-wow-border p-6 rounded-xl cursor-pointer transition-all group relative overflow-hidden block">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-500/5 rounded-bl-full group-hover:bg-yellow-500/10 transition-colors"></div>
+                <i class="fas fa-globe text-4xl text-yellow-400 mb-4 group-hover:scale-110 transition-transform block"></i>
+                <h3 class="text-xl font-bold text-white mb-1">Páginas Útiles</h3>
+                <p class="text-sm text-gray-400">Recursos externos y herramientas web.</p>
+            </a>
+
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // Load Header
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                const scripts = document.getElementById('header-container').getElementsByTagName('script');
+                for(let i=0; i<scripts.length; i++) {
+                    eval(scripts[i].innerText);
+                }
+            });
+
+        // Load Footer
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+</body>
+</html>

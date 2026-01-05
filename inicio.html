@@ -3,23 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Inicio - Farmers de Azeroth</title>
-    <link rel="icon" type="image/jpeg" href="channels4_profile.jpg">
+    <title>Farmers de Azeroth | Investigación de Farmeo</title>
+    <meta name="description" content="Mi investigación personal sobre farmeo de oro en World of Warcraft. Datos, análisis y herramientas.">
+    <link rel="icon" type="image/jpeg" href="/channels4_profile.jpg">
 
-    <!-- Tailwind CSS (via CDN) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
     <!-- Tailwind Config -->
     <script>
@@ -44,110 +39,432 @@
       };
     </script>
 
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="/style.css" />
     
     <style>
-      /* Animación de olas */
-      .wave {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100px;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="%230074e0" fill-opacity="0.1"></path></svg>');
-        background-size: 1200px 100px;
-        animation: wave 10s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
-        transform: translate3d(0, 0, 0);
+      /* Gradient Background */
+      .gradient-bg {
+        background: linear-gradient(135deg, #0b0c10 0%, #1a1d29 50%, #0b0c10 100%);
       }
       
-      .wave:nth-of-type(2) {
-        bottom: 10px;
-        animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
-        opacity: 0.8;
+      /* Animated Gradient Text */
+      .gradient-text {
+        background: linear-gradient(90deg, #ffd100, #0074e0, #ffd100);
+        background-size: 200% auto;
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradient-shift 3s ease infinite;
       }
       
-      .wave:nth-of-type(3) {
-        bottom: 20px;
-        animation: wave 5s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.25s infinite, swell 5s ease -2.5s infinite;
-        opacity: 0.6;
+      @keyframes gradient-shift {
+        0%, 100% { background-position: 0% center; }
+        50% { background-position: 100% center; }
       }
       
-      @keyframes wave {
-        0% { margin-left: 0; }
-        100% { margin-left: -1200px; }
+      /* Card Hover Effect */
+      .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
       
-      @keyframes swell {
-        0%, 100% { transform: translate3d(0,-10px,0); }
-        50% { transform: translate3d(0,5px,0); }
+      .hover-lift:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 116, 224, 0.2);
       }
       
-      /* Animación de fade in */
+      /* Fade In Animation */
       .fade-in {
-        animation: fadeIn 1s ease-in;
+        animation: fadeIn 0.8s ease-in;
       }
       
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
+        from { opacity: 0; transform: translateY(30px); }
         to { opacity: 1; transform: translateY(0); }
       }
+      
+      /* Stagger Animation */
+      .fade-in-delay-1 { animation-delay: 0.1s; animation-fill-mode: both; }
+      .fade-in-delay-2 { animation-delay: 0.2s; animation-fill-mode: both; }
+      .fade-in-delay-3 { animation-delay: 0.3s; animation-fill-mode: both; }
+      .fade-in-delay-4 { animation-delay: 0.4s; animation-fill-mode: both; }
     </style>
   </head>
 
-  <body class="text-white font-sans min-h-screen flex flex-col">
+  <body class="text-white font-sans min-h-screen flex flex-col gradient-bg">
     <div id="header-placeholder" class="shrink-0 sticky top-0 z-50"></div>
 
-    <main class="flex-1 flex flex-col relative overflow-hidden">
-      <!-- Animación de olas en el fondo -->
-      <div class="wave"></div>
-      <div class="wave"></div>
-      <div class="wave"></div>
-      
-      <!-- Contenido centrado -->
-      <div class="flex-1 flex items-center justify-center px-4 relative z-10">
-        <div class="text-center fade-in">
-          <!-- Icono de construcción -->
-          <div class="mb-8">
-            <i class="fas fa-hammer text-6xl text-wow-blue animate-pulse"></i>
+    <main class="flex-1">
+      <!-- Hero Section -->
+      <section class="relative overflow-hidden py-20 md:py-32 px-4">
+        <div class="absolute inset-0 bg-gradient-to-b from-wow-blue/10 to-transparent"></div>
+        
+        <div class="max-w-6xl mx-auto relative z-10">
+          <div class="text-center fade-in">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-2 bg-wow-card/50 border border-wow-border rounded-full mb-6">
+              <span class="w-2 h-2 bg-wow-success rounded-full animate-pulse"></span>
+              <span class="text-sm text-gray-400">Investigación Personal • Actualizado para Midnight</span>
+            </div>
+            
+            <!-- Title -->
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
+              Investigación de <span class="gradient-text">Farmeo</span> en Azeroth
+            </h1>
+            
+            <!-- Subtitle -->
+            <p class="text-xl md:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto">
+              Mis notas, datos y análisis sobre farmeo de oro. Profesiones, items, rutas y precios actualizados.
+            </p>
+            
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <a href="#datos" class="px-8 py-4 bg-wow-blue hover:bg-blue-600 rounded-lg transition-all font-semibold text-lg inline-flex items-center gap-2 hover-lift">
+                <i class="fas fa-database"></i>
+                Ver Datos
+              </a>
+              <a href="#profesiones" class="px-8 py-4 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-all font-semibold text-lg inline-flex items-center gap-2 hover-lift">
+                <i class="fas fa-tools"></i>
+                Profesiones
+              </a>
+            </div>
+            
+            <!-- Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 max-w-4xl mx-auto">
+              <div class="fade-in fade-in-delay-1">
+                <div class="text-3xl md:text-4xl font-bold text-wow-gold">500+</div>
+                <div class="text-sm text-gray-500">Items Rastreados</div>
+              </div>
+              <div class="fade-in fade-in-delay-2">
+                <div class="text-3xl md:text-4xl font-bold text-wow-blue">100+</div>
+                <div class="text-sm text-gray-500">Rutas Documentadas</div>
+              </div>
+              <div class="fade-in fade-in-delay-3">
+                <div class="text-3xl md:text-4xl font-bold text-wow-success">12</div>
+                <div class="text-sm text-gray-500">Expansiones</div>
+              </div>
+              <div class="fade-in fade-in-delay-4">
+                <div class="text-3xl md:text-4xl font-bold text-purple-400">24/7</div>
+                <div class="text-sm text-gray-500">Actualización</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Setup Básico Section -->
+      <section id="setup" class="py-16 px-4 bg-wow-card/30">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+              <i class="fas fa-cog text-wow-blue mr-2"></i>
+              Setup Básico
+            </h2>
+            <p class="text-gray-400 text-lg">Prepara tu cuenta para maximizar ganancias</p>
           </div>
           
-          <!-- Título -->
-          <h1 class="text-4xl md:text-6xl font-bold mb-4">
-            En <span class="text-wow-gold">Construcción</span>
-          </h1>
+          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Bank Toon -->
+            <div class="bg-wow-card border border-wow-border rounded-xl p-6 hover-lift fade-in">
+              <div class="w-12 h-12 bg-wow-blue/20 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-university text-2xl text-wow-blue"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Bank Toon</h3>
+              <p class="text-gray-400 text-sm mb-4">Personaje dedicado para gestionar el AH y almacenar items.</p>
+              <a href="tips.html#bank-toon" class="text-wow-blue hover:text-blue-400 text-sm font-semibold inline-flex items-center gap-1">
+                Leer más <i class="fas fa-arrow-right text-xs"></i>
+              </a>
+            </div>
+            
+            <!-- Farming Toon -->
+            <div class="bg-wow-card border border-wow-border rounded-xl p-6 hover-lift fade-in fade-in-delay-1">
+              <div class="w-12 h-12 bg-wow-gold/20 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-user-ninja text-2xl text-wow-gold"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Farming Toon</h3>
+              <p class="text-gray-400 text-sm mb-4">Personaje optimizado para farmear materiales eficientemente.</p>
+              <a href="tips.html#farming-toon" class="text-wow-gold hover:text-yellow-400 text-sm font-semibold inline-flex items-center gap-1">
+                Leer más <i class="fas fa-arrow-right text-xs"></i>
+              </a>
+            </div>
+            
+            <!-- Speedsets -->
+            <div class="bg-wow-card border border-wow-border rounded-xl p-6 hover-lift fade-in fade-in-delay-2">
+              <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-running text-2xl text-green-500"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Speedsets</h3>
+              <p class="text-gray-400 text-sm mb-4">Sets de velocidad para Druida (4 especializaciones).</p>
+              <a href="tips.html#speedsets" class="text-green-500 hover:text-green-400 text-sm font-semibold inline-flex items-center gap-1">
+                Leer más <i class="fas fa-arrow-right text-xs"></i>
+              </a>
+            </div>
+            
+            <!-- Addons -->
+            <div class="bg-wow-card border border-wow-border rounded-xl p-6 hover-lift fade-in fade-in-delay-3">
+              <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-puzzle-piece text-2xl text-purple-500"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Addons</h3>
+              <p class="text-gray-400 text-sm mb-4">TSM, ATT, LootAppraiser y más herramientas esenciales.</p>
+              <a href="tips.html#addons" class="text-purple-500 hover:text-purple-400 text-sm font-semibold inline-flex items-center gap-1">
+                Leer más <i class="fas fa-arrow-right text-xs"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Farm Categories Section -->
+      <section id="farms" class="py-16 px-4">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+              <i class="fas fa-map-marked-alt text-wow-gold mr-2"></i>
+              Categorías de Farms
+            </h2>
+            <p class="text-gray-400 text-lg">Elige tu estrategia de farmeo</p>
+          </div>
           
-          <!-- Descripción -->
-          <p class="text-gray-400 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-            Estamos trabajando en algo increíble. Mientras tanto, explora nuestras otras secciones.
+          <div class="grid md:grid-cols-2 gap-8">
+            <!-- Part 1: Materiales -->
+            <div class="bg-gradient-to-br from-wow-card to-wow-card/50 border border-wow-border rounded-2xl p-8 hover-lift">
+              <div class="flex items-start gap-4 mb-6">
+                <div class="w-16 h-16 bg-orange-500/20 rounded-xl flex items-center justify-center shrink-0">
+                  <i class="fas fa-box-open text-3xl text-orange-500"></i>
+                </div>
+                <div>
+                  <h3 class="text-2xl font-bold mb-2">Part 1: Materiales</h3>
+                  <p class="text-gray-400">Slow-selling, High Value</p>
+                </div>
+              </div>
+              
+              <p class="text-gray-300 mb-6">
+                Materiales de alto valor que se venden lentamente pero generan grandes ganancias a largo plazo.
+              </p>
+              
+              <div class="space-y-3 mb-6">
+                <div class="flex items-center gap-2 text-sm">
+                  <i class="fas fa-cut text-wow-gold w-5"></i>
+                  <span>Skinning Farms</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                  <i class="fas fa-leaf text-green-500 w-5"></i>
+                  <span>Herbalism Farms</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                  <i class="fas fa-gem text-blue-500 w-5"></i>
+                  <span>Mining Farms</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                  <i class="fas fa-star text-purple-500 w-5"></i>
+                  <span>Non-Profession Farms</span>
+                </div>
+              </div>
+              
+              <a href="farms-part1.html" class="block w-full px-6 py-3 bg-orange-500 hover:bg-orange-600 rounded-lg transition-all font-semibold text-center">
+                Ver Farms Part 1 <i class="fas fa-arrow-right ml-2"></i>
+              </a>
+            </div>
+            
+            <!-- Part 2: Rápidos -->
+            <div class="bg-gradient-to-br from-wow-card to-wow-card/50 border border-wow-border rounded-2xl p-8 hover-lift">
+              <div class="flex items-start gap-4 mb-6">
+                <div class="w-16 h-16 bg-wow-blue/20 rounded-xl flex items-center justify-center shrink-0">
+                  <i class="fas fa-bolt text-3xl text-wow-blue"></i>
+                </div>
+                <div>
+                  <h3 class="text-2xl font-bold mb-2">Part 2: Rápidos</h3>
+                  <p class="text-gray-400">Fast-selling, Quick Profits</p>
+                </div>
+              </div>
+              
+              <p class="text-gray-300 mb-6">
+                Farms de venta rápida que generan oro constante. Ideal para capital inmediato.
+              </p>
+              
+              <div class="space-y-3 mb-6">
+                <div class="flex items-center gap-2 text-sm">
+                  <i class="fas fa-users text-wow-blue w-5"></i>
+                  <span>Group Farms</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                  <i class="fas fa-user text-wow-gold w-5"></i>
+                  <span>Solo Farms</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                  <i class="fas fa-tshirt text-pink-500 w-5"></i>
+                  <span>Transmog Farms</span>
+                </div>
+                <div class="flex items-center gap-2 text-sm">
+                  <i class="fas fa-dragon text-red-500 w-5"></i>
+                  <span>BoE Farming</span>
+                </div>
+              </div>
+              
+              <a href="farms-part2.html" class="block w-full px-6 py-3 bg-wow-blue hover:bg-blue-600 rounded-lg transition-all font-semibold text-center">
+                Ver Farms Part 2 <i class="fas fa-arrow-right ml-2"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Expansions Section -->
+      <section class="py-16 px-4 bg-wow-card/30">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+              <i class="fas fa-globe text-wow-blue mr-2"></i>
+              Farms por Expansión
+            </h2>
+            <p class="text-gray-400 text-lg">Contenido actualizado desde Vanilla hasta Midnight</p>
+          </div>
+          
+          <div class="bg-wow-card border border-wow-border rounded-2xl p-8">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
+              <div class="text-center p-4 bg-wow-dark/50 rounded-lg hover:bg-wow-dark transition-colors">
+                <div class="text-2xl mb-2">🌍</div>
+                <div class="text-sm font-semibold">Vanilla</div>
+              </div>
+              <div class="text-center p-4 bg-wow-dark/50 rounded-lg hover:bg-wow-dark transition-colors">
+                <div class="text-2xl mb-2">🔥</div>
+                <div class="text-sm font-semibold">TBC</div>
+              </div>
+              <div class="text-center p-4 bg-wow-dark/50 rounded-lg hover:bg-wow-dark transition-colors">
+                <div class="text-2xl mb-2">❄️</div>
+                <div class="text-sm font-semibold">Wrath</div>
+              </div>
+              <div class="text-center p-4 bg-wow-dark/50 rounded-lg hover:bg-wow-dark transition-colors">
+                <div class="text-2xl mb-2">🌊</div>
+                <div class="text-sm font-semibold">Cata</div>
+              </div>
+              <div class="text-center p-4 bg-wow-dark/50 rounded-lg hover:bg-wow-dark transition-colors">
+                <div class="text-2xl mb-2">🐼</div>
+                <div class="text-sm font-semibold">MoP</div>
+              </div>
+              <div class="text-center p-4 bg-wow-dark/50 rounded-lg hover:bg-wow-dark transition-colors">
+                <div class="text-2xl mb-2">⚔️</div>
+                <div class="text-sm font-semibold">WoD</div>
+              </div>
+              <div class="text-center p-4 bg-wow-dark/50 rounded-lg hover:bg-wow-dark transition-colors">
+                <div class="text-2xl mb-2">👹</div>
+                <div class="text-sm font-semibold">Legion</div>
+              </div>
+              <div class="text-center p-4 bg-wow-dark/50 rounded-lg hover:bg-wow-dark transition-colors">
+                <div class="text-2xl mb-2">⚓</div>
+                <div class="text-sm font-semibold">BFA</div>
+              </div>
+              <div class="text-center p-4 bg-wow-dark/50 rounded-lg hover:bg-wow-dark transition-colors">
+                <div class="text-2xl mb-2">💀</div>
+                <div class="text-sm font-semibold">Shadowlands</div>
+              </div>
+              <div class="text-center p-4 bg-wow-dark/50 rounded-lg hover:bg-wow-dark transition-colors">
+                <div class="text-2xl mb-2">🐉</div>
+                <div class="text-sm font-semibold">Dragonflight</div>
+              </div>
+              <div class="text-center p-4 bg-wow-dark/50 rounded-lg hover:bg-wow-dark transition-colors">
+                <div class="text-2xl mb-2">⚡</div>
+                <div class="text-sm font-semibold">TWW</div>
+              </div>
+              <div class="text-center p-4 bg-wow-dark/50 rounded-lg hover:bg-wow-dark transition-colors border-2 border-wow-gold">
+                <div class="text-2xl mb-2">🌙</div>
+                <div class="text-sm font-semibold text-wow-gold">Midnight</div>
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-center gap-4 text-sm text-gray-400">
+              <div class="flex items-center gap-2">
+                <i class="fas fa-check-circle text-wow-success"></i>
+                <span>Última actualización: <strong class="text-white">V1.0.0</strong></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="fas fa-calendar text-wow-blue"></i>
+                <span>Enero 2026</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tools Section -->
+      <section class="py-16 px-4">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+              <i class="fas fa-tools text-wow-gold mr-2"></i>
+              Herramientas
+            </h2>
+            <p class="text-gray-400 text-lg">Optimiza tu farmeo con nuestras herramientas</p>
+          </div>
+          
+          <div class="grid md:grid-cols-3 gap-6">
+            <!-- Libro de Ingresos -->
+            <div class="bg-wow-card border border-wow-border rounded-xl p-6 hover-lift">
+              <div class="w-12 h-12 bg-wow-blue/20 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-coins text-2xl text-wow-gold"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Oro Ganado 2026</h3>
+              <p class="text-gray-400 text-sm mb-4">Registra y analiza tus ganancias diarias con gráficos y estadísticas.</p>
+              <a href="/index.html" class="text-wow-blue hover:text-blue-400 text-sm font-semibold inline-flex items-center gap-1">
+                Abrir <i class="fas fa-arrow-right text-xs"></i>
+              </a>
+            </div>
+            
+            <!-- Calculadora -->
+            <div class="bg-wow-card border border-wow-border rounded-xl p-6 hover-lift">
+              <div class="w-12 h-12 bg-wow-gold/20 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-calculator text-2xl text-wow-gold"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Calculadora</h3>
+              <p class="text-gray-400 text-sm mb-4">Calcula ganancias por hora y optimiza tus rutas de farmeo.</p>
+              <a href="/pages/calculadora.html" class="text-wow-gold hover:text-yellow-400 text-sm font-semibold inline-flex items-center gap-1">
+                Abrir <i class="fas fa-arrow-right text-xs"></i>
+              </a>
+            </div>
+            
+            <!-- Flipping -->
+            <div class="bg-wow-card border border-wow-border rounded-xl p-6 hover-lift">
+              <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-chart-line text-2xl text-green-500"></i>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Flipping</h3>
+              <p class="text-gray-400 text-sm mb-4">Descubre los mejores ítems con precios de subasta actualizados en vivo.</p>
+              <a href="/pages/flipping.html" class="text-green-500 hover:text-green-400 text-sm font-semibold inline-flex items-center gap-1">
+                Abrir <i class="fas fa-arrow-right text-xs"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Final -->
+      <section class="py-20 px-4 bg-gradient-to-r from-wow-blue/20 to-wow-gold/20">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-3xl md:text-5xl font-bold mb-6">
+            Comienza tu viaje hacia el <span class="text-wow-gold">Gold Cap</span>
+          </h2>
+          <p class="text-xl text-gray-300 mb-8">
+            Únete a miles de jugadores que ya están dominando el mercado de Azeroth
           </p>
-          
-          <!-- Botones de navegación -->
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="dashboard.html" 
-               class="px-6 py-3 bg-wow-blue hover:bg-blue-600 rounded-lg transition-colors font-semibold inline-flex items-center justify-center gap-2">
-              <i class="fas fa-chart-line"></i>
-              Dashboard
+            <a href="/pages/consejos.html" class="px-8 py-4 bg-wow-gold hover:bg-yellow-500 text-wow-dark rounded-lg transition-all font-bold text-lg inline-flex items-center justify-center gap-2 hover-lift">
+              <i class="fas fa-lightbulb"></i>
+              Ver Tips
             </a>
-            <a href="calculadora.html" 
-               class="px-6 py-3 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-colors font-semibold inline-flex items-center justify-center gap-2">
-              <i class="fas fa-calculator"></i>
-              Calculadora
-            </a>
-            <a href="farmeos.html" 
-               class="px-6 py-3 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-colors font-semibold inline-flex items-center justify-center gap-2">
-              <i class="fas fa-seedling"></i>
-              Farmeos Sugeridos
+            <a href="/pages/farmeos.html" class="px-8 py-4 bg-wow-card hover:bg-wow-border border-2 border-wow-gold rounded-lg transition-all font-bold text-lg inline-flex items-center justify-center gap-2 hover-lift">
+              <i class="fas fa-map-marked-alt"></i>
+              Explorar Farms
             </a>
           </div>
         </div>
-      </div>
-      
-      <div id="footer-placeholder" class="w-full shrink-0 relative z-10"></div>
+      </section>
     </main>
+
+    <div id="footer-placeholder" class="w-full shrink-0"></div>
 
     <script>
       // Load Header
-      fetch('header.html')
+      fetch('/components/header.html')
         .then(response => response.text())
         .then(data => {
           document.getElementById('header-placeholder').innerHTML = data;
@@ -159,7 +476,7 @@
         .catch(error => console.error('Error loading header:', error));
 
       // Load Footer
-      fetch('footer.html')
+      fetch('/components/footer.html')
         .then(response => response.text())
         .then(data => {
           document.getElementById('footer-placeholder').innerHTML = data;

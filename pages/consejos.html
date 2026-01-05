@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consejos Generales - Farmers de Azeroth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wow: {
+                dark: "#0b0c10",
+                card: "#1a1d29",
+                border: "#2a2e3b",
+                blue: "#0074e0",
+                gold: "#ffd100",
+                success: "#22c55e",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .notebook-line {
+            background-image: linear-gradient(#333 1px, transparent 1px);
+            background-size: 100% 2em;
+            line-height: 2em;
+        }
+    </style>
+</head>
+<body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
+
+    <!-- Header Container -->
+    <div id="header-container" class="sticky top-0 z-50"></div>
+
+    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20">
+        <!-- Back Button -->
+        <a href="primeros-pasos.html" class="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors group">
+            <div class="w-8 h-8 rounded-full bg-wow-card border border-wow-border flex items-center justify-center group-hover:border-wow-gold transition-colors">
+                <i class="fas fa-arrow-left text-sm"></i>
+            </div>
+            <span class="font-medium">Volver a Primeros Pasos</span>
+        </a>
+
+                        <section id="consejos" class="content-section  fade-in">
+                    <header class="mb-8 border-b border-wow-border pb-6 flex items-center justify-between">
+                        <div>
+                            <div class="inline-flex items-center gap-2 px-3 py-1 bg-orange-500/10 border border-orange-500/20 rounded-full mb-3">
+                                <span class="text-xs text-orange-400 font-bold uppercase tracking-wider">Mindset</span>
+                            </div>
+                            <h1 class="text-4xl font-bold text-white mb-2">Consejos Generales</h1>
+                            <p class="text-gray-400">La mentalidad necesaria para acumular riqueza en Azeroth.</p>
+                        </div>
+                        <i class="fas fa-lightbulb text-6xl text-orange-500/20"></i>
+                    </header>
+                    <div class="bg-wow-card border border-wow-border rounded-xl p-8">
+                        <ul class="space-y-6">
+                            <li class="p-4 bg-orange-900/10 border-l-4 border-orange-500 rounded flex gap-4">
+                                <i class="fas fa-quote-left text-orange-500 text-xl mt-1"></i>
+                                <div>
+                                    <p class="text-lg italic text-gray-200">"No pongas todos los huevos en la misma cesta. Diversifica tus mercados."</p>
+                                    <p class="text-sm text-gray-500 mt-2">No dependas solo de una profesión o un item. Si el mercado cae, necesitas respaldo.</p>
+                                </div>
+                            </li>
+                            <li class="p-4 bg-orange-900/10 border-l-4 border-orange-500 rounded flex gap-4">
+                                <i class="fas fa-quote-left text-orange-500 text-xl mt-1"></i>
+                                <div>
+                                    <p class="text-lg italic text-gray-200">"El tiempo es oro. Si un farmeo da menos de 10k/hora, busca otro."</p>
+                                    <p class="text-sm text-gray-500 mt-2">Calcula tu Gold Per Hour (GPH). No pierdas tiempo en rutas muertas.</p>
+                                </div>
+                            </li>
+                             <li class="p-4 bg-orange-900/10 border-l-4 border-orange-500 rounded flex gap-4">
+                                <i class="fas fa-quote-left text-orange-500 text-xl mt-1"></i>
+                                <div>
+                                    <p class="text-lg italic text-gray-200">"Revisa la casa de subastas en horas pico (fines de semana, noches)."</p>
+                                    <p class="text-sm text-gray-500 mt-2">Vende cuando hay demanda. Compra cuando hay exceso de oferta (mañanas/madrugadas).</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // Load Header
+        fetch('/components/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
+                const scripts = document.getElementById('header-container').getElementsByTagName('script');
+                for(let i=0; i<scripts.length; i++) {
+                    eval(scripts[i].innerText);
+                }
+            });
+
+        // Load Footer
+        fetch('/components/footer.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('footer-placeholder').innerHTML = data;
+            });
+    </script>
+</body>
+</html>

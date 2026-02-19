@@ -15,6 +15,11 @@ let serverCachedToken = null;
 let serverLastFetch = 0;
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hora en milisegundos
 
+// Caché de subastas (Commodities) - Global para la instancia
+let cachedCommodities = null;
+let lastCommoditiesFetch = 0;
+const COMMODITIES_CACHE_DURATION = 15 * 60 * 1000; // 15 minutos
+
 exports.getwowtokenprice = onRequest(
   {
     secrets: [client_id, client_secret],
@@ -237,33 +242,41 @@ exports.getauctionprice = onRequest(
           return res.status(500).send("Error: Faltan credenciales");
         }
 
-        // 1. Obtener Token de Acceso
-        const auth = Buffer.from(`${id}:${secret}`).toString("base64");
-        const tokenResponse = await axios.post(
-          "https://oauth.battle.net/token",
-          "grant_type=client_credentials",
-          {
-            headers: {
-              Authorization: `Basic ${auth}`,
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-          }
-        );
+        // 2. Obtener datos de subasta (usando caché global de la instancia si es posible)
+        let auctions = [];
+        const now = Date.now();
 
-        const accessToken = tokenResponse.data.access_token;
+        if (cachedCommodities && (now - lastCommoditiesFetch < COMMODITIES_CACHE_DURATION)) {
+          console.log("Servidor: Usando caché global de subastas");
+          auctions = cachedCommodities;
+        } else {
+          console.log("Servidor: Consultando commodities a Blizzard...");
+          // 2.1 Obtener Token de Acceso
+          const auth = Buffer.from(`${id}:${secret}`).toString("base64");
+          const tokenResponse = await axios.post(
+            "https://oauth.battle.net/token",
+            "grant_type=client_credentials",
+            {
+              headers: {
+                Authorization: `Basic ${auth}`,
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+            }
+          );
+          const accessToken = tokenResponse.data.access_token;
 
-        // 2. Consultar datos de subasta (commodities para NA)
-        const auctionResponse = await axios.get(
-          `https://us.api.blizzard.com/data/wow/auctions/commodities?namespace=dynamic-us&locale=es_MX`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
+          // 2.2 Consultar datos de subasta
+          const auctionResponse = await axios.get(
+            `https://us.api.blizzard.com/data/wow/auctions/commodities?namespace=dynamic-us&locale=es_MX`,
+            { headers: { Authorization: `Bearer ${accessToken}` } }
+          );
+          
+          auctions = auctionResponse.data.auctions || [];
+          cachedCommodities = auctions;
+          lastCommoditiesFetch = now;
+        }
 
         // 3. Buscar el ítem en las subastas
-        const auctions = auctionResponse.data.auctions || [];
         const itemAuctions = auctions.filter(a => a.item && a.item.id === parseInt(itemId));
 
         let price = 0;
@@ -299,6 +312,80 @@ exports.getauctionprice = onRequest(
           error: "No se pudo obtener el precio",
           message: error.message,
         });
+      }
+    });
+  }
+);
+
+/**
+ * Función para obtener precios de múltiples ítems en una sola llamada.
+ * Muy útil para el dashboard de farmeos.
+ */
+exports.getmultipleauctionprices = onRequest(
+  {
+    secrets: [client_id, client_secret],
+    region: "us-central1",
+    memory: "512MiB", // Requerimos más memoria para procesar el JSON grande
+  },
+  (req, res) => {
+    return cors(req, res, async () => {
+      const idsParam = req.query.ids;
+      if (!idsParam) return res.status(400).send("Faltan los IDs (separados por coma)");
+      
+      const itemIds = idsParam.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+      if (itemIds.length === 0) return res.status(400).send("IDs inválidos");
+
+      try {
+        let auctions = [];
+        const now = Date.now();
+
+        if (cachedCommodities && (now - lastCommoditiesFetch < COMMODITIES_CACHE_DURATION)) {
+          auctions = cachedCommodities;
+        } else {
+          const id = client_id.value();
+          const secret = client_secret.value();
+          const auth = Buffer.from(`${id}:${secret}`).toString("base64");
+          const tokenResponse = await axios.post(
+            "https://oauth.battle.net/token",
+            "grant_type=client_credentials",
+            { headers: { "Content-Type": "application/x-www-form-urlencoded", Authorization: `Basic ${auth}` } }
+          );
+          const accessToken = tokenResponse.data.access_token;
+
+          const auctionResponse = await axios.get(
+            `https://us.api.blizzard.com/data/wow/auctions/commodities?namespace=dynamic-us&locale=es_MX`,
+            { headers: { Authorization: `Bearer ${accessToken}` } }
+          );
+          
+          auctions = auctionResponse.data.auctions || [];
+          cachedCommodities = auctions;
+          lastCommoditiesFetch = now;
+        }
+
+        // Mapear resultados para todos los IDs solicitados
+        const results = {};
+        itemIds.forEach(itemId => {
+          const itemAuctions = auctions.filter(a => a.item && a.item.id === itemId);
+          let price = 0;
+          let quantity = 0;
+
+          if (itemAuctions.length > 0) {
+            const prices = itemAuctions.map(a => a.unit_price || a.buyout || 0);
+            price = Math.min(...prices.filter(p => p > 0));
+            quantity = itemAuctions.reduce((sum, a) => sum + (a.quantity || 0), 0);
+          }
+
+          results[itemId] = {
+            price: price / 10000,
+            quantity: quantity,
+            timestamp: now
+          };
+        });
+
+        res.status(200).json(results);
+      } catch (error) {
+        console.error("Error en getmultipleauctionprices:", error.message);
+        res.status(500).json({ error: "Error al obtener precios múltiples", message: error.message });
       }
     });
   }

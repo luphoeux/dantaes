@@ -1,0 +1,112 @@
+{
+  "13468": {
+    "id": 13468,
+    "name": "Loto negro",
+    "quality": "UNCOMMON",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_misc_herb_blacklotus.jpg",
+    "level": 10,
+    "item_class": "Habilidad comercial",
+    "item_subclass": "Hierba",
+    "sell_price": 1000,
+    "description": null
+  },
+  "14256": {
+    "id": 14256,
+    "name": "Tela vil",
+    "quality": "COMMON",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_fabric_felrag.jpg",
+    "level": 10,
+    "item_class": "Habilidad comercial",
+    "item_subclass": "Tela",
+    "sell_price": 2000,
+    "description": null
+  },
+  "20520": {
+    "id": 20520,
+    "name": "Runa oscura",
+    "quality": "UNCOMMON",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/spell_shadow_sealofkings.jpg",
+    "level": 10,
+    "item_class": "Habilidad comercial",
+    "item_subclass": "Otros",
+    "sell_price": 2000,
+    "description": null
+  },
+  "23426": {
+    "id": 23426,
+    "name": "Mena de korio",
+    "quality": "UNCOMMON",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_ore_khorium.jpg",
+    "level": 15,
+    "item_class": "Habilidad comercial",
+    "item_subclass": "Metal y piedra",
+    "sell_price": 2500,
+    "description": null
+  },
+  "25719": {
+    "id": 25719,
+    "name": "Pluma de arakkoa",
+    "quality": "COMMON",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_feather_06.jpg",
+    "level": 1,
+    "item_class": "Misión",
+    "item_subclass": "Misión",
+    "sell_price": 868,
+    "description": null
+  },
+  "52325": {
+    "id": 52325,
+    "name": "Fuego volátil",
+    "quality": "COMMON",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_misc_volatilefire.jpg",
+    "level": 25,
+    "item_class": "Habilidad comercial",
+    "item_subclass": "Elemental",
+    "sell_price": 875,
+    "description": null
+  },
+  "124671": {
+    "id": 124671,
+    "name": "Aguardiente de la Luna Negra",
+    "quality": "COMMON",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_misc_flaskofvolatility.jpg",
+    "level": 1,
+    "item_class": "Consumible",
+    "item_subclass": "Pociones",
+    "sell_price": 62,
+    "description": "¡Te da ese empujón extra!"
+  },
+  "168217": {
+    "id": 168217,
+    "name": "Resorte endurecido",
+    "quality": "COMMON",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_misc_gear_03.jpg",
+    "level": 1,
+    "item_class": "Miscelánea",
+    "item_subclass": "Chatarra",
+    "sell_price": 1,
+    "description": null
+  },
+  "168649": {
+    "id": 168649,
+    "name": "Cuero dragado",
+    "quality": "COMMON",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_misc_startannedleather.jpg",
+    "level": 45,
+    "item_class": "Habilidad comercial",
+    "item_subclass": "Cuero",
+    "sell_price": 50,
+    "description": "Lo recolectan los jugadores con habilidad en desuello. Puede comprarse y venderse en la casa de subastas."
+  },
+  "200113": {
+    "id": 200113,
+    "name": "Cristal resonante",
+    "quality": "EPIC",
+    "icon": "https://render.worldofwarcraft.com/us/icons/56/inv_10_enchanting_crystal_color2.jpg",
+    "level": 60,
+    "item_class": "Habilidad comercial",
+    "item_subclass": "Encantamiento",
+    "sell_price": 100000,
+    "description": "Lo recolectan los jugadores con habilidad en encantamiento al desencantar objetos. Se puede comprar y vender en la casa de subastas."
+  }
+}

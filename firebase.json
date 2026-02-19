@@ -20,6 +20,10 @@
         "function": "getauctionprice"
       },
       {
+        "source": "/api/auction-prices",
+        "function": "getmultipleauctionprices"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
@@ -28,5 +32,20 @@
   "functions": {
     "source": "functions",
     "runtime": "nodejs20"
+  },
+  "emulators": {
+    "functions": {
+      "port": 5002
+    },
+    "firestore": {
+      "port": 8089
+    },
+    "hosting": {
+      "port": 5005
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
   }
 }

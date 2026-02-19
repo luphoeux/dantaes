@@ -4,8 +4,21 @@ const LOCAL_STORAGE_KEY_USER_ENTRIES = 'dantaes_user_entries';
 // Memoria volátil
 const itemMetadataCache = {};
 
-// Cargar caché desde localStorage al iniciar
-function loadLocalCache() {
+// Cargar caché desde localStorage y archivo local al iniciar
+async function loadLocalCache() {
+    // 1. Cargar desde el archivo generado estáticamente (MUY RÁPIDO)
+    try {
+        const response = await fetch('/js/items_metadata.json');
+        if (response.ok) {
+            const staticMetadata = await response.json();
+            Object.assign(itemMetadataCache, staticMetadata);
+            console.log('Metadatos estáticos cargados');
+        }
+    } catch (e) {
+        console.warn('No se pudo cargar items_metadata.json, usando localStorage');
+    }
+
+    // 2. Cargar desde localStorage (prioridad a los datos más nuevos)
     const saved = localStorage.getItem('wow_item_metadata');
     if (saved) {
         Object.assign(itemMetadataCache, JSON.parse(saved));
@@ -265,8 +278,8 @@ async function fetchLedgerData() {
     }
 }
 
-function initDashboard() {
-    loadLocalCache();
+async function initDashboard() {
+    await loadLocalCache();
     fetchLedgerData().then(success => {
         if (!success) console.warn("Usando datos locales por fallo en sincronización");
         

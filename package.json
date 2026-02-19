@@ -5,14 +5,17 @@
   "main": "index.html",
   "type": "module",
   "scripts": {
-    "dev": "npx http-server ./ -p 8080 -c-1",
+    "dev": "npx firebase emulators:start",
+    "serve": "npx http-server ./ -p 8080 -c-1",
     "login": "npx firebase login",
-    "deploy": "npx firebase deploy"
+    "deploy": "npx firebase deploy",
+    "update-metadata": "node download_metadata.cjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "axios": "^1.13.5",
     "firebase-tools": "^15.1.0",
     "http-server": "^14.1.1",
     "pdf-parse-fork": "^1.2.0"

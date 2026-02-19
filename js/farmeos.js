@@ -207,27 +207,46 @@ async function fetchAuctionPrice(itemId, retries = 2) {
 // Procesar en lotes para evitar sobrecarga
 // Procesar en lotes para evitar sobrecarga
 async function fetchAllPrices(itemsToFetch = farmeosData) {
-    const BATCH_SIZE = 6; // Procesar 6 items a la vez para mayor velocidad
-    // Filtrar items válidos de la lista proporcionada
+    const BATCH_SIZE = 15; // Consultar 15 items a la vez usando el nuevo endpoint
     const items = itemsToFetch.filter(item => item.itemId);
     
-    console.log(`Actualizando precios de ${items.length} items...`);
+    console.log(`Actualizando precios de ${items.length} items usando lotes...`);
     
     for (let i = 0; i < items.length; i += BATCH_SIZE) {
         const batch = items.slice(i, i + BATCH_SIZE);
+        const ids = batch.map(item => item.itemId).join(',');
         
-        // Procesar lote en paralelo
-        const promises = batch.map(async (item) => {
-            const priceData = await fetchAuctionPrice(item.itemId);
-            updateItemPrice(item.itemId, priceData);
-        });
-        
-        await Promise.all(promises);
-        
-        // Eliminado el delay artificial para carga más rápida
+        try {
+            console.log(`Fetch: Consultando lote de ${batch.length} items...`);
+            const response = await fetch(`/api/auction-prices?ids=${ids}`);
+            
+            if (!response.ok) {
+                if (response.status === 429) {
+                    console.warn('Rate limited! Esperando 5 segundos...');
+                    await new Promise(r => setTimeout(r, 5000));
+                    i -= BATCH_SIZE; // Reintentar el mismo lote
+                    continue;
+                }
+                throw new Error(`HTTP ${response.status}`);
+            }
+            
+            const results = await response.json();
+            
+            // Actualizar UI y Cache para cada item del lote
+            Object.entries(results).forEach(([itemId, priceData]) => {
+                const id = parseInt(itemId);
+                priceCache[id] = priceData;
+                updateItemPrice(id, priceData);
+            });
+
+            // Pequeña pausa entre lotes para evitar saturación
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+        } catch (e) {
+            console.error('Error al actualizar lote de precios:', e);
+        }
     }
     
-    // Guardar en localStorage después de actualizar
     savePricesToStorage();
     updateLastUpdateTime();
     console.log('Precios actualizados correctamente');

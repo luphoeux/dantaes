@@ -1,0 +1,57 @@
+{
+  "_info": "Base de datos local de íconos de WoW. Rutas relativas desde la raíz del proyecto.",
+  "_cdn": "https://wow.zamimg.com/images/wow/icons/large/{icon_name}.jpg",
+  "_uso": "Para usar en HTML: <img src='/public/icons/wow/professions/alquimia.jpg' alt='Alquimia'>",
+
+  "profesiones": {
+    "alquimia":      { "file": "/public/icons/wow/professions/alquimia.jpg",      "cdn": "trade_alchemy",                    "es": "Alquimia" },
+    "herreria":      { "file": "/public/icons/wow/professions/herreria.jpg",       "cdn": "trade_blacksmithing",              "es": "Herrería" },
+    "encantamiento": { "file": "/public/icons/wow/professions/encantamiento.jpg",  "cdn": "trade_engraving",                  "es": "Encantamiento" },
+    "ingenieria":    { "file": "/public/icons/wow/professions/ingenieria.jpg",     "cdn": "trade_engineering",                "es": "Ingeniería" },
+    "herboristeria": { "file": "/public/icons/wow/professions/herboristeria.jpg",  "cdn": "trade_herbalism",                  "es": "Herboristería" },
+    "inscripcion":   { "file": "/public/icons/wow/professions/inscripcion.jpg",    "cdn": "inv_inscription_tradeskill01",     "es": "Inscripción" },
+    "joyeria":       { "file": "/public/icons/wow/professions/joyeria.jpg",        "cdn": "inv_misc_gem_01",                  "es": "Joyería" },
+    "peleteria":     { "file": "/public/icons/wow/professions/peleteria.jpg",      "cdn": "trade_leatherworking",             "es": "Peletería" },
+    "mineria":       { "file": "/public/icons/wow/professions/mineria.jpg",        "cdn": "trade_mining",                     "es": "Minería" },
+    "desuello":      { "file": "/public/icons/wow/professions/desuello.jpg",       "cdn": "inv_misc_pelt_wolf_01",            "es": "Desuello" },
+    "sastreria":     { "file": "/public/icons/wow/professions/sastreria.jpg",      "cdn": "trade_tailoring",                  "es": "Sastrería" },
+    "cocina":        { "file": "/public/icons/wow/professions/cocina.jpg",         "cdn": "inv_misc_food_15",                 "es": "Cocina" },
+    "pesca":         { "file": "/public/icons/wow/professions/pesca.jpg",          "cdn": "trade_fishing",                    "es": "Pesca" },
+    "arqueologia":   { "file": "/public/icons/wow/professions/arqueologia.jpg",    "cdn": "trade_archaeology",                "es": "Arqueología" }
+  },
+
+  "clases": {
+    "guerrero":          { "file": "/public/icons/wow/classes/guerrero.jpg",         "cdn": "classicon_warrior",       "color": "#C79C6E", "es": "Guerrero" },
+    "cazador":           { "file": "/public/icons/wow/classes/cazador.jpg",          "cdn": "classicon_hunter",        "color": "#ABD473", "es": "Cazador" },
+    "mago":              { "file": "/public/icons/wow/classes/mago.jpg",             "cdn": "classicon_mage",          "color": "#69CCF0", "es": "Mago" },
+    "picaro":            { "file": "/public/icons/wow/classes/picaro.jpg",           "cdn": "classicon_rogue",         "color": "#FFF569", "es": "Pícaro" },
+    "sacerdote":         { "file": "/public/icons/wow/classes/sacerdote.jpg",        "cdn": "classicon_priest",        "color": "#FFFFFF", "es": "Sacerdote" },
+    "brujo":             { "file": "/public/icons/wow/classes/brujo.jpg",            "cdn": "classicon_warlock",       "color": "#9482C9", "es": "Brujo" },
+    "paladin":           { "file": "/public/icons/wow/classes/paladin.jpg",          "cdn": "classicon_paladin",       "color": "#F58CBA", "es": "Paladín" },
+    "druida":            { "file": "/public/icons/wow/classes/druida.jpg",           "cdn": "classicon_druid",         "color": "#FF7D0A", "es": "Druida" },
+    "chaman":            { "file": "/public/icons/wow/classes/chaman.jpg",           "cdn": "classicon_shaman",        "color": "#0070DE", "es": "Chamán" },
+    "monje":             { "file": "/public/icons/wow/classes/monje.jpg",            "cdn": "classicon_monk",          "color": "#00FF96", "es": "Monje" },
+    "cazador-demonios":  { "file": "/public/icons/wow/classes/cazador-demonios.jpg", "cdn": "classicon_demonhunter",   "color": "#A330C9", "es": "Cazador de Demonios" },
+    "caballero-muerte":  { "file": "/public/icons/wow/classes/caballero-muerte.jpg", "cdn": "classicon_deathknight",   "color": "#C41E3A", "es": "Caballero de la Muerte" },
+    "evocador":          { "file": "/public/icons/wow/classes/evocador.jpg",         "cdn": "classicon_evoker",        "color": "#33937F", "es": "Evocador" }
+  },
+
+  "misc": {
+    "runa-oscura":           { "file": "/public/icons/wow/misc/runa-oscura.jpg",           "es": "Runa oscura" },
+    "ojo-basilisco":         { "file": "/public/icons/wow/misc/ojo-basilisco.jpg",         "es": "Ojo de basilisco" },
+    "tendon-zancaalta":      { "file": "/public/icons/wow/misc/tendon-zancaalta.jpg",      "es": "Tendón de zancaálta" },
+    "muelle-endurecido":     { "file": "/public/icons/wow/misc/muelle-endurecido.jpg",     "es": "Muelle endurecido" },
+    "agua-volatil":          { "file": "/public/icons/wow/misc/agua-volatil.jpg",          "es": "Agua volátil" },
+    "mena-korio":            { "file": "/public/icons/wow/misc/mena-korio.jpg",            "es": "Mena de korio" },
+    "aguardiente-lunanegra": { "file": "/public/icons/wow/misc/aguardiente-lunanegra.jpg", "es": "Aguardiente de la Luna Negra" },
+    "dragontinas-abisales":  { "file": "/public/icons/wow/misc/dragontinas-abisales.jpg",  "es": "Dragontinas abisales" },
+    "polvo-sombras":         { "file": "/public/icons/wow/misc/polvo-sombras.jpg",         "es": "Polvo de las Sombras" },
+    "moneda-oro":            { "file": "/public/icons/wow/misc/moneda-oro.jpg",            "es": "Moneda de Oro" },
+    "moneda-plata":          { "file": "/public/icons/wow/misc/moneda-plata.jpg",          "es": "Moneda de Plata" },
+    "moneda-cobre":          { "file": "/public/icons/wow/misc/moneda-cobre.jpg",          "es": "Moneda de Cobre" },
+    "flipping":              { "file": "/public/icons/wow/misc/flipping.jpg",              "es": "Flipping / Casa de Subastas" },
+    "mercado-negro":         { "file": "/public/icons/wow/misc/mercado-negro.jpg",         "es": "Mercado Negro" },
+    "warband":               { "file": "/public/icons/wow/misc/warband.jpg",               "es": "Warband" },
+    "incentive-program":     { "file": "/public/icons/wow/misc/incentive-program.jpg",     "es": "Incentive Program (Addon)" }
+  }
+}

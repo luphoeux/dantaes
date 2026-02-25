@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Primeros farmeos en Midnight - Farmers de Azeroth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wow: {
+                dark: "#0b0c10",
+                card: "#1a1d29",
+                border: "#2a2e3b",
+                gold: "#ffd100",
+              },
+            },
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+          },
+        },
+      };
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+<body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
+
+    <div id="header-container" class="sticky top-0 z-50"></div>
+
+    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20 max-w-3xl">
+
+        <!-- Back Button -->
+        <a href="primeros-pasos.html" class="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors group">
+            <div class="w-8 h-8 rounded-full bg-wow-card border border-wow-border flex items-center justify-center group-hover:border-wow-gold transition-colors">
+                <i class="fas fa-arrow-left text-sm"></i>
+            </div>
+            <span class="font-medium">Volver a Primeros Pasos</span>
+        </a>
+
+        <!-- Header -->
+        <header class="mb-8 border-b border-wow-border pb-6 flex items-center justify-between">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full mb-3">
+                    <span class="text-xs text-gray-400 font-bold uppercase tracking-wider">Midnight</span>
+                </div>
+                <h1 class="text-4xl font-bold text-white mb-2">Primeros farmeos que realizar en Midnight</h1>
+                <p class="text-gray-500">Los primeros pasos para generar oro al comenzar en la expansión.</p>
+            </div>
+            <i class="fas fa-coins text-6xl text-white/5 hidden md:block"></i>
+        </header>
+
+        <!-- Lista de 13 farmeos -->
+        <div class="space-y-2">
+
+            <!-- 1 -->
+            <div class="rec-card bg-wow-card border border-wow-border rounded-xl px-5 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-gray-500 mt-0.5">1</div>
+                <div>
+                    <p class="text-gray-200 font-medium leading-snug">Recolecta todas las menas y plantas posibles de las rutas o crea nuevas</p>
+                </div>
+            </div>
+
+            <!-- 2 -->
+            <div class="rec-card bg-wow-card border border-wow-border rounded-xl px-5 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-gray-500 mt-0.5">2</div>
+                <div>
+                    <p class="text-gray-200 font-medium leading-snug">Vende todos los <strong class="text-white">verdes/azul</strong> que caen de los enemigos al NPC o desencantar</p>
+                </div>
+            </div>
+
+            <!-- 3 -->
+            <div class="rec-card bg-wow-card border border-wow-border rounded-xl px-5 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-gray-500 mt-0.5">3</div>
+                <div>
+                    <p class="text-gray-200 font-medium leading-snug">Desuello grupal/individual del rare del — items <strong class="text-white">morados</strong></p>
+                </div>
+            </div>
+
+            <!-- 4 -->
+            <div class="rec-card bg-wow-card border border-wow-border rounded-xl px-5 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-gray-500 mt-0.5">4</div>
+                <div>
+                    <p class="text-gray-200 font-medium leading-snug">Revender ítems del <strong class="text-white">Housing</strong> nuevos</p>
+                </div>
+            </div>
+
+            <!-- 5 -->
+            <div class="rec-card bg-wow-card border border-wow-border rounded-xl px-5 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-gray-500 mt-0.5">5</div>
+                <div>
+                    <p class="text-gray-200 font-medium leading-snug">Opción: vender <strong class="text-white">Contratos / Crafteos / Misivas</strong></p>
+                </div>
+            </div>
+
+            <!-- 6 -->
+            <div class="rec-card bg-wow-card border border-wow-border rounded-xl px-5 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-gray-500 mt-0.5">6</div>
+                <div>
+                    <p class="text-gray-200 font-medium leading-snug"><strong class="text-white">Taumaturgia / Encantamientos / Joyas</strong> — son buenas opciones de craft</p>
+                </div>
+            </div>
+
+            <!-- 7 -->
+            <div class="rec-card bg-wow-card border border-wow-border rounded-xl px-5 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-gray-500 mt-0.5">7</div>
+                <div>
+                    <p class="text-gray-200 font-medium leading-snug">Vender <strong class="text-white">Recetas / Ropa</strong> &amp; <strong class="text-white">Consumibles PVP</strong></p>
+                </div>
+            </div>
+
+            <!-- 8 -->
+            <div class="rec-card bg-wow-card border border-wow-border rounded-xl px-5 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-gray-500 mt-0.5">8</div>
+                <div>
+                    <p class="text-gray-200 font-medium leading-snug">Hacer <strong class="text-white">pedidos de crafteo</strong></p>
+                </div>
+            </div>
+
+            <!-- 9 -->
+            <div class="rec-card bg-wow-card border border-wow-border rounded-xl px-5 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-gray-500 mt-0.5">9</div>
+                <div>
+                    <p class="text-gray-200 font-medium leading-snug">Vender <strong class="text-white">carrys de leveo</strong> o de equipo</p>
+                </div>
+            </div>
+
+            <!-- 10 -->
+            <div class="rec-card bg-wow-card border border-wow-border rounded-xl px-5 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-gray-500 mt-0.5">10</div>
+                <div>
+                    <p class="text-gray-200 font-medium leading-snug">Rares y eventos que den <strong class="text-white">mascotas de duelo</strong></p>
+                </div>
+            </div>
+
+            <!-- 11 -->
+            <div class="rec-card bg-wow-card border border-wow-border rounded-xl px-5 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-gray-500 mt-0.5">11</div>
+                <div>
+                    <p class="text-gray-200 font-medium leading-snug">Hacer oro con <strong class="text-white">Runas de Aumento</strong> — Buscador de Grupo Plus</p>
+                </div>
+            </div>
+
+            <!-- 12 -->
+            <div class="rec-card bg-wow-card border border-wow-border rounded-xl px-5 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 text-xs font-bold text-gray-500 mt-0.5">12</div>
+                <div>
+                    <p class="text-gray-200 font-medium leading-snug">Farmear menas y plantas con <strong class="text-white">Pesca</strong> y también <strong class="text-white">Cocina</strong> <span class="text-gray-500 text-sm">(al pj que le diste las prof)</span></p>
+                </div>
+            </div>
+
+            <!-- 13 -->
+            <div class="rec-card bg-wow-card border border-wow-gold/20 rounded-xl px-5 py-4 flex items-start gap-4">
+                <div class="w-8 h-8 rounded-lg bg-wow-gold/10 border border-wow-gold/20 flex items-center justify-center flex-shrink-0 text-xs font-bold text-wow-gold mt-0.5">13</div>
+                <div>
+                    <p class="text-gray-200 font-medium leading-snug"><strong class="text-wow-gold">Evento de Abundancia</strong></p>
+                    <p class="text-xs text-gray-500 mt-1">Aprovecha los eventos temporales — suelen generar buenas oportunidades de gold.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        fetch('/components/header.html')
+            .then(r => r.text()).then(d => {
+                document.getElementById('header-container').innerHTML = d;
+                [...document.getElementById('header-container').getElementsByTagName('script')].forEach(s => eval(s.innerText));
+            });
+        fetch('/components/footer.html')
+            .then(r => r.text()).then(d => { document.getElementById('footer-placeholder').innerHTML = d; });
+    </script>
+</body>
+</html>
+

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -48,14 +48,7 @@
       }
       
       /* Animated Gradient Text */
-      .gradient-text {
-        background: linear-gradient(90deg, #ffd100, #0074e0, #ffd100);
-        background-size: 200% auto;
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: gradient-shift 3s ease infinite;
-      }
+      .gradient-text { color: #ffffff; }
       
       @keyframes gradient-shift {
         0%, 100% { background-position: 0% center; }
@@ -69,7 +62,7 @@
       
       .hover-lift:hover {
         transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0, 116, 224, 0.2);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
       }
       
       /* Fade In Animation */
@@ -95,20 +88,15 @@
 
     <main class="flex-1">
       <!-- Hero Section -->
-      <section class="relative overflow-hidden py-20 md:py-32 px-4">
-        <div class="absolute inset-0 bg-gradient-to-b from-wow-blue/10 to-transparent"></div>
+      <section class="relative overflow-hidden min-h-screen flex items-center px-4">
+        <div class="absolute inset-0 bg-gradient-to-b from-white/3 to-transparent"></div>
         
         <div class="max-w-6xl mx-auto relative z-10">
           <div class="text-center fade-in">
-            <!-- Badge -->
-            <div class="inline-flex items-center gap-2 px-4 py-2 bg-wow-card/50 border border-wow-border rounded-full mb-6">
-              <span class="w-2 h-2 bg-wow-success rounded-full animate-pulse"></span>
-              <span class="text-sm text-gray-400">Investigación Personal • Actualizado para Midnight</span>
-            </div>
             
             <!-- Title -->
             <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
-              Investigación de <span class="gradient-text">Farmeo</span> en Azeroth
+              Libro de investigación <br> Farmers de Azeroth
             </h1>
             
             <!-- Subtitle -->
@@ -117,14 +105,26 @@
             </p>
             
             <!-- CTA Buttons -->
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a href="#datos" class="px-8 py-4 bg-wow-blue hover:bg-blue-600 rounded-lg transition-all font-semibold text-lg inline-flex items-center gap-2 hover-lift">
-                <i class="fas fa-database"></i>
-                Ver Datos
+            <div class="flex flex-wrap gap-3 justify-center items-center">
+              <a href="/pages/primeros-pasos.html" class="px-6 py-3 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-all font-semibold text-base inline-flex items-center gap-2 hover-lift">
+                <i class="fas fa-compass"></i>
+                Primeros Pasos
               </a>
-              <a href="#profesiones" class="px-8 py-4 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-all font-semibold text-lg inline-flex items-center gap-2 hover-lift">
+              <a href="/pages/profesiones.html" class="px-6 py-3 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-all font-semibold text-base inline-flex items-center gap-2 hover-lift">
                 <i class="fas fa-tools"></i>
                 Profesiones
+              </a>
+              <a href="/pages/farmeos.html" class="px-6 py-3 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-all font-semibold text-base inline-flex items-center gap-2 hover-lift">
+                <i class="fas fa-map-marked-alt"></i>
+                Farmeos
+              </a>
+              <a href="/index.html" class="px-6 py-3 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-all font-semibold text-base inline-flex items-center gap-2 hover-lift">
+                <i class="fas fa-coins text-wow-gold"></i>
+                Oro Ganado 2026
+              </a>
+              <a href="/pages/calculadora.html" class="px-6 py-3 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-all font-semibold text-base inline-flex items-center gap-2 hover-lift">
+                <i class="fas fa-wrench"></i>
+                Herramientas
               </a>
             </div>
             
@@ -135,15 +135,15 @@
                 <div class="text-sm text-gray-500">Items Rastreados</div>
               </div>
               <div class="fade-in fade-in-delay-2">
-                <div class="text-3xl md:text-4xl font-bold text-wow-blue">100+</div>
+                <div class="text-3xl md:text-4xl font-bold text-gray-500">100+</div>
                 <div class="text-sm text-gray-500">Rutas Documentadas</div>
               </div>
               <div class="fade-in fade-in-delay-3">
-                <div class="text-3xl md:text-4xl font-bold text-wow-success">12</div>
+                <div class="text-3xl md:text-4xl font-bold text-gray-500">12</div>
                 <div class="text-sm text-gray-500">Expansiones</div>
               </div>
               <div class="fade-in fade-in-delay-4">
-                <div class="text-3xl md:text-4xl font-bold text-purple-400">24/7</div>
+                <div class="text-3xl md:text-4xl font-bold text-white">24/7</div>
                 <div class="text-sm text-gray-500">Actualización</div>
               </div>
             </div>
@@ -152,11 +152,11 @@
       </section>
 
       <!-- Setup Básico Section -->
-      <section id="setup" class="py-16 px-4 bg-wow-card/30">
+      <section id="setup" class="py-16 px-4 bg-wow-card/30 hidden">
         <div class="max-w-6xl mx-auto">
           <div class="text-center mb-12">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">
-              <i class="fas fa-cog text-wow-blue mr-2"></i>
+              <i class="fas fa-cog text-gray-500 mr-2"></i>
               Setup Básico
             </h2>
             <p class="text-gray-400 text-lg">Prepara tu cuenta para maximizar ganancias</p>
@@ -165,12 +165,12 @@
           <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- Bank Toon -->
             <div class="bg-wow-card border border-wow-border rounded-xl p-6 hover-lift fade-in">
-              <div class="w-12 h-12 bg-wow-blue/20 rounded-lg flex items-center justify-center mb-4">
-                <i class="fas fa-university text-2xl text-wow-blue"></i>
+              <div class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-university text-2xl text-gray-500"></i>
               </div>
               <h3 class="text-xl font-bold mb-2">Bank Toon</h3>
               <p class="text-gray-400 text-sm mb-4">Personaje dedicado para gestionar el AH y almacenar items.</p>
-              <a href="tips.html#bank-toon" class="text-wow-blue hover:text-blue-400 text-sm font-semibold inline-flex items-center gap-1">
+              <a href="tips.html#bank-toon" class="text-gray-400 hover:text-white text-sm font-semibold inline-flex items-center gap-1">
                 Leer más <i class="fas fa-arrow-right text-xs"></i>
               </a>
             </div>
@@ -182,31 +182,31 @@
               </div>
               <h3 class="text-xl font-bold mb-2">Farming Toon</h3>
               <p class="text-gray-400 text-sm mb-4">Personaje optimizado para farmear materiales eficientemente.</p>
-              <a href="tips.html#farming-toon" class="text-wow-gold hover:text-yellow-400 text-sm font-semibold inline-flex items-center gap-1">
+              <a href="tips.html#farming-toon" class="text-wow-gold hover:text-gray-400 text-sm font-semibold inline-flex items-center gap-1">
                 Leer más <i class="fas fa-arrow-right text-xs"></i>
               </a>
             </div>
             
             <!-- Speedsets -->
             <div class="bg-wow-card border border-wow-border rounded-xl p-6 hover-lift fade-in fade-in-delay-2">
-              <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
-                <i class="fas fa-running text-2xl text-green-500"></i>
+              <div class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-running text-2xl text-gray-500"></i>
               </div>
               <h3 class="text-xl font-bold mb-2">Speedsets</h3>
               <p class="text-gray-400 text-sm mb-4">Sets de velocidad para Druida (4 especializaciones).</p>
-              <a href="tips.html#speedsets" class="text-green-500 hover:text-green-400 text-sm font-semibold inline-flex items-center gap-1">
+              <a href="tips.html#speedsets" class="text-gray-400 hover:text-white text-sm font-semibold inline-flex items-center gap-1">
                 Leer más <i class="fas fa-arrow-right text-xs"></i>
               </a>
             </div>
             
             <!-- Addons -->
             <div class="bg-wow-card border border-wow-border rounded-xl p-6 hover-lift fade-in fade-in-delay-3">
-              <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center mb-4">
-                <i class="fas fa-puzzle-piece text-2xl text-purple-500"></i>
+              <div class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-puzzle-piece text-2xl text-gray-500"></i>
               </div>
               <h3 class="text-xl font-bold mb-2">Addons</h3>
               <p class="text-gray-400 text-sm mb-4">TSM, ATT, LootAppraiser y más herramientas esenciales.</p>
-              <a href="tips.html#addons" class="text-purple-500 hover:text-purple-400 text-sm font-semibold inline-flex items-center gap-1">
+              <a href="tips.html#addons" class="text-gray-400 hover:text-white text-sm font-semibold inline-flex items-center gap-1">
                 Leer más <i class="fas fa-arrow-right text-xs"></i>
               </a>
             </div>
@@ -215,11 +215,11 @@
       </section>
 
       <!-- Farm Categories Section -->
-      <section id="farms" class="py-16 px-4">
+      <section id="farms" class="py-16 px-4 hidden">
         <div class="max-w-6xl mx-auto">
           <div class="text-center mb-12">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">
-              <i class="fas fa-map-marked-alt text-wow-gold mr-2"></i>
+              <i class="fas fa-map-marked-alt text-gray-500 mr-2"></i>
               Categorías de Farms
             </h2>
             <p class="text-gray-400 text-lg">Elige tu estrategia de farmeo</p>
@@ -229,8 +229,8 @@
             <!-- Part 1: Materiales -->
             <div class="bg-gradient-to-br from-wow-card to-wow-card/50 border border-wow-border rounded-2xl p-8 hover-lift">
               <div class="flex items-start gap-4 mb-6">
-                <div class="w-16 h-16 bg-orange-500/20 rounded-xl flex items-center justify-center shrink-0">
-                  <i class="fas fa-box-open text-3xl text-orange-500"></i>
+                <div class="w-16 h-16 bg-white/5 rounded-xl flex items-center justify-center shrink-0">
+                  <i class="fas fa-box-open text-3xl text-gray-500"></i>
                 </div>
                 <div>
                   <h3 class="text-2xl font-bold mb-2">Part 1: Materiales</h3>
@@ -248,20 +248,20 @@
                   <span>Skinning Farms</span>
                 </div>
                 <div class="flex items-center gap-2 text-sm">
-                  <i class="fas fa-leaf text-green-500 w-5"></i>
+                  <i class="fas fa-leaf text-gray-500 w-5"></i>
                   <span>Herbalism Farms</span>
                 </div>
                 <div class="flex items-center gap-2 text-sm">
-                  <i class="fas fa-gem text-blue-500 w-5"></i>
+                  <i class="fas fa-gem text-gray-500 w-5"></i>
                   <span>Mining Farms</span>
                 </div>
                 <div class="flex items-center gap-2 text-sm">
-                  <i class="fas fa-star text-purple-500 w-5"></i>
+                  <i class="fas fa-star text-gray-500 w-5"></i>
                   <span>Non-Profession Farms</span>
                 </div>
               </div>
               
-              <a href="farms-part1.html" class="block w-full px-6 py-3 bg-orange-500 hover:bg-orange-600 rounded-lg transition-all font-semibold text-center">
+              <a href="farms-part1.html" class="block w-full px-6 py-3 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-all font-semibold text-center">
                 Ver Farms Part 1 <i class="fas fa-arrow-right ml-2"></i>
               </a>
             </div>
@@ -269,8 +269,8 @@
             <!-- Part 2: Rápidos -->
             <div class="bg-gradient-to-br from-wow-card to-wow-card/50 border border-wow-border rounded-2xl p-8 hover-lift">
               <div class="flex items-start gap-4 mb-6">
-                <div class="w-16 h-16 bg-wow-blue/20 rounded-xl flex items-center justify-center shrink-0">
-                  <i class="fas fa-bolt text-3xl text-wow-blue"></i>
+                <div class="w-16 h-16 bg-white/5 rounded-xl flex items-center justify-center shrink-0">
+                  <i class="fas fa-bolt text-3xl text-gray-500"></i>
                 </div>
                 <div>
                   <h3 class="text-2xl font-bold mb-2">Part 2: Rápidos</h3>
@@ -292,16 +292,16 @@
                   <span>Solo Farms</span>
                 </div>
                 <div class="flex items-center gap-2 text-sm">
-                  <i class="fas fa-tshirt text-pink-500 w-5"></i>
+                  <i class="fas fa-tshirt text-gray-500 w-5"></i>
                   <span>Transmog Farms</span>
                 </div>
                 <div class="flex items-center gap-2 text-sm">
-                  <i class="fas fa-dragon text-red-500 w-5"></i>
+                  <i class="fas fa-dragon text-gray-500 w-5"></i>
                   <span>BoE Farming</span>
                 </div>
               </div>
               
-              <a href="farms-part2.html" class="block w-full px-6 py-3 bg-wow-blue hover:bg-blue-600 rounded-lg transition-all font-semibold text-center">
+              <a href="farms-part2.html" class="block w-full px-6 py-3 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-all font-semibold text-center">
                 Ver Farms Part 2 <i class="fas fa-arrow-right ml-2"></i>
               </a>
             </div>
@@ -310,11 +310,11 @@
       </section>
 
       <!-- Expansions Section -->
-      <section class="py-16 px-4 bg-wow-card/30">
+      <section class="py-16 px-4 bg-wow-card/30 hidden">
         <div class="max-w-6xl mx-auto">
           <div class="text-center mb-12">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">
-              <i class="fas fa-globe text-wow-blue mr-2"></i>
+              <i class="fas fa-globe text-gray-500 mr-2"></i>
               Farms por Expansión
             </h2>
             <p class="text-gray-400 text-lg">Contenido actualizado desde Vanilla hasta Midnight</p>
@@ -374,11 +374,11 @@
             
             <div class="flex items-center justify-center gap-4 text-sm text-gray-400">
               <div class="flex items-center gap-2">
-                <i class="fas fa-check-circle text-wow-success"></i>
+                <i class="fas fa-check-circle text-gray-500"></i>
                 <span>Última actualización: <strong class="text-white">V1.0.0</strong></span>
               </div>
               <div class="flex items-center gap-2">
-                <i class="fas fa-calendar text-wow-blue"></i>
+                <i class="fas fa-calendar text-gray-500"></i>
                 <span>Enero 2026</span>
               </div>
             </div>
@@ -387,11 +387,11 @@
       </section>
 
       <!-- Tools Section -->
-      <section class="py-16 px-4">
+      <section class="py-16 px-4 hidden">
         <div class="max-w-6xl mx-auto">
           <div class="text-center mb-12">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">
-              <i class="fas fa-tools text-wow-gold mr-2"></i>
+              <i class="fas fa-tools text-gray-500 mr-2"></i>
               Herramientas
             </h2>
             <p class="text-gray-400 text-lg">Optimiza tu farmeo con nuestras herramientas</p>
@@ -400,12 +400,12 @@
           <div class="grid md:grid-cols-3 gap-6">
             <!-- Libro de Ingresos -->
             <div class="bg-wow-card border border-wow-border rounded-xl p-6 hover-lift">
-              <div class="w-12 h-12 bg-wow-blue/20 rounded-lg flex items-center justify-center mb-4">
+              <div class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center mb-4">
                 <i class="fas fa-coins text-2xl text-wow-gold"></i>
               </div>
               <h3 class="text-xl font-bold mb-2">Oro Ganado 2026</h3>
               <p class="text-gray-400 text-sm mb-4">Registra y analiza tus ganancias diarias con gráficos y estadísticas.</p>
-              <a href="/index.html" class="text-wow-blue hover:text-blue-400 text-sm font-semibold inline-flex items-center gap-1">
+              <a href="/index.html" class="text-gray-400 hover:text-white text-sm font-semibold inline-flex items-center gap-1">
                 Abrir <i class="fas fa-arrow-right text-xs"></i>
               </a>
             </div>
@@ -417,19 +417,19 @@
               </div>
               <h3 class="text-xl font-bold mb-2">Calculadora</h3>
               <p class="text-gray-400 text-sm mb-4">Calcula ganancias por hora y optimiza tus rutas de farmeo.</p>
-              <a href="/pages/calculadora.html" class="text-wow-gold hover:text-yellow-400 text-sm font-semibold inline-flex items-center gap-1">
+              <a href="/pages/calculadora.html" class="text-wow-gold hover:text-gray-400 text-sm font-semibold inline-flex items-center gap-1">
                 Abrir <i class="fas fa-arrow-right text-xs"></i>
               </a>
             </div>
             
             <!-- Flipping -->
             <div class="bg-wow-card border border-wow-border rounded-xl p-6 hover-lift">
-              <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-4">
-                <i class="fas fa-chart-line text-2xl text-green-500"></i>
+              <div class="w-12 h-12 bg-white/5 rounded-lg flex items-center justify-center mb-4">
+                <i class="fas fa-chart-line text-2xl text-gray-500"></i>
               </div>
               <h3 class="text-xl font-bold mb-2">Flipping</h3>
               <p class="text-gray-400 text-sm mb-4">Descubre los mejores ítems con precios de subasta actualizados en vivo.</p>
-              <a href="/pages/flipping.html" class="text-green-500 hover:text-green-400 text-sm font-semibold inline-flex items-center gap-1">
+              <a href="/pages/flipping.html" class="text-gray-400 hover:text-white text-sm font-semibold inline-flex items-center gap-1">
                 Abrir <i class="fas fa-arrow-right text-xs"></i>
               </a>
             </div>
@@ -438,7 +438,7 @@
       </section>
 
       <!-- CTA Final -->
-      <section class="py-20 px-4 bg-gradient-to-r from-wow-blue/20 to-wow-gold/20">
+      <section class="py-20 px-4 bg-wow-card/30 border-t border-wow-border hidden">
         <div class="max-w-4xl mx-auto text-center">
           <h2 class="text-3xl md:text-5xl font-bold mb-6">
             Comienza tu viaje hacia el <span class="text-wow-gold">Gold Cap</span>
@@ -447,11 +447,11 @@
             Únete a miles de jugadores que ya están dominando el mercado de Azeroth
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/pages/consejos.html" class="px-8 py-4 bg-wow-gold hover:bg-yellow-500 text-wow-dark rounded-lg transition-all font-bold text-lg inline-flex items-center justify-center gap-2 hover-lift">
+            <a href="/pages/consejos.html" class="px-8 py-4 bg-wow-card hover:bg-wow-border border border-wow-border text-white rounded-lg transition-all font-bold text-lg inline-flex items-center justify-center gap-2 hover-lift">
               <i class="fas fa-lightbulb"></i>
               Ver Tips
             </a>
-            <a href="/pages/farmeos.html" class="px-8 py-4 bg-wow-card hover:bg-wow-border border-2 border-wow-gold rounded-lg transition-all font-bold text-lg inline-flex items-center justify-center gap-2 hover-lift">
+            <a href="/pages/farmeos.html" class="px-8 py-4 bg-wow-card hover:bg-wow-border border border-wow-border rounded-lg transition-all font-bold text-lg inline-flex items-center justify-center gap-2 hover-lift">
               <i class="fas fa-map-marked-alt"></i>
               Explorar Farms
             </a>
@@ -485,3 +485,5 @@
     </script>
   </body>
 </html>
+
+

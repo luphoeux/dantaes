@@ -31,11 +31,6 @@
     <link rel="stylesheet" href="/style.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .notebook-line {
-            background-image: linear-gradient(#333 1px, transparent 1px);
-            background-size: 100% 2em;
-            line-height: 2em;
-        }
     </style>
 </head>
 <body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
@@ -52,35 +47,238 @@
             <span class="font-medium">Volver a Profesiones</span>
         </a>
 
-                         <section id="mineria" class="profession-section ">
-                    <header class="mb-8 border-b border-wow-border pb-6 flex items-center justify-between">
-                        <div>
-                            <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full mb-3">
-                                <span class="text-xs text-blue-400 font-bold uppercase tracking-wider">Recolección</span>
+        <!-- ══════════════════════════════════════════════════ -->
+        <!-- SECCIÓN: MAPA INTERACTIVO (MINERÍA)          -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <section id="mapas-rutas" class="mb-12">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-1">Mapa Interactivo de Minería</h2>
+                    <p class="text-gray-500 text-sm">Visualiza las mejores rutas de extracción de minerales en Midnight.</p>
+                </div>
+                
+                <!-- Mini Tabs para Zonas -->
+                <div class="flex gap-1 bg-wow-card border border-wow-border p-1 rounded-xl">
+                    <button onclick="changeZone(0)" class="zone-tab active px-4 py-2 rounded-lg text-xs font-bold transition-all bg-wow-gold text-wow-dark">B. CANCIÓN ETERNA</button>
+                    <button onclick="changeZone(1)" class="zone-tab px-4 py-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">ZUL'AMAN</button>
+                    <button onclick="changeZone(2)" class="zone-tab px-4 py-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">HARANDAR</button>
+                    <button onclick="changeZone(3)" class="zone-tab px-4 py-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">Tormenta del vacío</button>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-4 gap-6">
+                <!-- Panel de Control / Info -->
+                <div class="space-y-4">
+                    <div class="bg-wow-card border border-wow-border rounded-xl p-5">
+                        <h4 id="zone-title" class="text-lg font-bold text-white mb-2">Bosque Canción Eterna</h4>
+                        <p id="zone-desc" class="text-xs text-gray-500 leading-relaxed mb-4">
+                            Esta zona es ideal para menas de nivel bajo y materiales base de Midnight.
+                        </p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-gray-400">Riqueza</span>
+                                <span class="text-green-400 font-bold">Alta</span>
                             </div>
-                            <h1 class="text-4xl font-bold text-white mb-2">Minería</h1>
-                            <p class="text-gray-400">Extracción de minerales y piedras preciosas.</p>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-gray-400">Objetivo</span>
+                                <span class="text-wow-gold">Menas y Gemas</span>
+                            </div>
                         </div>
-                        <i class="fas fa-gem text-6xl text-blue-500/20"></i>
-                    </header>
-                    <div class="bg-wow-card border border-wow-border p-12 rounded-xl text-center">
-                        <i class="fas fa-hard-hat text-4xl text-yellow-500 mb-4"></i>
-                        <h3 class="text-xl font-bold text-white">Datos en procesamiento...</h3>
-                        <p class="text-gray-400 mt-2">Recopilando rutas de minería del libro.</p>
+
+                        <div class="mt-6 pt-6 border-t border-wow-border space-y-3">
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Código de Importación</span>
+                                    <span class="text-[10px] text-wow-gold">Addon: Routes</span>
+                                </div>
+                                <textarea id="route-display" readonly rows="5" class="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-[10px] text-gray-400 font-mono resize-none focus:outline-none focus:border-wow-gold/30 transition-colors">Cargando código...</textarea>
+                            </div>
+
+                            <button onclick="copyRouteString()" class="w-full py-2 bg-wow-gold hover:bg-yellow-500 border border-wow-gold/20 rounded-lg text-xs font-bold text-black transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,209,0,0.1)]">
+                                <i class="fas fa-copy" id="copy-icon"></i> <span id="copy-text">Copiar String (Routes)</span>
+                            </button>
+                        </div>
                     </div>
-                </section>
+
+                    <!-- Leyenda -->
+                    <div class="bg-wow-card border border-wow-border rounded-xl p-4">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest block mb-3">Leyenda</span>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 text-xs text-gray-400">
+                                <div class="w-3 h-3 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+                                <span>Ruta de Minería Táctica</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs text-gray-400">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <span>Zonas de Élite</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visor del Mapa -->
+                <div class="lg:col-span-3">
+                    <div class="relative bg-black rounded-2xl border border-wow-border overflow-hidden aspect-video shadow-2xl group">
+                        <!-- Mapa Base -->
+                        <div id="map-wrap" class="w-full h-full overflow-hidden bg-black relative">
+                            <img id="map-img" src="/public/maps/midnight/eversong.avif" 
+                                 class="absolute inset-0 w-full h-full object-fill" 
+                                 alt="Mapa de WoW">
+                            
+                            <!-- Overlay de SVG para Rutas -->
+                            <svg id="route-overlay" class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 10000 10000" preserveAspectRatio="none">
+                                <path id="route-path" d="" fill="none" class="stroke-blue-500" stroke-width="50" stroke-dasharray="100 50" stroke-linecap="round">
+                                    <animate attributeName="stroke-dashoffset" from="1500" to="0" dur="20s" repeatCount="indefinite" />
+                                </path>
+                            </svg>
+                        </div>
+
+                        <!-- Overlay de Carga -->
+                        <div id="map-loader" class="absolute inset-0 bg-wow-dark/80 flex items-center justify-center hidden">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="w-12 h-12 border-4 border-wow-gold border-t-transparent rounded-full animate-spin"></div>
+                                <span class="text-xs font-bold text-wow-gold uppercase">Cargando Mapa de Minería...</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 flex items-center justify-between text-xs text-gray-500">
+                        <div class="flex items-center gap-4">
+                            <span class="flex items-center gap-1.5 text-wow-gold"><i class="fas fa-gem"></i> Sensores de Mineral Activos</span>
+                        </div>
+                        <span class="bg-wow-gold/10 text-wow-gold px-2 py-0.5 rounded border border-wow-gold/20">GPS Sincronizado</span>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <script>
+        // Coordenadas de Minería proporcionadas en Step 845
+        const ZONES = [
+            {
+                name: "Bosque Canción Eterna",
+                desc: "Esta zona es ideal para menas de nivel bajo y materiales base de Midnight. La ruta optimizada sigue los afloramientos rocosos.",
+                img: "/public/maps/midnight/eversong.avif",
+                routeString: "Retail:Routes:menas y plantas:Bosque Canción Eterna:XjFeVF5TUm91dGVEYXRhXlReU3Zpc2libGVeQl5TdGFib29saXN0XlRedF5TY29sb3JeVF5OMV5OMF5OMl5GNDgwMzgzOTg1MzA2ODI4OF5mLTU1Xk4zXk4xXk40Xk4xXnReU2xvb3BlZF5OMV5TaGlkZGVuXmJeU3dpZHRoXk40NF5Tc2VsZWN0aW9uXlRedF5Td2lkdGhfbWluaW1hcF5ONDBeU3RhYm9vc15UXnReU3JvdXRlXlReTjFeTjQwMzQxMDU0Xk4yXk40MzU4MjM1Nl5OMF5ONDMyOTMwNzZeTjReTjQ1OTUzNzIyXk41Xk40Mjk5NDU4OF5ONl5ONDY4MzQ1NDVeTjdeTjQ4NDg0NDk0Xk44Xk41MDQ2NDI4NF5OOV5ONTQxMTQ2MzReTjEwXk41NDcxNDQwM15OMTFeTjU2NzYzOTUzXk4xMl5ONTk3ODM2MjleTjEzXk42MDc3MjgyM15OMTReTjYwMzYyMzU0Xk4xNV5ONjA4NzE1NzleTjE2Xk42MzY1MjExMF5OMTdeTjYzMDkyNTQwXk4xOF5ONjM5OTI4ODBeTjE5Xk42Mjk3MzM3NV5OMjBeTjYzMjYzODIwXk4yMV5ONTk2OTQxMjBeTjIyXk41ODI0NDUzN15OMjNeTjU3ODY0ODkzXk4yNF5ONTYzMTUzNDReTjI1Xk41MjU3NTUwOV5OMjZeTjQ5NDU1NzExXk4yN15ONDcyNDU2MTZeTjI4Xk40NzU3NTMxMV5OMjleTjQ3ODk1MDA1Xk4zMF5ONDUxNzUyMTFeTjMxXk40NDQyNTU5NV5OMzJeTjQxNTM1NjIxXk4zM15ONDE3MjU5OTBeTjM0Xk4zOTE3NjI0M15OMzVeTjM2NjI2MDQxXk4zNl5OMzczOTU2ODleTjM3Xk4zODMxNTQzNF5OMzheTjM0NDY1MTc5Xk4zOV5OMzQ2OTQ4NDleTjQwXk4zNjM5NDU2NV5ONDFeTjM5MzQ0NjM3Xk40Ml5OMzczNzM2NjheTjQzXk40MDI2Mzk4OF5ONDReTjQxNTczODA0Xk40NV5ONDA2ODMyNjNeTjQ2Xk40MDk3Mjk0OV5ONDreTjQxMzUyNjY3Xk40OF5OMzY5NzIwMzBeTjQ5Xk40MDkyMTgzOF5ONTBeTjM5NDUxNTM3XnReU3dpZHRoX2JhdHRsZW1hcF5OMjleU2xlbmd0aF5GNDU0NTc4Mzc3MDk0NzU5OV5mLTM4XlNkYl90eXBlXlRedF50XlNSb3V0ZU5hbWVeU21lbmFzfmB5fmBwbGFudGFzXlNSb3V0ZVpvbmVeTjIzOTVeU1JvdXRlS2V5XlNtZW5hc/95/3BsYW50YXNedF5e"
+            },
+            {
+                name: "Zul'Aman",
+                desc: "Zona boscosa y peligrosa. El farmeo de menas aquí es denso pero requiere sigilo frente a las patrullas trolls.",
+                img: "/public/maps/midnight/zulaman.avif",
+                routeString: "Retail:Routes:MENAS Y PLANTAS:Zul'Aman:XjFeVF5TUm91dGVEYXRhXlReU3Zpc2libGVeQl5TdGFib29saXN0XlRedF5TY29sb3JeVF5OMV5OMF5OMl5GNzM0NzA0OTQzOTY5MDc1Ml5mLTU1Xk4zXk4xXk40Xk4xXnReU2xvb3BlZF5OMV5TaGlkZGVuXmJeU3dpZHRoXk41Ml5Tc2VsZWN0aW9uXlRedF5Td2lkdGhfbWluaW1hcF5OMzVeU3RhYm9vc15UXnReU3JvdXRlXlReTjFeTjM2NDk2NjQ1Xk4yXk4zOTU2NjQwOV5OM35ONDE1NTYzNjJeTjReTjQzNDE2MzQ1Xk41Xk40NTAyNjMxMV5ONl5ONDYyMTYxMzReTjdeTjQ2MzI1NjY5Xk44Xk40ODA3NTY2Ml5OOV5ONDgzNzU5NjVeTjEwXk40ODQxNjI0NF5OMTFeTjQ5MTU2NDMyXk4xMl5ONTA3OTY0NzVeTjEzXk41MzI4NjUyOV5OMTReTjUyMjI2NzY4Xk4xNV5ONTUyODcxOTReTjE2Xk41NjA1NzU4Ml5OMTdeTjU3MzI4MDkwXk4xOF5ONTMyNjg1MzZeTjE5Xk40ODY4ODQ5Ml5OMjBeTjQ3NTY4MzUzXk4yMV5ONDU4OTgxMDJeTjIyXk41MDEzODA5MF5OMjNeTjUyNjc3ODIxXk4yNF5ONTA0MTc1OTFeTjI1Xk40NzIzNzcwM15OMjZeTjQ3OTk3Mjc1Xk4yN15ONDM1OTc3NTdeTjI4Xk40MjkzNzkyOV5OMjleTjQxNzI4MTExXk4zMF5ONDEzODgzODleTjMxXk4zODk4ODQ4NV5OMzJeTjM3OTY4MjY3Xk4zM15OMzYxNjg0MjZeTjM0Xk4zMjU4ODQ4Ml5OMzVeTjM3NDI4MDE3Xk4zNl5OMzU3Njc4MjVeTjM3Xk4zNDIxNzgzNV5OMzheTjMyNjc4MjA4Xk4zOV5OMzIyMzc5NTBeTjQwXk4zMDI2ODAwMF5ONDFeTjI5NzU3ODQ2Xk40Ml5OMjk5Mzc1MTVeTjQzXk4yOTg2NzI0N15ONDReTjMwMDE2OTg3Xk40NV5OMzI1MjY5ODBeTjQ2Xk4zNDE4NjcxNl50XlN3aWR0aF9iYXR0bGVtYXBeTjI2XlNsZW5ndGheRjg2NDI1NTE5NTU2MDgzNDZeZi0zOV5TZGJfdHlwZV5UXnRedF5TUm91dGVOYW1lXlNNRU5BU35gWX5gUExBTlRBU15TUm91dGVab25lXk4yNDM3XlNSb3V0ZUtleV5TTUVOQVP/Wf9QTEFOVEFTXnReXg=="
+            },
+            {
+                name: "Harandar",
+                desc: "Gran cantidad de menas y gemas de calidad rara en los valles sombríos del centro.",
+                img: "/public/maps/midnight/harandar.avif",
+                routeString: "Retail:Routes:menas y plantas:Harandar:XjFeVF5TUm91dGVEYXRhXlReU3Zpc2libGVeQl5TdGFib29saXN0XlRedF5TY29sb3JeVF5OMV5OMF5OMl5GNjM1ODAyMzE2MTI0OTc5Ml5mLTU0Xk4zXk4xXk40Xk4xXnReU2xvb3BlZF5OMV5TaGlkZGVuXmJeU3dpZHRoXk41Ml5Tc2VsZWN0aW9uXlRedF5Td2lkdGhfbWluaW1hcF5OMzdeU3RhYm9vc15UXnReU3JvdXRlXlReTjFeTjM2NzExMDQ0Xk4yXk40MDIwMTE1MF5OM35ONDAwMjE1NDBeTjReTjQzNTQxNTkyXk41Xk40NjY2MTU2OV5ONl5ONTAzMzE2MjdeTjdeTjUyNTAyMDMyXk44Xk41NDExMjY1MV5OOV5ONTE4MjI5NDBeTjEwXk41MzAyMzM0OF5OMTFeTjU1MDczNTk5Xk4xMl5ONTE4OTM4MTBeTjEzXk40ODY3NDAyNV5OMTReTjQ3Mzk0MjQyXk4xNV5ONDgxNjQ4NTVeTjE2Xk40ODQ4NTMzMF5OMTdeTjQ2MjA1NTM3Xk4xOF5ONDM1MjU0MzdeTjE5Xk40Mzk5NTk0NF5OMjBeTjQ0MDI2MjY2Xk4yMV5ONDYzNTY2NzVeTjIyXk40NTQyNzA5MF5OMjNeTjQyNzY2NjkyXk4yNF5ONDExNTczMTNeTjI1Xk4zODUxNzM3N15OMjZeTjM1MjE3NTM4Xk4yN15OMzU3MzgxMzNeTjI4Xk4zNDUxODQ2MF5OMjleTjMyMDM4NTkyXk4zMF5OMjk3ODgzMDdeTjMxXk4yODQwNzk1NF5OMzJeTjI3MzE3NjM5Xk4zM15OMjkzNTt0NDAyTjM0Xk4zMTY5NzE2NV5OMzVeTjMxMTc2NjQwXk4zNl5OMzE0MzYxOTleTjM3Xk4zNjE4NTgxMl5OMzheTjM4Njk1NDY5Xk4zOV5OMzUzOTQ3MzReTjQwXk4zOTEyNDMxMl5ONDFeTjQwNjA0MDI4Xk40Ml5OMzg1OTM0NDdeTjQzXk40MDA3MzIzNF5ONDReTjQwMDQyOTEzXk40NV5OMzYzNDI3NTReTjQ2Xk4zMzU3MjQxNl5ONDreTjM3MTIxOTY5Xk40OF5OMzM4MjEyMDZedF5Td2lkdGhfYmF0dGxlbWFwXk4yMl5TbGVuZ3RoXkY3MzEyMzg5NDQ1NjM5ODA0XmYtMzleU2RiX3R5cGVeVF50XnReU1JvdXRlTmFtZV5TbWVuYXN+YHl+YHBsYW50YXNeU1JvdXRlWm9uZV5OMjQxM15TUm91dGVLZXleU21lbmFz/3n/cGxhbnRhc150Xl4="
+            },
+            {
+                name: "Tormenta del vacío",
+                desc: "Ruta de minería de endgame. Solo para recolectores experimentados en las zonas más inestables.",
+                img: "/public/maps/midnight/deadlands.avif",
+                routeString: "Retail:Routes:menas y plantas:Tormenta del Vacío:XjFeVF5TUm91dGVEYXRhXlReU3Zpc2libGVeQl5TdGFib29saXN0XlRedF5TY29sb3JeVF5OMV5OMF5OMl5GNDUyMTI2MTA2OTc2MjU2MF5mLTU0Xk4zXk4xXk40Xk4xXnReU2xvb3BlZF5OMV5TaGlkZGVuXmJeU3dpZHRoXk41M15Tc2VsZWN0aW9uXlRedF5Td2lkdGhfbWluaW1hcF5OMzdeU3RhYm9vc15UXnReU3JvdXRlXlReTjFeTjQwNTQzODk1Xk4yXk40MTk4NDEzOV5OMz5ONDM2OTQ0OTheTjReTjQ1NzQ0Njk4Xk41Xk40OTE3NDUyMV5ONl5ONTA0NTQ5MjNeTjdeTjQ4MTk1MjMzXk44Xk40NjY2NTUzNl5OOV5ONDY0MjU3OTZeTjEwXk40ODU1NTk2N15OMTFeTjUxNTM1OTI5Xk4xMl5ONTQyNjU5NzVeTjEzXk41NTg4NjIzNl5OMTReTjU1NTc2NDI2Xk4xNV5ONTU0MjY3OTheTjE2Xk41NTU0NzA1M15OMTdeTjU2NjU3MzQ5Xk4xOF5ONTM1MTc0NzdeTjE5Xk41MzU4ODAxNl5OMjBeTjQ5NjU4MzU0Xk4yMV5ONDYxMTg0OTReTjIyXk40MjgyODM2Nl5OMjNeTjQ3MzE3NDM1Xk4yNF5ONDA1Mjc4MjBeTjI1Xk40MDM1ODI5OV5OMjZeTjM2NTc4MzIyXk4yN15OMzU0ODgxMTVeTjI4Xk4zNjQ5Nzc3OV5OMjleTjM0NjI3NTkyXjMwXk4zMjIxNzQyNV5OMzFeTjMwOTM3MTg4XjMyXk4zMzIxNjc1NF5OMzNeTjM2NjM2NDg2XjM0Xk40MDEzNjczMl5OMzVeTjQ0MTQ2NDA0Xk4zNl5ONDA2OTYyMjReTjM3Xk40MjM3NTY0OV5OMzheTjMzNTY1Njc3Xk4zOV5OMzMwODUyNzBeTjQwXk4zODU2NDc3Ml50XlN3aWR0aF9iYXR0bGVtYXBeTjIyXlNsZW5ndGheRjQ5MTE1MzcwNTY2MjkyMTNeZi0zOE5TZGJfdHlwZV5UXnRedF5TUm91dGVOYW1lXlNtZW5hc35geX5gcGxhbnRhc15TUm91dGVab25lXk4yNDA1XlNSb3V0ZUtleV5TbWVuYXP/ef9wbGFudGFzXnReXg=="
+            }
+        ];
+
+        let activeZoneIdx = 0;
+        const mapImg = document.getElementById('map-img');
+
+        function changeZone(idx) {
+            activeZoneIdx = idx;
+            const zone = ZONES[idx];
+            document.getElementById('map-loader').classList.remove('hidden');
+            document.querySelectorAll('.zone-tab').forEach((b, i) => {
+                const active = i === idx;
+                b.classList.toggle('bg-wow-gold', active);
+                b.classList.toggle('text-wow-dark', active);
+                b.classList.toggle('text-gray-400', !active);
+                b.classList.toggle('hover:text-white', !active);
+            });
+            document.getElementById('zone-title').innerText = zone.name;
+            document.getElementById('zone-desc').innerText = zone.desc;
+            setTimeout(() => {
+                mapImg.src = zone.img;
+                const dynamicPath = parseRouteString(zone.routeString);
+                document.getElementById('route-path').setAttribute('d', dynamicPath);
+                document.getElementById('route-display').value = zone.routeString;
+                document.getElementById('map-loader').classList.add('hidden');
+            }, 600);
+        }
+
+        function parseRouteString(str) {
+            if (!str) return "";
+            try {
+                const parts = str.split(':');
+                const b64 = parts[parts.length - 1].trim();
+                const decoded = atob(b64);
+                const routeMarker = "^Sroute^T";
+                const startIdx = decoded.indexOf(routeMarker);
+                if (startIdx === -1) return fallbackParse(decoded);
+                const content = decoded.substring(startIdx + routeMarker.length);
+                const endIdx = content.indexOf("^t");
+                const routeSection = content.substring(0, endIdx);
+                const matches = routeSection.matchAll(/\^N\d+\^N(\d+)/g);
+                const points = [];
+                for (const match of matches) {
+                    const P = parseInt(match[1]);
+                    if (isNaN(P) || P < 100) continue; 
+                    const x = Math.floor(P / 10000);
+                    const y = P % 10000;
+                    if (x >= 0 && x <= 10000 && y >= 0 && y <= 10000) points.push(`${x},${y}`);
+                }
+                return buildPath(points, decoded);
+            } catch (e) { return ""; }
+        }
+
+        function fallbackParse(decoded) {
+            const matches = decoded.matchAll(/\^N\d+\^N(\d{6,})/g);
+            const points = [];
+            for (const match of matches) {
+                const P = parseInt(match[1]);
+                const x = Math.floor(P / 10000);
+                const y = P % 10000;
+                if (x >= 0 && x <= 10000 && y >= 0 && y <= 10000) points.push(`${x},${y}`);
+            }
+            return buildPath(points, decoded);
+        }
+
+        function buildPath(points, decoded) {
+            if (points.length === 0) return "";
+            let pathD = `M ${points[0]}`;
+            for (let i = 1; i < points.length; i++) pathD += ` L ${points[i]}`;
+            if (decoded.includes('looped') || decoded.includes('Slooped^N1')) pathD += " Z";
+            return pathD;
+        }
+
+        function copyRouteString() {
+            const str = ZONES[activeZoneIdx].routeString;
+            navigator.clipboard.writeText(str).then(() => {
+                const btnText = document.getElementById('copy-text');
+                const btnIcon = document.getElementById('copy-icon');
+                const originalText = btnText.innerText;
+                btnText.innerText = '¡Copiado!';
+                btnIcon.classList.replace('fa-copy', 'fa-check');
+                setTimeout(() => {
+                    btnText.innerText = originalText;
+                    btnIcon.classList.replace('fa-check', 'fa-copy');
+                }, 2000);
+            });
+        }
+
         fetch('/components/header.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('header-container').innerHTML = data;
                 const scripts = document.getElementById('header-container').getElementsByTagName('script');
-                for(let i=0; i<scripts.length; i++) {
-                    eval(scripts[i].innerText);
-                }
+                for(let i=0; i<scripts.length; i++) eval(scripts[i].innerText);
             });
+
+        const firstRoute = parseRouteString(ZONES[0].routeString);
+        document.getElementById('route-path').setAttribute('d', firstRoute);
+        document.getElementById('route-display').value = ZONES[0].routeString;
     </script>
 </body>
 </html>

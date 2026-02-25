@@ -1,48 +1,53 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Páginas Útiles - Farmers de Azeroth</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script>
-        // Load Header
-        fetch('/components/header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-container').innerHTML = data;
-                const scripts = document.getElementById('header-container').getElementsByTagName('script');
-                for(let i=0; i<scripts.length; i++) {
-                    eval(scripts[i].innerText);
-                }
-            });
-
-        // Load Footer
-        fetch('/components/footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-placeholder').innerHTML = data;
-            });
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wow: {
+                dark: "#0b0c10",
+                card: "#1a1d29",
+                border: "#2a2e3b",
+                blue: "#0074e0",
+                gold: "#ffd100",
+                success: "#22c55e",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .notebook-line {
-            background-image: linear-gradient(#333 1px, transparent 1px);
-            background-size: 100% 2em;
-            line-height: 2em;
+        .site-card {
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
         }
+        .site-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.12);
+        }
+        .youtube-card:hover { border-color: rgba(255, 50, 50, 0.35) !important; }
     </style>
 </head>
 <body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
 
-    <!-- Header Container -->
     <div id="header-container" class="sticky top-0 z-50"></div>
 
-    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20">
+    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20 max-w-6xl">
+
         <!-- Back Button -->
         <a href="primeros-pasos.html" class="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors group">
             <div class="w-8 h-8 rounded-full bg-wow-card border border-wow-border flex items-center justify-center group-hover:border-wow-gold transition-colors">
@@ -51,68 +56,177 @@
             <span class="font-medium">Volver a Primeros Pasos</span>
         </a>
 
-                        <section id="paginas" class="content-section  fade-in">
-                     <header class="mb-8 border-b border-wow-border pb-6 flex items-center justify-between">
-                        <div>
-                            <div class="inline-flex items-center gap-2 px-3 py-1 bg-yellow-500/10 border border-yellow-500/20 rounded-full mb-3">
-                                <span class="text-xs text-yellow-400 font-bold uppercase tracking-wider">Recursos</span>
-                            </div>
-                            <h1 class="text-4xl font-bold text-white mb-2">Páginas Útiles</h1>
-                            <p class="text-gray-400">Favoritos obligatorios.</p>
-                        </div>
-                        <i class="fas fa-globe text-6xl text-yellow-500/20"></i>
-                    </header>
-                    <div class="space-y-4">
-                        <a href="https://undermine.exchange/" target="_blank" class="block bg-wow-card p-6 rounded-xl hover:bg-white/5 transition-colors border border-wow-border group">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center text-green-500">
-                                        <i class="fas fa-chart-line text-2xl group-hover:scale-110 transition-transform"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-white text-lg">Undermine Exchange</h4>
-                                        <p class="text-sm text-gray-400">Precios y tendencias de subasta global. Vital para saber cuándo vender.</p>
-                                    </div>
-                                </div>
-                                <i class="fas fa-external-link-alt text-gray-500"></i>
-                            </div>
-                        </a>
-                        <a href="https://www.wowhead.com/" target="_blank" class="block bg-wow-card p-6 rounded-xl hover:bg-white/5 transition-colors border border-wow-border group">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center text-red-500">
-                                        <i class="fas fa-database text-2xl group-hover:scale-110 transition-transform"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-white text-lg">Wowhead</h4>
-                                        <p class="text-sm text-gray-400">La biblia de WoW. Busca drops, porcentajes, mapas y comentarios.</p>
-                                    </div>
-                                </div>
-                                <i class="fas fa-external-link-alt text-gray-500"></i>
-                            </div>
-                        </a>
-                        <a href="https://www.craftsim.com/" target="_blank" class="block bg-wow-card p-6 rounded-xl hover:bg-white/5 transition-colors border border-wow-border group">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-500">
-                                        <i class="fas fa-hammer text-2xl group-hover:scale-110 transition-transform"></i>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-white text-lg">CraftSim</h4>
-                                        <p class="text-sm text-gray-400">Simulador avanzado para profesiones de crafteo. Calcula profit margins.</p>
-                                    </div>
-                                </div>
-                                <i class="fas fa-external-link-alt text-gray-500"></i>
-                            </div>
-                        </a>
+        <!-- Header -->
+        <header class="mb-10 border-b border-wow-border pb-6 flex items-center justify-between">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-wow-border rounded-full mb-3">
+                    <span class="text-xs text-gray-400 font-bold uppercase tracking-wider">Recursos</span>
+                </div>
+                <h1 class="text-4xl font-bold text-white mb-2">Páginas Útiles</h1>
+                <p class="text-gray-400">Favoritos obligatorios para todo farmer de Azeroth.</p>
+            </div>
+            <i class="fas fa-globe text-6xl text-gray-400/20 hidden md:block"></i>
+        </header>
+
+        <!-- Grid de cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+            <!-- Wowhead -->
+            <a href="https://www.wowhead.com/" target="_blank" rel="noopener"
+               class="site-card bg-wow-card border border-wow-border rounded-2xl p-6 flex flex-col gap-4 group">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-database text-2xl text-gray-500"></i>
                     </div>
-                </section>
+                    <div>
+                        <h3 class="font-bold text-white text-lg leading-tight">Wowhead</h3>
+                        <span class="text-xs text-gray-500 font-medium">wowhead.com</span>
+                    </div>
+                    <i class="fas fa-external-link-alt text-gray-600 group-hover:text-gray-400 ml-auto transition-colors"></i>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed">La biblia de WoW. Busca drops, porcentajes, mapas, coordenadas y comentarios de la comunidad.</p>
+            </a>
+
+            <!-- Archon.gg -->
+            <a href="https://www.archon.gg/" target="_blank" rel="noopener"
+               class="site-card bg-wow-card border border-wow-border rounded-2xl p-6 flex flex-col gap-4 group">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-chess-king text-2xl text-gray-500"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-lg leading-tight">Archon.gg</h3>
+                        <span class="text-xs text-gray-500 font-medium">archon.gg</span>
+                    </div>
+                    <i class="fas fa-external-link-alt text-gray-600 group-hover:text-gray-400 ml-auto transition-colors"></i>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed">Estadísticas, tier lists y builds óptimos basados en datos reales de la comunidad.</p>
+            </a>
+
+            <!-- Icy Veins -->
+            <a href="https://www.icy-veins.com/" target="_blank" rel="noopener"
+               class="site-card bg-wow-card border border-wow-border rounded-2xl p-6 flex flex-col gap-4 group">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-snowflake text-2xl text-gray-500"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-lg leading-tight">Icy Veins</h3>
+                        <span class="text-xs text-gray-500 font-medium">icy-veins.com</span>
+                    </div>
+                    <i class="fas fa-external-link-alt text-gray-600 group-hover:text-gray-400 ml-auto transition-colors"></i>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed">Guías de clase, rotaciones y builds detallados para maximizar tu rendimiento.</p>
+            </a>
+
+            <!-- Raider.io -->
+            <a href="https://raider.io/" target="_blank" rel="noopener"
+               class="site-card bg-wow-card border border-wow-border rounded-2xl p-6 flex flex-col gap-4 group">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-shield-alt text-2xl text-gray-500"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-lg leading-tight">Raider.io</h3>
+                        <span class="text-xs text-gray-500 font-medium">raider.io</span>
+                    </div>
+                    <i class="fas fa-external-link-alt text-gray-600 group-hover:text-gray-400 ml-auto transition-colors"></i>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed">Tu perfil de M+ y raids. Rankings, puntuaciones y progreso de tu personaje.</p>
+            </a>
+
+            <!-- Undermine Exchange -->
+            <a href="https://undermine.exchange/" target="_blank" rel="noopener"
+               class="site-card bg-wow-card border border-wow-border rounded-2xl p-6 flex flex-col gap-4 group">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-chart-line text-2xl text-gray-500"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-lg leading-tight">Undermine Exchange</h3>
+                        <span class="text-xs text-gray-500 font-medium">undermine.exchange</span>
+                    </div>
+                    <i class="fas fa-external-link-alt text-gray-600 group-hover:text-gray-400 ml-auto transition-colors"></i>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed">Precios y tendencias de la casa de subastas global. Vital para saber cuándo y cuánto vender.</p>
+            </a>
+
+            <!-- Wago.io -->
+            <a href="https://wago.io/" target="_blank" rel="noopener"
+               class="site-card bg-wow-card border border-wow-border rounded-2xl p-6 flex flex-col gap-4 group">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-code text-2xl text-gray-500"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-lg leading-tight">Wago.io</h3>
+                        <span class="text-xs text-gray-500 font-medium">wago.io</span>
+                    </div>
+                    <i class="fas fa-external-link-alt text-gray-600 group-hover:text-gray-400 ml-auto transition-colors"></i>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed">Importa WeakAuras, rotaciones para Hekili y macros creadas por la comunidad.</p>
+            </a>
+
+            <!-- CurseForge -->
+            <a href="https://www.curseforge.com/wow" target="_blank" rel="noopener"
+               class="site-card bg-wow-card border border-wow-border rounded-2xl p-6 flex flex-col gap-4 group">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-puzzle-piece text-2xl text-gray-500"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-lg leading-tight">CurseForge</h3>
+                        <span class="text-xs text-gray-500 font-medium">curseforge.com</span>
+                    </div>
+                    <i class="fas fa-external-link-alt text-gray-600 group-hover:text-gray-400 ml-auto transition-colors"></i>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed">El repositorio más grande de addons de WoW. Descarga, gestiona y actualiza tus addons.</p>
+            </a>
+
+            <!-- WoW-Professions -->
+            <a href="https://www.wow-professions.com/" target="_blank" rel="noopener"
+               class="site-card bg-wow-card border border-wow-border rounded-2xl p-6 flex flex-col gap-4 group">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-hammer text-2xl text-gray-500"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-lg leading-tight">WoW-Professions</h3>
+                        <span class="text-xs text-gray-500 font-medium">wow-professions.com</span>
+                    </div>
+                    <i class="fas fa-external-link-alt text-gray-600 group-hover:text-gray-400 ml-auto transition-colors"></i>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed">Guías completas para subir cada profesión de forma rápida y eficiente, con el menor costo posible.</p>
+            </a>
+
+            <!-- Dantaes Guias (YouTube) — card especial destacada -->
+            <a href="https://www.youtube.com/@dantaes" target="_blank" rel="noopener"
+               class="site-card youtube-card bg-gradient-to-br from-white/3 to-wow-card border border-wow-border rounded-2xl p-6 flex flex-col gap-4 group md:col-span-2 xl:col-span-1">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <i class="fab fa-youtube text-2xl text-gray-500"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-lg leading-tight">Dantaes Guías</h3>
+                        <span class="text-xs text-gray-400 font-medium">youtube.com/@dantaes</span>
+                    </div>
+                    <i class="fas fa-external-link-alt text-gray-600 group-hover:text-gray-400 ml-auto transition-colors"></i>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed">
+                    Canal oficial de <strong class="text-gray-400">Farmers de Azeroth</strong>. Guías de farmeo, spots actualizados y estrategias de oro en video.
+                </p>
+                <div class="flex items-center gap-2 text-xs text-gray-400/80 font-medium">
+                    <i class="fas fa-circle text-gray-500 animate-pulse text-[8px]"></i>
+                    Canal oficial
+                </div>
+            </a>
+
+        </div>
     </main>
+
     <div id="footer-placeholder"></div>
 
-    
     <script>
-        // Load Header
         fetch('/components/header.html')
             .then(response => response.text())
             .then(data => {
@@ -123,7 +237,6 @@
                 }
             });
 
-        // Load Footer
         fetch('/components/footer.html')
             .then(response => response.text())
             .then(data => {
@@ -132,4 +245,5 @@
     </script>
 </body>
 </html>
+
 

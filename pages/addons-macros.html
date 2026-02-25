@@ -1,48 +1,51 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Addons & Macros - Farmers de Azeroth</title>
+    <title>Addons Necesarios - Farmers de Azeroth</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script>
-        // Load Header
-        fetch('/components/header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-container').innerHTML = data;
-                const scripts = document.getElementById('header-container').getElementsByTagName('script');
-                for(let i=0; i<scripts.length; i++) {
-                    eval(scripts[i].innerText);
-                }
-            });
-
-        // Load Footer
-        fetch('/components/footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-placeholder').innerHTML = data;
-            });
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wow: {
+                dark: "#0b0c10",
+                card: "#1a1d29",
+                border: "#2a2e3b",
+                blue: "#0074e0",
+                gold: "#ffd100",
+                success: "#22c55e",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+          },
+        },
+      };
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .notebook-line {
-            background-image: linear-gradient(#333 1px, transparent 1px);
-            background-size: 100% 2em;
-            line-height: 2em;
+        .addon-card {
+            transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+        }
+        .addon-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(0,0,0,0.35);
         }
     </style>
 </head>
 <body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
 
-    <!-- Header Container -->
     <div id="header-container" class="sticky top-0 z-50"></div>
 
-    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20">
+    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20 max-w-6xl">
+
         <!-- Back Button -->
         <a href="primeros-pasos.html" class="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors group">
             <div class="w-8 h-8 rounded-full bg-wow-card border border-wow-border flex items-center justify-center group-hover:border-wow-gold transition-colors">
@@ -51,67 +54,314 @@
             <span class="font-medium">Volver a Primeros Pasos</span>
         </a>
 
-                        <section id="addons-macros" class="content-section  fade-in">
-                    <header class="mb-8 border-b border-wow-border pb-6 flex items-center justify-between">
-                        <div>
-                            <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full mb-3">
-                                <span class="text-xs text-blue-400 font-bold uppercase tracking-wider">Herramientas</span>
+        <!-- Header -->
+        <header class="mb-10 border-b border-wow-border pb-6 flex items-center justify-between">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-gray-600/20 rounded-full mb-3">
+                    <span class="text-xs text-gray-500 font-bold uppercase tracking-wider">Herramientas</span>
+                </div>
+                <h1 class="text-4xl font-bold text-white mb-2">Addons Necesarios</h1>
+                <p class="text-gray-400">Instálalos todos. Son el equipamiento principal de cualquier farmer serio.</p>
+            </div>
+            <i class="fas fa-plug text-6xl text-gray-500/20 hidden md:block"></i>
+        </header>
+
+        <!-- Tip de instalación -->
+        <div class="bg-white/3 border border-wow-border rounded-xl p-5 flex gap-4 items-start mb-10">
+            <i class="fas fa-info-circle text-gray-500 text-xl mt-1 flex-shrink-0"></i>
+            <div class="text-sm text-gray-300 leading-relaxed">
+                <strong class="text-gray-300 block mb-1">¿Cómo instalarlos?</strong>
+                Descárgalos desde <a href="https://www.curseforge.com/wow" target="_blank" class="text-gray-300 underline hover:text-gray-400">CurseForge</a>.
+                Instala el cliente de CurseForge, busca cada addon por nombre y dale a <strong>Install</strong>. Se actualizan solos.
+            </div>
+        </div>
+
+        <!-- ─── CATEGORÍA: RAROS & FARMEO ─── -->
+        <div class="mb-10">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <span class="w-1 h-5 bg-gray-600 rounded-full inline-block"></span>
+                Raros &amp; Farmeo de Mundo
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                <!-- RareScanner -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-radar text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">RareScanner</h3>
+                        <p class="text-xs text-gray-400 mt-1">Alerta sonora y visual cuando aparece un raro o evento cercano. Imprescindible.</p>
+                    </div>
+                </div>
+
+                <!-- FasterLoot -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-bolt text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">FasterLoot</h3>
+                        <p class="text-xs text-gray-400 mt-1">Looteador automático ultrarrápido. Recoge todo al instante sin abrir ventanas.</p>
+                    </div>
+                </div>
+
+                <!-- TomTom -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-compass text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">TomTom</h3>
+                        <p class="text-xs text-gray-400 mt-1">Waypoints personalizados en el mapa. Trabaja junto con Routes y Wowhead.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ─── CATEGORÍA: RUTAS ─── -->
+        <div class="mb-10">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <span class="w-1 h-5 bg-gray-600 rounded-full inline-block"></span>
+                Rutas de Farmeo
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                <!-- Routes -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-route text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">Routes</h3>
+                        <p class="text-xs text-gray-400 mt-1">Dibuja rutas óptimas de herboristería y minería en el minimapa para seguirlas.</p>
+                    </div>
+                </div>
+
+                <!-- Routes Import Export -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-file-import text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">Routes Import Export</h3>
+                        <p class="text-xs text-gray-400 mt-1">Permite importar y exportar rutas de Routes entre personajes o desde la comunidad.</p>
+                    </div>
+                </div>
+
+                <!-- FarmHud -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-map-marked-alt text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">FarmHud</h3>
+                        <p class="text-xs text-gray-400 mt-1">HUD circular en pantalla que muestra nodos y raros alrededor tuyo mientras farmeas.</p>
+                    </div>
+                </div>
+
+                <!-- GatherMate2 -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-map-pin text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">GatherMate2</h3>
+                        <p class="text-xs text-gray-400 mt-1">Guarda y muestra en el mapa todos los nodos que recolectas para no perderte ninguno.</p>
+                    </div>
+                </div>
+
+                <!-- GatherMate2 Data -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-database text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">GatherMate2 Data</h3>
+                        <p class="text-xs text-gray-400 mt-1">Base de datos preinstalada con miles de nodos ya mapeados. Instálalo junto al anterior.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ─── CATEGORÍA: TSM / SUBASTAS ─── -->
+        <div class="mb-10">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <span class="w-1 h-5 bg-gray-600 rounded-full inline-block"></span>
+                Casa de Subastas — TradeSkillMaster
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                <!-- TSM4 -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-store text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">TSM4 — TradeSkillMaster</h3>
+                        <p class="text-xs text-gray-400 mt-1">El sistema operativo del goblin. Controla subastas, crafteo, mail y precios desde un addon.</p>
+                    </div>
+                </div>
+
+                <!-- TSM4 App Helper -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-sync-alt text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">TSM4 App Helper</h3>
+                        <p class="text-xs text-gray-400 mt-1">Sincroniza TSM con la App de escritorio para tener precios en tiempo real de la subasta.</p>
+                    </div>
+                </div>
+
+                <!-- Baganator -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-briefcase text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">Baganator</h3>
+                        <p class="text-xs text-gray-400 mt-1">Organiza tu mochila y banco automáticamente. Búsqueda rápida de objetos entre personajes.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ─── CATEGORÍA: NOTAS & MASCOTAS ─── -->
+        <div class="mb-10">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <span class="w-1 h-5 bg-gray-600 rounded-full inline-block"></span>
+                Notas, Mascotas &amp; Seguimiento
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                <!-- HandyNotes -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-sticky-note text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">HandyNotes</h3>
+                        <p class="text-xs text-gray-400 mt-1">Agrega íconos y notas en el mapa del mundo: tesoros, raros y puntos de interés.</p>
+                    </div>
+                </div>
+
+                <!-- HandyNotes Glyph -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-scroll text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">HandyNotes Glyph</h3>
+                        <p class="text-xs text-gray-400 mt-1">Expansión de HandyNotes con ubicaciones de glifos y recetas de la expansión TWW.</p>
+                    </div>
+                </div>
+
+                <!-- Rematch -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-paw text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">Rematch</h3>
+                        <p class="text-xs text-gray-400 mt-1">Gestor avanzado de mascotas de batalla. Guarda equipos y los sugiere automáticamente.</p>
+                    </div>
+                </div>
+
+                <!-- Rematch TSMPetValue -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-tag text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">Rematch TSMPetValue</h3>
+                        <p class="text-xs text-gray-400 mt-1">Integra el precio de TSM en la ventana de Rematch para saber cuánto vale cada mascota.</p>
+                    </div>
+                </div>
+
+                <!-- LootAppraiser Reloaded -->
+                <div class="addon-card bg-wow-card border border-wow-border hover:border-gray-600/40 rounded-xl p-5 flex items-start gap-4">
+                    <div class="w-11 h-11 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-coins text-gray-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white">LootAppraiser Reloaded</h3>
+                        <p class="text-xs text-gray-400 mt-1">Muestra en pantalla el valor en oro de cada ítem que farmeas en tiempo real. Motivación pura.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ─── PLAYLIST DE VIDEOS ─── -->
+        <div class="mb-6">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <span class="w-1 h-5 bg-gray-600 rounded-full inline-block"></span>
+                Videos Guía de Addons
+            </h2>
+            <a href="https://www.youtube.com/playlist?list=PL7vzIi5upvIUBBv_4902YT0kKjt0Iu0oi"
+               target="_blank" rel="noopener"
+               class="addon-card block bg-gradient-to-br from-white/3 to-wow-card border border-wow-border hover:border-white/10 rounded-2xl overflow-hidden group">
+                <div class="flex flex-col md:flex-row items-stretch">
+                    <!-- Thumbnail -->
+                    <div class="relative w-full md:w-72 flex-shrink-0 bg-black flex items-center justify-center aspect-video md:aspect-auto">
+                        <img src="https://i.ytimg.com/vi/PL7vzIi5upvIUBBv_4902YT0kKjt0Iu0oi/hqdefault.jpg"
+                             onerror="this.style.display='none'"
+                             alt="Playlist de Addons"
+                             class="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity">
+                        <!-- Play overlay -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-14 h-14 bg-gray-700 rounded-full flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform">
+                                <i class="fab fa-youtube text-white text-2xl"></i>
                             </div>
-                            <h1 class="text-4xl font-bold text-white mb-2">Addons & Macros</h1>
-                            <p class="text-gray-400">Optimiza tu interfaz y automatiza acciones.</p>
                         </div>
-                        <i class="fas fa-cog text-6xl text-blue-500/20"></i>
-                    </header>
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <!-- Addons -->
-                        <div class="bg-wow-card border border-wow-border rounded-xl p-6">
-                            <h3 class="text-xl font-bold mb-4 text-white flex items-center gap-2"><i class="fas fa-plug text-blue-400"></i> Addons Esenciales</h3>
-                            <ul class="space-y-4">
-                                <li class="flex items-start gap-3 p-3 rounded bg-gray-800/30">
-                                    <div class="mt-1"><i class="fas fa-check-circle text-green-500"></i></div>
-                                    <div>
-                                        <span class="font-bold text-white block">TradeSkillMaster (TSM)</span>
-                                        <p class="text-xs text-gray-400">El sistema operativo del goblin. Subastas, crafteo y mail.</p>
-                                    </div>
-                                </li>
-                                <li class="flex items-start gap-3 p-3 rounded bg-gray-800/30">
-                                    <div class="mt-1"><i class="fas fa-check-circle text-green-500"></i></div>
-                                    <div>
-                                        <span class="font-bold text-white block">LootAppraiser</span>
-                                        <p class="text-xs text-gray-400">Trackea el valor de tu farmeo en tiempo real.</p>
-                                    </div>
-                                </li>
-                                <li class="flex items-start gap-3 p-3 rounded bg-gray-800/30">
-                                    <div class="mt-1"><i class="fas fa-check-circle text-green-500"></i></div>
-                                    <div>
-                                        <span class="font-bold text-white block">Routes + FarmHud</span>
-                                        <p class="text-xs text-gray-400">Dibuja rutas de farmeo en tu pantalla.</p>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                        <!-- Macros -->
-                        <div class="bg-wow-card border border-wow-border rounded-xl p-6">
-                             <h3 class="text-xl font-bold mb-4 text-white flex items-center gap-2"><i class="fas fa-keyboard text-gray-400"></i> Macros Útiles</h3>
-                             <div class="space-y-4">
-                                <div>
-                                    <div class="text-xs text-gray-500 mb-1">Macro de Venta de Grises</div>
-                                    <div class="bg-gray-900 rounded p-3 font-mono text-[10px] text-green-400 border border-gray-700 overflow-x-auto whitespace-pre-wrap">/run local c,i,n,v=0;for b=0,4 do for s=1,GetContainerNumSlots(b) do i={GetContainerItemInfo(b,s)} n=i[7] if n and string.find(n,"Grey Item Name") then UseContainerItem(b,s) end end end</div>
-                                </div>
-                                <div>
-                                    <div class="text-xs text-gray-500 mb-1">Macro de Mouseover Farm</div>
-                                    <div class="bg-gray-900 rounded p-3 font-mono text-[10px] text-green-400 border border-gray-700">/cast [@mouseover,exists] [] HechizoDeFarm</div>
-                                </div>
-                             </div>
+                        <!-- Playlist badge -->
+                        <div class="absolute bottom-2 right-2 bg-black/80 text-white text-xs px-2 py-1 rounded font-medium flex items-center gap-1">
+                            <i class="fas fa-list text-gray-400 text-[10px]"></i> PLAYLIST
                         </div>
                     </div>
-                </section>
+                    <!-- Info -->
+                    <div class="flex flex-col justify-center p-6 gap-3">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white/5 border border-wow-border rounded-full text-xs text-gray-400 font-bold uppercase tracking-wide">
+                                <i class="fas fa-circle animate-pulse text-[8px]"></i> Canal Oficial
+                            </span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white leading-snug group-hover:text-gray-300 transition-colors">
+                            Guías de Addons — Farmers de Azeroth
+                        </h3>
+                        <p class="text-sm text-gray-400 leading-relaxed">
+                            Lista de reproducción completa con videos explicativos de cómo configurar e instalar cada uno de los addons necesarios para farmear oro de forma eficiente.
+                        </p>
+                        <div class="flex items-center gap-2 text-sm text-gray-400 font-medium group-hover:gap-3 transition-all">
+                            Ver playlist completa <i class="fas fa-arrow-right text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- CurseForge CTA -->
+        <a href="https://www.curseforge.com/wow" target="_blank" rel="noopener"
+           class="block bg-white/3 border border-wow-border rounded-xl p-5 flex items-center gap-4 hover:bg-white/5 transition-colors group">
+            <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center flex-shrink-0">
+                <i class="fas fa-puzzle-piece text-gray-500 text-xl"></i>
+            </div>
+            <div class="flex-1">
+                <h3 class="font-bold text-white">Instala todos desde CurseForge</h3>
+                <p class="text-xs text-gray-400 mt-0.5">curseforge.com — El cliente oficial para gestionar tus addons de WoW</p>
+            </div>
+            <i class="fas fa-external-link-alt text-gray-500 group-hover:text-gray-300 transition-colors"></i>
+        </a>
+
     </main>
+
     <div id="footer-placeholder"></div>
 
-    
     <script>
-        // Load Header
         fetch('/components/header.html')
             .then(response => response.text())
             .then(data => {
@@ -122,7 +372,6 @@
                 }
             });
 
-        // Load Footer
         fetch('/components/footer.html')
             .then(response => response.text())
             .then(data => {
@@ -131,4 +380,5 @@
     </script>
 </body>
 </html>
+
 

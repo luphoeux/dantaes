@@ -1,4 +1,10 @@
-<header class="w-full bg-wow-card/90 backdrop-blur-md border-b border-wow-border sticky top-0 z-50 shrink-0">
+﻿<style>
+  /* Header styles - hardcoded so they work on any page regardless of tailwind.config */
+  #site-header { background-color: rgba(26,29,41,0.95); border-bottom: 1px solid #2a2e3b; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+  #site-header .dropdown-menu { background-color: #1a1d29; border: 1px solid #2a2e3b; }
+  #site-header #mobile-nav { background-color: rgba(26,29,41,0.98); border-top: 1px solid #2a2e3b; }
+</style>
+<header id="site-header" class="w-full sticky top-0 z-50 shrink-0">
     <div class="px-6 py-4 flex justify-between items-center">
         <div class="flex items-center gap-4">
             <a href="/inicio.html" class="flex items-center gap-2 group">
@@ -20,26 +26,23 @@
                         Primeros Pasos <i class="fas fa-chevron-down text-xs"></i>
                     </button>
                     <div class="dropdown-menu absolute top-full left-0 mt-2 bg-wow-card border border-wow-border rounded-lg shadow-xl min-w-[220px] opacity-0 invisible transition-all duration-200 transform -translate-y-2">
-                        <a href="/pages/primeros-pasos.html" class="block px-4 py-3 text-wow-gold hover:text-white hover:bg-white/5 transition-colors text-sm font-bold border-b border-wow-border/50">
-                            <i class="fas fa-compass"></i>Ver Hub Completo
-                        </a>
                         <a href="/pages/consejos.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-lightbulb text-orange-400"></i>Consejos
-                        </a>
-                        <a href="/pages/recomendaciones.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-star text-red-400"></i>Recomendaciones
+                            <i class="fas fa-lightbulb text-gray-500"></i>Consejos
                         </a>
                         <a href="/pages/alterarmy.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-users text-purple-400"></i>Alterarmy
+                            <i class="fas fa-users text-gray-500"></i>Alterarmy
                         </a>
                         <a href="/pages/addons-macros.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-cog text-blue-400"></i>Addons & Macros
-                        </a>
-                        <a href="/pages/consumibles.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-flask text-green-400"></i>Consumibles
+                            <i class="fas fa-cog text-gray-500"></i>Addons & Macros
                         </a>
                         <a href="/pages/paginas-utiles.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-globe text-yellow-400"></i>Páginas Útiles
+                            <i class="fas fa-globe text-gray-500"></i>Páginas Útiles
+                        </a>
+                        <a href="/pages/consumibles.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
+                            <i class="fas fa-flask text-gray-500"></i>Consumibles
+                        </a>
+                        <a href="/pages/primeros-farmeos.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
+                            <i class="fas fa-list text-gray-500"></i>Primeros farmeos en Midnight
                         </a>
                     </div>
                 </div>
@@ -50,44 +53,41 @@
                         Profesiones <i class="fas fa-chevron-down text-xs"></i>
                     </button>
                     <div class="dropdown-menu absolute top-full left-0 mt-2 bg-wow-card border border-wow-border rounded-lg shadow-xl min-w-[220px] opacity-0 invisible transition-all duration-200 transform -translate-y-2">
-                        <a href="/pages/profesiones.html" class="block px-4 py-3 text-wow-gold hover:text-white hover:bg-white/5 transition-colors text-sm font-bold border-b border-wow-border/50">
-                            <i class="fas fa-tools"></i>Ver Hub Completo
-                        </a>
-                        <a href="/pages/herboristeria.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-leaf text-green-500"></i>Herboristería
-                        </a>
-                        <a href="/pages/mineria.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-gem text-blue-400"></i>Minería
+                        <a href="/pages/recoleccion.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
+                            <i class="fas fa-gem text-blue-400 mr-1"></i><i class="fas fa-leaf text-green-500 mr-2"></i>Minería & Herboristería
                         </a>
                         <a href="/pages/desuello.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-cut text-orange-400"></i>Desuello
+                            <i class="fas fa-cut text-gray-500"></i>Desuello
                         </a>
                         <a href="/pages/sastreria.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-tshirt text-pink-400"></i>Sastrería
+                            <i class="fas fa-tshirt text-gray-500"></i>Sastrería
                         </a>
                         <a href="/pages/alquimia.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-flask text-green-400"></i>Alquimia
+                            <i class="fas fa-flask text-gray-500"></i>Alquimia
                         </a>
                         <a href="/pages/inscripcion.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-scroll text-yellow-400"></i>Inscripción
+                            <i class="fas fa-scroll text-gray-500"></i>Inscripción
                         </a>
                         <a href="/pages/joyeria.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-ring text-cyan-400"></i>Joyería
+                            <i class="fas fa-ring text-gray-500"></i>Joyería
                         </a>
                         <a href="/pages/encantamiento.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-magic text-purple-500"></i>Encantamiento
+                            <i class="fas fa-magic text-gray-500"></i>Encantamiento
                         </a>
                         <a href="/pages/herreria.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-hammer text-gray-400"></i>Herrería
+                            <i class="fas fa-hammer text-gray-500"></i>Herrería
                         </a>
                         <a href="/pages/peleteria.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-vest text-orange-800"></i>Peletería
+                            <i class="fas fa-vest text-gray-500"></i>Peletería
                         </a>
                         <a href="/pages/ingenieria.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-cog text-red-400"></i>Ingeniería
+                            <i class="fas fa-cog text-gray-500"></i>Ingeniería
                         </a>
-                        <a href="/pages/pesca-cocina.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-fish text-blue-300"></i>Pesca y Cocina
+                        <a href="/pages/pesca.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
+                            <i class="fas fa-fish text-gray-500"></i>Pesca
+                        </a>
+                        <a href="/pages/cocina.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
+                            <i class="fas fa-utensils text-gray-500"></i>Cocina
                         </a>
                     </div>
                 </div>
@@ -98,20 +98,17 @@
                         Farmeos <i class="fas fa-chevron-down text-xs"></i>
                     </button>
                     <div class="dropdown-menu absolute top-full left-0 mt-2 bg-wow-card border border-wow-border rounded-lg shadow-xl min-w-[220px] opacity-0 invisible transition-all duration-200 transform -translate-y-2">
-                        <a href="/pages/farmeos.html" class="block px-4 py-3 text-wow-gold hover:text-white hover:bg-white/5 transition-colors text-sm font-bold border-b border-wow-border/50">
-                             <i class="fas fa-map"></i>Ver Hub Completo
-                        </a>
                         <a href="/pages/farmeos-sin-profesion.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-hiking text-green-400"></i>Sin Profesión
+                            <i class="fas fa-hiking text-gray-500"></i>Sin Profesión
                         </a>
                         <a href="/pages/farmeos-solo.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-user text-blue-400"></i>Solo Farms
+                            <i class="fas fa-user text-gray-500"></i>Solo Farms
                         </a>
                         <a href="/pages/farmeos-midnight.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-moon text-purple-400"></i>Farmeos Midnight
+                            <i class="fas fa-moon text-gray-500"></i>Farmeos Midnight
                         </a>
                         <a href="/pages/farmeos-sugeridos.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-seedling text-wow-gold"></i>Farmeos Sugeridos
+                            <i class="fas fa-seedling text-gray-500"></i>Farmeos Sugeridos
                         </a>
                     </div>
                 </div>
@@ -128,7 +125,7 @@
                             <i class="fas fa-calculator"></i>Calculadora
                         </a>
                         <a href="/pages/flipping.html" class="block px-4 py-3 text-gray-400 hover:text-white hover:bg-white/5 transition-colors text-sm">
-                            <i class="fas fa-chart-line text-blue-400"></i>Flipping
+                            <i class="fas fa-chart-line text-gray-500"></i>Flipping
                         </a>
                     </div>
                 </div>
@@ -155,10 +152,22 @@
                     <i class="fas fa-compass w-5 text-center"></i> Hub Primeros Pasos
                 </a>
                 <a href="/pages/consejos.html" class="text-gray-400 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg transition-all text-sm flex items-center gap-3">
-                    <i class="fas fa-lightbulb w-5 text-center text-orange-400"></i> Consejos
+                    <i class="fas fa-lightbulb w-5 text-center text-gray-500"></i> Consejos
                 </a>
-                <a href="/pages/recomendaciones.html" class="text-gray-400 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg transition-all text-sm flex items-center gap-3">
-                    <i class="fas fa-star w-5 text-center text-red-400"></i> Recomendaciones
+                <a href="/pages/alterarmy.html" class="text-gray-400 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg transition-all text-sm flex items-center gap-3">
+                    <i class="fas fa-users w-5 text-center text-gray-500"></i> Alterarmy
+                </a>
+                <a href="/pages/addons-macros.html" class="text-gray-400 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg transition-all text-sm flex items-center gap-3">
+                    <i class="fas fa-cog w-5 text-center text-gray-500"></i> Addons & Macros
+                </a>
+                <a href="/pages/paginas-utiles.html" class="text-gray-400 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg transition-all text-sm flex items-center gap-3">
+                    <i class="fas fa-globe w-5 text-center text-gray-500"></i> Páginas Útiles
+                </a>
+                <a href="/pages/consumibles.html" class="text-gray-400 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg transition-all text-sm flex items-center gap-3">
+                    <i class="fas fa-flask w-5 text-center text-gray-500"></i> Consumibles
+                </a>
+                <a href="/pages/primeros-farmeos.html" class="text-gray-400 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg transition-all text-sm flex items-center gap-3">
+                    <i class="fas fa-list w-5 text-center text-gray-500"></i> Primeros farmeos en Midnight
                 </a>
             </div>
             
@@ -177,7 +186,7 @@
                     <i class="fas fa-map w-5 text-center"></i> Hub Farmeos
                 </a>
                 <a href="/pages/farmeos-sugeridos.html" class="text-gray-400 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg transition-all text-sm flex items-center gap-3">
-                    <i class="fas fa-seedling w-5 text-center text-wow-gold"></i> Farmeos Sugeridos
+                    <i class="fas fa-seedling w-5 text-center text-gray-500"></i> Farmeos Sugeridos
                 </a>
             </div>
             
@@ -192,7 +201,7 @@
                     <i class="fas fa-calculator w-5 text-center"></i> Calculadora
                 </a>
                 <a href="/pages/flipping.html" class="text-gray-400 hover:text-white hover:bg-white/5 px-4 py-3 rounded-lg transition-all text-sm flex items-center gap-3">
-                    <i class="fas fa-chart-line w-5 text-center text-blue-400"></i> Flipping
+                    <i class="fas fa-chart-line w-5 text-center text-gray-500"></i> Flipping
                 </a>
             </div>
         </div>
@@ -215,10 +224,10 @@
         } else if (page === "index.html") {
             activeId = "nav-oro";
             mobileActiveId = "mobile-nav-oro";
-        } else if (["consejos.html", "recomendaciones.html", "alterarmy.html", "addons-macros.html", "consumibles.html", "paginas-utiles.html", "primeros-pasos.html"].includes(page)) {
+        } else if (["consejos.html", "recomendaciones.html", "primeros-farmeos.html", "alterarmy.html", "addons-macros.html", "consumibles.html", "paginas-utiles.html", "primeros-pasos.html"].includes(page)) {
             parentId = "nav-primeros-pasos-parent";
             if (page === "primeros-pasos.html") mobileActiveId = "mobile-nav-primeros";
-        } else if (["herboristeria.html", "mineria.html", "desuello.html", "sastreria.html", "alquimia.html", "inscripcion.html", "joyeria.html", "encantamiento.html", "herreria.html", "peleteria.html", "ingenieria.html", "pesca-cocina.html", "profesiones.html"].includes(page)) {
+        } else if (["recoleccion.html", "desuello.html", "sastreria.html", "alquimia.html", "inscripcion.html", "joyeria.html", "encantamiento.html", "herreria.html", "peleteria.html", "ingenieria.html", "pesca.html", "cocina.html", "profesiones.html"].includes(page)) {
             parentId = "nav-profesiones-parent";
             if (page === "profesiones.html") mobileActiveId = "mobile-nav-profesiones";
         } else if (["farmeos-sin-profesion.html", "farmeos-solo.html", "farmeos-midnight.html", "farmeos.html"].includes(page)) {
@@ -262,3 +271,4 @@
         }
     })();
 </script>
+

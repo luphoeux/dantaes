@@ -1,48 +1,49 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alterarmy - Farmers de Azeroth</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script>
-        // Load Header
-        fetch('/components/header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-container').innerHTML = data;
-                const scripts = document.getElementById('header-container').getElementsByTagName('script');
-                for(let i=0; i<scripts.length; i++) {
-                    eval(scripts[i].innerText);
-                }
-            });
-
-        // Load Footer
-        fetch('/components/footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-placeholder').innerHTML = data;
-            });
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wow: {
+                dark: "#0b0c10",
+                card: "#1a1d29",
+                border: "#2a2e3b",
+                gold: "#ffd100",
+              },
+            },
+            fontFamily: { sans: ["Inter", "sans-serif"] },
+          },
+        },
+      };
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .notebook-line {
-            background-image: linear-gradient(#333 1px, transparent 1px);
-            background-size: 100% 2em;
-            line-height: 2em;
-        }
+        .class-druid   { color: #FF7D0A; }
+        .class-dk      { color: #C41E3A; }
+        .class-paladin { color: #F48CBA; }
+        .class-any     { color: #9d9d9d; }
+        .border-druid  { border-color: rgba(255,125,10,0.25); }
+        .border-dk     { border-color: rgba(196,30,58,0.25); }
+        .border-paladin{ border-color: rgba(244,140,186,0.25); }
+        .border-any    { border-color: rgba(157,157,157,0.2); }
+        .char-card { transition: box-shadow 0.2s, border-color 0.2s; }
+        .char-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.45); }
     </style>
 </head>
 <body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
 
-    <!-- Header Container -->
     <div id="header-container" class="sticky top-0 z-50"></div>
 
-    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20">
+    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20 max-w-4xl">
+
         <!-- Back Button -->
         <a href="primeros-pasos.html" class="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors group">
             <div class="w-8 h-8 rounded-full bg-wow-card border border-wow-border flex items-center justify-center group-hover:border-wow-gold transition-colors">
@@ -51,65 +52,601 @@
             <span class="font-medium">Volver a Primeros Pasos</span>
         </a>
 
-                        <section id="alterarmy" class="content-section  fade-in">
-                    <header class="mb-8 border-b border-wow-border pb-6 flex items-center justify-between">
+        <!-- Header -->
+        <header class="mb-8 border-b border-wow-border pb-6 flex items-center justify-between">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full mb-3">
+                    <span class="text-xs text-gray-400 font-bold uppercase tracking-wider">Setup</span>
+                </div>
+                <h1 class="text-4xl font-bold text-white mb-2">Alterarmy</h1>
+                <p class="text-gray-500">Escalamiento horizontal de tu producción de oro con múltiples personajes.</p>
+            </div>
+            <i class="fas fa-users text-6xl text-white/5 hidden md:block"></i>
+        </header>
+
+        <!-- Intro tip -->
+        <div class="bg-wow-card border border-wow-border rounded-xl p-5 flex gap-4 items-start mb-8">
+            <i class="fas fa-info-circle text-gray-500 text-xl mt-1 flex-shrink-0"></i>
+            <div class="text-sm text-gray-400 leading-relaxed">
+                <strong class="text-gray-200 block mb-1">Objetivo del Alterarmy</strong>
+                Levea todos los personajes que quieras con las profesiones de la <strong class="text-gray-200">hoja de profesiones</strong>.
+                Sube reputación con misiones varias y diarias para obtener mejores <strong class="text-gray-200">tesoros secretos y recetas</strong>.
+            </div>
+        </div>
+
+        <!-- SECCIÓN 1 — Personajes por rol (pestañas) -->
+        <div class="mb-12">
+
+            <!-- Tab bar -->
+            <div id="char-tabs" class="flex gap-1 bg-wow-card border border-wow-border rounded-xl p-1 mb-1 overflow-x-auto">
+                <button onclick="showChar(0)" data-tab="0" class="char-tab flex-1 min-w-[68px] flex flex-col items-center gap-0.5 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white">
+                    <span class="text-sm font-bold leading-none">1er</span>
+                    <span class="font-normal text-gray-600 hidden sm:block">Druida</span>
+                </button>
+                <button onclick="showChar(1)" data-tab="1" class="char-tab flex-1 min-w-[68px] flex flex-col items-center gap-0.5 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white">
+                    <span class="text-sm font-bold leading-none">2do</span>
+                    <span class="font-normal text-gray-600 hidden sm:block">DK / Pala</span>
+                </button>
+                <button onclick="showChar(2)" data-tab="2" class="char-tab flex-1 min-w-[68px] flex flex-col items-center gap-0.5 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white">
+                    <span class="text-sm font-bold leading-none">3er</span>
+                    <span class="font-normal text-gray-600 hidden sm:block">DK / Pala</span>
+                </button>
+                <button onclick="showChar(3)" data-tab="3" class="char-tab flex-1 min-w-[68px] flex flex-col items-center gap-0.5 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white">
+                    <span class="text-sm font-bold leading-none">4to</span>
+                    <span class="font-normal text-gray-600 hidden sm:block">Enc+Alq</span>
+                </button>
+                <button onclick="showChar(4)" data-tab="4" class="char-tab flex-1 min-w-[68px] flex flex-col items-center gap-0.5 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all text-gray-400 hover:text-white">
+                    <span class="text-sm font-bold leading-none">5to</span>
+                    <span class="font-normal text-gray-600 hidden sm:block">Libre</span>
+                </button>
+            </div>
+
+            <div class="bg-wow-card border border-wow-border rounded-xl overflow-hidden">
+
+                <!-- Panel 0 — 1er -->
+                <div class="char-pane" data-pane="0">
+                    <div class="px-6 py-4 border-b border-wow-border flex items-center justify-between">
                         <div>
-                            <div class="inline-flex items-center gap-2 px-3 py-1 bg-purple-500/10 border border-purple-500/20 rounded-full mb-3">
-                                <span class="text-xs text-purple-400 font-bold uppercase tracking-wider">Setup</span>
-                            </div>
-                            <h1 class="text-4xl font-bold text-white mb-2">Alterarmy</h1>
-                            <p class="text-gray-400">Escalamiento horizontal de tu producción de oro.</p>
+                            <h2 class="font-bold text-white">1er Personaje — Tanque o Healer</h2>
+                            <span class="text-xs font-medium class-druid">Preferible: Druida (para farm)</span>
                         </div>
-                        <i class="fas fa-users text-6xl text-purple-500/20"></i>
-                    </header>
-                    <div class="bg-wow-card border border-wow-border rounded-xl p-6 md:p-8">
-                        <div class="prose prose-invert max-w-none text-gray-400">
-                            <p class="mb-4">Tener un ejército de alters es crucial para maximizar cooldowns diarios y profesiones.</p>
-                            <div class="grid md:grid-cols-2 gap-6 mt-6">
-                                <div class="bg-gray-800/50 p-4 rounded-lg border border-wow-border">
-                                    <h3 class="font-bold text-white mb-2 flex items-center gap-2"><i class="fas fa-chess text-purple-400"></i> Setup Recomendado</h3>
-                                    <ul class="space-y-2 text-sm">
-                                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> 1 Main para contenido actual</li>
-                                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> 1 Druida Farm (Herbolaria/Minería)</li>
-                                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Alquimistas para Transmutes</li>
-                                        <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Sastres para CDs de tela</li>
-                                    </ul>
-                                </div>
-                                <div class="bg-gray-800/50 p-4 rounded-lg border border-wow-border">
-                                    <h3 class="font-bold text-white mb-2 flex items-center gap-2"><i class="fas fa-chart-line text-purple-400"></i> Beneficios</h3>
-                                    <ul class="space-y-2 text-sm">
-                                        <li class="flex items-center gap-2"><i class="fas fa-plus-circle text-purple-400"></i> Multiplica ganancias pasivas</li>
-                                        <li class="flex items-center gap-2"><i class="fas fa-plus-circle text-purple-400"></i> Cobertura de todas las profesiones</li>
-                                        <li class="flex items-center gap-2"><i class="fas fa-plus-circle text-purple-400"></i> Autosuficiencia en materiales</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        <img src="/public/icons/wow/classes/druida.jpg" class="w-10 h-10 rounded border border-white/10 opacity-60 hidden md:block" alt="">
                     </div>
-                </section>
+                    <ul class="divide-y divide-wow-border/30">
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Avanzar en la historia hasta desbloquear el vuelo <span class="text-gray-600">(busca los glifos)</span></span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Aprender profesiones: <strong class="text-gray-200">Herboristeria + Mineria</strong></span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Subir profesiones buscando tesoros y completando semanales</span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Mientras subes de nivel, <strong class="text-wow-gold">vender toda ropa verde</strong> que te caiga</span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Llegar a nivel 90 con las historias <strong class="text-gray-200">OBLIGATORIAMENTE</strong></span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Desbloqueas todas las reputaciones de la expa — <strong class="text-wow-gold">Subelas rapido!</strong></span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Farmeos de mundo: ropa subastable, buscar tesoros y farmeos varios</span></li>
+                    </ul>
+                </div>
+
+                <!-- Panel 1 — 2do -->
+                <div class="char-pane hidden" data-pane="1">
+                    <div class="px-6 py-4 border-b border-wow-border flex items-center justify-between">
+                        <div>
+                            <h2 class="font-bold text-white">2do Personaje — Tanque o Healer</h2>
+                            <span class="text-xs font-medium class-dk">Preferible: DK / Paladin</span>
+                        </div>
+                        <img src="/public/icons/wow/classes/caballero-muerte.jpg" class="w-10 h-10 rounded border border-white/10 opacity-60 hidden md:block" alt="">
+                    </div>
+                    <ul class="divide-y divide-wow-border/30">
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Avanzar en la historia hasta desbloquear el vuelo</span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Puedes levearlo como gustes — se recomiendan <strong class="text-gray-200">mazmorras</strong></span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Subir profesion: <strong class="text-gray-200">Desuello + Encantamiento</strong> o <strong class="text-gray-200">Inscripcion + Sastreria</strong></span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Farmeos acordes a tu profesion + vender verdes o <strong class="text-gray-200">desencantar</strong></span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Diarias de profesion y buscar tesoros <span class="text-wow-gold">(RareScanner: si o si)</span></span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Llegar a nivel 90 y pasar al siguiente pj</span></li>
+                    </ul>
+                </div>
+
+                <!-- Panel 2 — 3er -->
+                <div class="char-pane hidden" data-pane="2">
+                    <div class="px-6 py-4 border-b border-wow-border flex items-center justify-between">
+                        <div>
+                            <h2 class="font-bold text-white">3er Personaje — Tank / Healer</h2>
+                            <span class="text-xs font-medium class-dk">Preferible: DK / Paladin</span>
+                        </div>
+                        <img src="/public/icons/wow/classes/paladin.jpg" class="w-10 h-10 rounded border border-white/10 opacity-60 hidden md:block" alt="">
+                    </div>
+                    <ul class="divide-y divide-wow-border/30">
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Avanzar en la historia hasta desbloquear el vuelo</span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Subir profesion (Desuello / Enchant / Inscr / Sastre) — la que no hayas aprendido</span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Subirla y buscar tesoros de profesion</span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Revisar Alquimia del Excel — subir <strong class="text-gray-200">Taumaturgia y Habilidad</strong></span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Subirlo a nivel 90 con mazmorras</span></li>
+                    </ul>
+                </div>
+
+                <!-- Panel 3 — 4to -->
+                <div class="char-pane hidden" data-pane="3">
+                    <div class="px-6 py-4 border-b border-wow-border flex items-center justify-between">
+                        <div>
+                            <h2 class="font-bold text-white">4to Personaje — Tank / Healer</h2>
+                            <span class="text-xs font-medium class-any">Encantamiento + Alquimia</span>
+                        </div>
+                        <img src="/public/icons/wow/professions/alquimia.jpg" class="w-10 h-10 rounded border border-white/10 opacity-60 hidden md:block" alt="">
+                    </div>
+                    <ul class="divide-y divide-wow-border/30">
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Avanzar en la historia y desbloquear el vuelo</span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Aprender: <strong class="text-gray-200">Encantamiento + Alquimia</strong></span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Subir la profesion con semanales, tesoros y crafteos</span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Vender <strong class="text-wow-gold">encantamientos</strong> y sus materiales</span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Levearlo y vender todo verde que encuentres</span></li>
+                    </ul>
+                </div>
+
+                <!-- Panel 4 — 5to -->
+                <div class="char-pane hidden" data-pane="4">
+                    <div class="px-6 py-4 border-b border-wow-border flex items-center justify-between">
+                        <div>
+                            <h2 class="font-bold text-white">5to Personaje — Tank / Healer</h2>
+                            <span class="text-xs font-medium class-any">Profesiones a eleccion</span>
+                        </div>
+                        <img src="/public/icons/wow/professions/joyeria.jpg" class="w-10 h-10 rounded border border-white/10 opacity-60 hidden md:block" alt="">
+                    </div>
+                    <ul class="divide-y divide-wow-border/30">
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Avanzar en la historia hasta desbloquear el vuelo</span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Aprender las profesiones que quieras — sugerido: <strong class="text-gray-200">Joyeria / Desuello</strong></span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Subir profesiones con semanales, tesoros y crafteos</span></li>
+                        <li class="px-6 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Levearlo y vender todo verde que encuentres</span></li>
+                    </ul>
+                </div>
+
+            </div><!-- /panel wrapper -->
+
+            <script>
+              const TAB_COLOR = ["#FF7D0A","#C41E3A","#C41E3A","#9d9d9d","#9d9d9d"];
+              function showChar(idx) {
+                document.querySelectorAll(".char-pane").forEach((p,i) => p.classList.toggle("hidden", i !== idx));
+                document.querySelectorAll(".char-tab").forEach((btn, i) => {
+                  const on = i === idx;
+                  btn.style.background = on ? "rgba(255,255,255,0.07)" : "";
+                  btn.querySelector("span").style.color = on ? TAB_COLOR[i] : "";
+                  btn.classList.toggle("text-white",   on);
+                  btn.classList.toggle("text-gray-400", !on);
+                });
+              }
+              showChar(0);
+            </script>
+
+        </div><!-- /mb-12 -->
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!-- SECCIÓN 2 — Cantidad de personajes por profesión  -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-1">Cantidad de personajes por profesión</h2>
+            <p class="text-gray-500 text-sm mb-6">Cuántos alters dedicar a cada profesión y por qué.</p>
+
+            <!-- Nota principal -->
+            <div class="bg-wow-card border border-wow-border rounded-xl p-5 flex gap-4 items-start mb-6">
+                <i class="fas fa-exclamation-circle text-wow-gold text-xl mt-0.5 flex-shrink-0"></i>
+                <div class="text-sm text-gray-400 leading-relaxed">
+                    <strong class="text-wow-gold block mb-1">Nota importante</strong>
+                    Más allá de combinar Herbo‑Minería y Sastre/Inscripción, da igual cómo las tengas — esas 4 no se afectan entre sí pero <strong class="text-gray-200">deben ser así</strong>.
+                    Otras builds posibles: Sastre‑Desuello o Desuello + lo que sea. Abajo explico qué profesión va mejor por raza y clase.
+                </div>
+            </div>
+
+            <div class="bg-wow-card border border-wow-border rounded-xl overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-wow-border bg-white/3">
+                            <th class="px-5 py-3 text-left text-gray-400 font-semibold">Profesión</th>
+                            <th class="px-5 py-3 text-left text-gray-400 font-semibold">Cantidad</th>
+                            <th class="px-5 py-3 text-left text-gray-400 font-semibold hidden md:table-cell">Por qué</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-wow-border/40">
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/alquimia.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Alquimia</td><td class="px-5 py-3 text-gray-400">1‑Varios</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">Uno para crear Taumaturgia y otro para Pociones/Frascos</td></tr>
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/sastreria.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Sastrería</td><td class="px-5 py-3 text-gray-400">1‑3</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">Uno para farm en Cresta y varios para craft y deshilvanar</td></tr>
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/desuello.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Desuello</td><td class="px-5 py-3 text-gray-400">Varios / Todos</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">Uno para farm grupal, varios para épicos de rares</td></tr>
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/herboristeria.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Herboristería</td><td class="px-5 py-3 text-gray-400">1</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">Solo un recolector</td></tr>
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/mineria.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Minería</td><td class="px-5 py-3 text-gray-400">1</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">Solo un recolector</td></tr>
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/ingenieria.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Ingeniería</td><td class="px-5 py-3 text-gray-400">1‑2</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">Uno para materiales de la mount de 3M y Bombas</td></tr>
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/peleteria.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Peletería</td><td class="px-5 py-3 text-gray-400">1‑3</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">Vender pieles, refuerzos y ornamentos</td></tr>
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/joyeria.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Joyería</td><td class="px-5 py-3 text-gray-400">1‑3</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">1 para receta, otro para gemas meta y uno para gemitas</td></tr>
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/inscripcion.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Inscripción</td><td class="px-5 py-3 text-gray-400">1‑3</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">1 para contratos y varios para cartas de la Luna Negra/sigilos</td></tr>
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/herreria.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Herrería</td><td class="px-5 py-3 text-gray-400">1‑2</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">1 o varios para aleaciones, armaduras y piedras de afilar</td></tr>
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/encantamiento.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Encantamiento</td><td class="px-5 py-3 text-gray-400">1‑Varios</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">1 para desencantar ítems, 1 o más para encantamientos</td></tr>
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/cocina.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Cocina</td><td class="px-5 py-3 text-gray-400">1 (AFA)</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">—</td></tr>
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/pesca.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Pesca</td><td class="px-5 py-3 text-gray-400">1 (AFA)</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">—</td></tr>
+                        <tr class="hover:bg-white/3 transition-colors"><td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/professions/arqueologia.jpg" class="w-6 h-6 rounded shadow-sm border border-white/10" alt="">Arqueología</td><td class="px-5 py-3 text-gray-400">1 (AEA)</td><td class="px-5 py-3 text-gray-500 hidden md:table-cell">—</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Nota 2 -->
+            <div class="mt-4 bg-wow-card border border-wow-border rounded-xl p-5 flex gap-4 items-start">
+                <i class="fas fa-lightbulb text-gray-500 text-xl mt-0.5 flex-shrink-0"></i>
+                <div class="text-sm text-gray-400 leading-relaxed">
+                    <strong class="text-gray-200 block mb-1">Consejo: ¿Qué clases subir?</strong>
+                    Se aconseja las que puedan ser sanador, tanque y DPS al mismo tiempo para usarlas en más actividades:
+                    <strong class="text-gray-200">Druida, Paladín o Monje</strong>. Los Paladines se pueden usar en otros farms;
+                    Monje y Druida solo es necesario 1 mínimo.
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!-- SECCIÓN 3 — Recomendaciones para nuevos jugadores -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-1">Cosas que recomiendo tener para ganar oro en TWW</h2>
+            <p class="text-gray-500 text-sm mb-6">Si recién lo compraste o estás empezando.</p>
+
+            <div class="bg-wow-card border border-wow-border rounded-xl overflow-hidden mb-4">
+                <ul class="divide-y divide-wow-border/40">
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Tener al menos <strong class="text-gray-200">1‑5 personajes</strong> para hacer farmeos de mundo y profesiones</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Tener equipo <strong class="text-gray-200">130 ilvl</strong> para llevarlos más rápido — de preferencia mazmorras (cronoviajes mejor)</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Dependiendo de los farmeos tener capital de al menos <strong class="text-gray-200">1‑4 millones de oro</strong> según los alters que tendrás</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Tener una <strong class="text-gray-200">alianza</strong> para farmear honor en mundo más fácilmente peleando con hordas o tener grupo de amigos horda para campear PvP</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>El punto anterior sirve para pelear contra bots y reportarlos o luchar por spots de farmeo</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-check text-gray-600 mt-0.5 flex-shrink-0"></i><span>Tener materiales viejos de la siguiente lista para revender en TWW (podrían subir de precio): <strong class="text-gray-200">aguardiente volátiles, primigenios, menas/plantas</strong></span></li>
+                </ul>
+            </div>
+
+            <!-- Notas 3 y 4 -->
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div class="bg-wow-card border border-wow-border rounded-xl p-5 flex gap-3 items-start">
+                    <i class="fas fa-bookmark text-gray-500 mt-0.5 flex-shrink-0"></i>
+                    <div class="text-sm text-gray-400 leading-relaxed">
+                        <strong class="text-gray-200 block mb-1">Nota 3</strong>
+                        Sería prudente también guardar menas y plantas de TBC 1K y Cataclismo — podrían subir de precio.
+                        Revisa las guías del canal además de la lista de arriba.
+                    </div>
+                </div>
+                <div class="bg-wow-card border border-wow-border rounded-xl p-5 flex gap-3 items-start">
+                    <i class="fas fa-bookmark text-gray-500 mt-0.5 flex-shrink-0"></i>
+                    <div class="text-sm text-gray-400 leading-relaxed">
+                        <strong class="text-gray-200 block mb-1">Nota 4</strong>
+                        En la primera página (Primeros Pasos) se recomienda tener varios PJ max 70 por cuenta — es oro extra con RawGold.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!-- SECCIÓN 4 — Actividades con 70 personajes         -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-1">Actividades que puedes hacer hasta con 70 personajes</h2>
+            <p class="text-gray-500 text-sm mb-6">Maximiza el rendimiento de cada alter.</p>
+
+            <div class="bg-wow-card border border-wow-border rounded-xl overflow-hidden">
+                <ul class="divide-y divide-wow-border/40">
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-circle text-gray-700 text-xs mt-1.5 flex-shrink-0"></i><span><strong class="text-gray-200">Misiones de mundo y cofres semanales</strong> (de 4K a 20K por PJ) — demoras 20‑30 min por PJ</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-circle text-gray-700 text-xs mt-1.5 flex-shrink-0"></i><span><strong class="text-gray-200">Eventos semanales</strong>: Teatro, Magna Flama, La Tejedora, Tormentas de Dragonflight</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-circle text-gray-700 text-xs mt-1.5 flex-shrink-0"></i><span>Desuello de épicos con muchos desolladores</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-circle text-gray-700 text-xs mt-1.5 flex-shrink-0"></i><span>Desuello de <strong class="text-gray-200">Escama de Cobra de Obsidiana</strong> y Astas Oníricas por PJ (Dragonflight)</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-circle text-gray-700 text-xs mt-1.5 flex-shrink-0"></i><span>Tener todas las profesiones subidas para <strong class="text-gray-200">craft y pedidos</strong></span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-circle text-gray-700 text-xs mt-1.5 flex-shrink-0"></i><span>Vender <strong class="text-gray-200">carrys</strong> (un personaje por cada tipo de armadura) — 3000 IO y 670 ilvl</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-circle text-gray-700 text-xs mt-1.5 flex-shrink-0"></i><span>Probar suerte con BOEs en banda por cada PJ (ser 80 y 660 ilvl de media)</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-circle text-gray-700 text-xs mt-1.5 flex-shrink-0"></i><span>Bandas como <strong class="text-gray-200">Naxramas / Zulgurub</strong> y más por recetas y BOEs caros</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-circle text-gray-700 text-xs mt-1.5 flex-shrink-0"></i><span>Tener varios PJ en el <strong class="text-gray-200">Mercado Negro</strong> de Dragonflight / TWW monturas</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-circle text-gray-700 text-xs mt-1.5 flex-shrink-0"></i><span>Con el addon <strong class="text-gray-200">Incentive Program</strong> obtener Runas de Aumento por cada PJ</span></li>
+                    <li class="px-5 py-3 flex items-start gap-3 text-sm text-gray-400"><i class="fas fa-circle text-gray-700 text-xs mt-1.5 flex-shrink-0"></i><span>Subastar ítems en varios reinos mediante la <strong class="text-gray-200">Warband</strong></span></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!-- SECCIÓN 5 — Mejores profesiones por clase         -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-1">Mejores profesiones para cada clase</h2>
+            <p class="text-gray-500 text-sm mb-6">Por clase y motivo.</p>
+
+            <div class="bg-wow-card border border-wow-border rounded-xl overflow-hidden mb-4">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-wow-border bg-white/3">
+                            <th class="px-5 py-3 text-left text-gray-400 font-semibold">Clase</th>
+                            <th class="px-5 py-3 text-left text-gray-400 font-semibold">Profesiones recomendadas</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-wow-border/40">
+                        <tr class="hover:bg-white/3 transition-colors">
+                            <td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/classes/guerrero.jpg" class="w-6 h-6 rounded border border-white/10" alt="">Guerrero</td>
+                            <td class="px-5 py-3 text-gray-400">
+                                <div class="flex flex-wrap gap-3 items-center">
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/encantamiento.jpg" class="w-5 h-5 rounded" alt="">Encantamiento</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/joyeria.jpg" class="w-5 h-5 rounded" alt="">Joyería</span>
+                                    <span>/</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/alquimia.jpg" class="w-5 h-5 rounded" alt="">Alquimia</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/3 transition-colors">
+                            <td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/classes/cazador.jpg" class="w-6 h-6 rounded border border-white/10" alt="">Cazador</td>
+                            <td class="px-5 py-3 text-gray-400">
+                                <div class="flex flex-wrap gap-3 items-center">
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/encantamiento.jpg" class="w-5 h-5 rounded" alt="">Encantamiento</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/joyeria.jpg" class="w-5 h-5 rounded" alt="">Joyería</span>
+                                    <span>/</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/alquimia.jpg" class="w-5 h-5 rounded" alt="">Alquimia</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/3 transition-colors">
+                            <td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/classes/mago.jpg" class="w-6 h-6 rounded border border-white/10" alt="">Mago</td>
+                            <td class="px-5 py-3 text-gray-400">
+                                <div class="flex flex-wrap gap-3 items-center">
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/encantamiento.jpg" class="w-5 h-5 rounded" alt="">Encantamiento</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/joyeria.jpg" class="w-5 h-5 rounded" alt="">Joyería</span>
+                                    <span>/</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/alquimia.jpg" class="w-5 h-5 rounded" alt="">Alquimia</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/3 transition-colors">
+                            <td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/classes/picaro.jpg" class="w-6 h-6 rounded border border-white/10" alt="">Pícaro</td>
+                            <td class="px-5 py-3 text-gray-400">
+                                <div class="flex flex-wrap gap-3 items-center">
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/encantamiento.jpg" class="w-5 h-5 rounded" alt="">Encantamiento</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/joyeria.jpg" class="w-5 h-5 rounded" alt="">Joyería</span>
+                                    <span>/</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/alquimia.jpg" class="w-5 h-5 rounded" alt="">Alquimia</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/3 transition-colors">
+                            <td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/classes/sacerdote.jpg" class="w-6 h-6 rounded border border-white/10" alt="">Sacerdote</td>
+                            <td class="px-5 py-3 text-gray-400">
+                                <div class="flex flex-wrap gap-3 items-center">
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/encantamiento.jpg" class="w-5 h-5 rounded" alt="">Encantamiento</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/joyeria.jpg" class="w-5 h-5 rounded" alt="">Joyería</span>
+                                    <span>/</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/alquimia.jpg" class="w-5 h-5 rounded" alt="">Alquimia</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/3 transition-colors">
+                            <td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/classes/brujo.jpg" class="w-6 h-6 rounded border border-white/10" alt="">Brujo</td>
+                            <td class="px-5 py-3 text-gray-400">
+                                <div class="flex flex-wrap gap-3 items-center">
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/encantamiento.jpg" class="w-5 h-5 rounded" alt="">Encantamiento</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/joyeria.jpg" class="w-5 h-5 rounded" alt="">Joyería</span>
+                                    <span>/</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/alquimia.jpg" class="w-5 h-5 rounded" alt="">Alquimia</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/3 transition-colors">
+                            <td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/classes/paladin.jpg" class="w-6 h-6 rounded border border-white/10" alt="">Paladín</td>
+                            <td class="px-5 py-3 text-gray-400">
+                                <div class="flex flex-wrap gap-3 items-center">
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/desuello.jpg" class="w-5 h-5 rounded" alt="">Desuello</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/encantamiento.jpg" class="w-5 h-5 rounded" alt="">Encantamiento</span>
+                                    <span>+ otros</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/3 transition-colors">
+                            <td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/classes/druida.jpg" class="w-6 h-6 rounded border border-white/10" alt="">Druida</td>
+                            <td class="px-5 py-3 text-gray-400">
+                                <div class="flex flex-wrap gap-3 items-center">
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/herboristeria.jpg" class="w-5 h-5 rounded" alt="">Herboristería</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/mineria.jpg" class="w-5 h-5 rounded" alt="">Minería</span>
+                                    <span class="mx-1">/</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/sastreria.jpg" class="w-5 h-5 rounded" alt="">Sastrería</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/inscripcion.jpg" class="w-5 h-5 rounded" alt="">Inscripción</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/3 transition-colors">
+                            <td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/classes/chaman.jpg" class="w-6 h-6 rounded border border-white/10" alt="">Chamán</td>
+                            <td class="px-5 py-3 text-gray-400">
+                                <div class="flex flex-wrap gap-3 items-center">
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/encantamiento.jpg" class="w-5 h-5 rounded" alt="">Encantamiento</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/alquimia.jpg" class="w-5 h-5 rounded" alt="">Alquimia</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/3 transition-colors">
+                            <td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/classes/monje.jpg" class="w-6 h-6 rounded border border-white/10" alt="">Monje</td>
+                            <td class="px-5 py-3 text-gray-400">
+                                <div class="flex flex-wrap gap-3 items-center">
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/encantamiento.jpg" class="w-5 h-5 rounded" alt="">Encantamiento</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/joyeria.jpg" class="w-5 h-5 rounded" alt="">Joyería</span>
+                                    <span>/</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/alquimia.jpg" class="w-5 h-5 rounded" alt="">Alquimia</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/3 transition-colors">
+                            <td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/classes/cazador-demonios.jpg" class="w-6 h-6 rounded border border-white/10" alt="">Cazador de Demonios</td>
+                            <td class="px-5 py-3 text-gray-400">
+                                <div class="flex flex-wrap gap-3 items-center">
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/desuello.jpg" class="w-5 h-5 rounded" alt="">Desuello</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/encantamiento.jpg" class="w-5 h-5 rounded" alt="">Encantamiento</span>
+                                    <span>+ otros</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/3 transition-colors">
+                            <td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/classes/caballero-muerte.jpg" class="w-6 h-6 rounded border border-white/10" alt="">Caballero de la Muerte</td>
+                            <td class="px-5 py-3 text-gray-400">
+                                <div class="flex flex-wrap gap-3 items-center">
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/sastreria.jpg" class="w-5 h-5 rounded" alt="">Sastrería</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/inscripcion.jpg" class="w-5 h-5 rounded" alt="">Inscripción</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-white/3 transition-colors">
+                            <td class="px-5 py-3 text-gray-200 font-medium flex items-center gap-2"><img src="/public/icons/wow/classes/evocador.jpg" class="w-6 h-6 rounded border border-white/10" alt="">Evocador</td>
+                            <td class="px-5 py-3 text-gray-400">
+                                <div class="flex flex-wrap gap-3 items-center">
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/encantamiento.jpg" class="w-5 h-5 rounded" alt="">Encantamiento</span>
+                                    <span>+</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/joyeria.jpg" class="w-5 h-5 rounded" alt="">Joyería</span>
+                                    <span>/</span>
+                                    <span class="flex items-center gap-1.5"><img src="/public/icons/wow/professions/alquimia.jpg" class="w-5 h-5 rounded" alt="">Alquimia</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- OJO: nota desolladores -->
+            <div class="bg-wow-card border border-wow-border rounded-xl p-5 flex gap-4 items-start">
+                <i class="fas fa-eye text-gray-500 text-xl mt-0.5 flex-shrink-0"></i>
+                <div class="text-sm text-gray-400 leading-relaxed">
+                    <strong class="text-gray-200 block mb-1">OJO — Desolladores al inicio</strong>
+                    Al inicio tener varios desolladores sirve porque los épicos nuevos serán carísimos, pero durarán unos días.
+                    Luego depende de ti si quieres mantener varios desolladores.
+                </div>
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!-- SECCIÓN 6 — Ítems para farmear sin expansión      -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold text-white mb-1">Ítems para farmear sin la expansión</h2>
+            <p class="text-gray-500 text-sm mb-6">Algunos materiales vendibles que puedes obtener sin comprar la última expa.</p>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                <!-- Runa oscura -->
+                <div class="bg-wow-card border border-wow-border rounded-xl p-4 hover:border-white/10 transition-colors">
+                    <div class="flex items-center gap-2 mb-2">
+                        <img src="/public/icons/wow/misc/runa-oscura.jpg" class="w-8 h-8 rounded border border-white/10" alt="">
+                        <span class="font-bold text-gray-200 text-sm">Runa oscura</span>
+                    </div>
+                    <p class="text-xs text-gray-500">Nivel obj. 10 · Carga máx: 1000</p>
+                    <p class="text-xs text-gray-600 mt-1">Restaura maná usando vida. Precio de venta: ~20</p>
+                </div>
+
+                <!-- Ojo de basilisco -->
+                <div class="bg-wow-card border border-wow-border rounded-xl p-4 hover:border-white/10 transition-colors">
+                    <div class="flex items-center gap-2 mb-2">
+                        <img src="/public/icons/wow/misc/ojo-basilisco.jpg" class="w-8 h-8 rounded border border-white/10" alt="">
+                        <span class="font-bold text-gray-200 text-sm">Ojo de basilisco (Escama Húmeda)</span>
+                    </div>
+                    <p class="text-xs text-gray-500">Nivel obj. 1 · Carga máx: 200</p>
+                    <p class="text-xs text-gray-600 mt-1">Material de profesión · Precio: ~6g 76</p>
+                </div>
+
+                <!-- Tendón de zancaálta -->
+                <div class="bg-wow-card border border-wow-border rounded-xl p-4 hover:border-white/10 transition-colors">
+                    <div class="flex items-center gap-2 mb-2">
+                        <img src="/public/icons/wow/misc/tendon-zancaalta.jpg" class="w-8 h-8 rounded border border-white/10" alt="">
+                        <span class="font-bold text-gray-200 text-sm">Tendón de zancaálta</span>
+                    </div>
+                    <p class="text-xs text-gray-500">Nivel obj. 60 · Carga máx: 1000</p>
+                    <p class="text-xs text-gray-600 mt-1">Islas Dragón · Precio: ~2g</p>
+                </div>
+
+                <!-- Muelle endurecido -->
+                <div class="bg-wow-card border border-wow-border rounded-xl p-4 hover:border-white/10 transition-colors">
+                    <div class="flex items-center gap-2 mb-2">
+                        <img src="/public/icons/wow/misc/muelle-endurecido.jpg" class="w-8 h-8 rounded border border-white/10" alt="">
+                        <span class="font-bold text-gray-200 text-sm">Muelle endurecido</span>
+                    </div>
+                    <p class="text-xs text-gray-500">Nivel obj. 1 · Se liga al recogerlo · Único (30)</p>
+                    <p class="text-xs text-gray-600 mt-1">Carga máx: 30</p>
+                </div>
+
+                <!-- Agua volátil -->
+                <div class="bg-wow-card border border-wow-border rounded-xl p-4 hover:border-white/10 transition-colors">
+                    <div class="flex items-center gap-2 mb-2">
+                        <img src="/public/icons/wow/misc/agua-volatil.jpg" class="w-8 h-8 rounded border border-white/10" alt="">
+                        <span class="font-bold text-gray-200 text-sm">Agua volátil</span>
+                    </div>
+                    <p class="text-xs text-gray-500">Nivel obj. 25 · Carga máx: 1000</p>
+                    <p class="text-xs text-gray-600 mt-1">Material de profesión · Precio: ~8g 75</p>
+                </div>
+
+                <!-- Mena de korio -->
+                <div class="bg-wow-card border border-wow-border rounded-xl p-4 hover:border-white/10 transition-colors">
+                    <div class="flex items-center gap-2 mb-2">
+                        <img src="/public/icons/wow/misc/mena-korio.jpg" class="w-8 h-8 rounded border border-white/10" alt="">
+                        <span class="font-bold text-gray-200 text-sm">Mena de korio</span>
+                    </div>
+                    <p class="text-xs text-gray-500">Nivel obj. 15 · Carga máx: 1000</p>
+                    <p class="text-xs text-gray-600 mt-1">Material de profesión · Precio: ~25</p>
+                </div>
+
+                <!-- Aguardiente de la Luna Negra -->
+                <div class="bg-wow-card border border-wow-border rounded-xl p-4 hover:border-white/10 transition-colors">
+                    <div class="flex items-center gap-2 mb-2">
+                        <img src="/public/icons/wow/misc/aguardiente-lunanegra.jpg" class="w-8 h-8 rounded border border-white/10" alt="">
+                        <span class="font-bold text-gray-200 text-sm">Aguardiente de la Luna Negra</span>
+                    </div>
+                    <p class="text-xs text-gray-500">Nivel obj. 1 · Carga máx: 200</p>
+                    <p class="text-xs text-gray-600 mt-1">+15% Destreza 1h · Precio: ~62</p>
+                </div>
+
+                <!-- Dragontinas abisales -->
+                <div class="bg-wow-card border border-wow-border rounded-xl p-4 hover:border-white/10 transition-colors">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-dragon text-gray-500"></i>
+                        <span class="font-bold text-gray-200 text-sm">Dragontinas abisales</span>
+                    </div>
+                    <p class="text-xs text-gray-500">Nivel obj. 15 · Carga máx: 1000</p>
+                    <p class="text-xs text-gray-600 mt-1">Material de profesión · Precio: ~20</p>
+                </div>
+
+                <!-- Polvo de las Sombras -->
+                <div class="bg-wow-card border border-wow-border rounded-xl p-4 hover:border-white/10 transition-colors">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-moon text-gray-500"></i>
+                        <span class="font-bold text-gray-200 text-sm">Polvo de las Sombras</span>
+                    </div>
+                    <p class="text-xs text-gray-500">Nivel obj. 1 · Carga máx: 100</p>
+                    <p class="text-xs text-gray-600 mt-1">Elixir de Sombras · Precio: ~1g 46</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ══════════════════════════════════════════════════ -->
+        <!-- Resumen final                                      -->
+        <!-- ══════════════════════════════════════════════════ -->
+        <div class="bg-wow-card border border-wow-gold/20 rounded-xl p-5 flex gap-4 items-start">
+            <i class="fas fa-star text-wow-gold text-lg mt-1 flex-shrink-0"></i>
+            <div class="text-sm text-gray-400 leading-relaxed">
+                <strong class="text-wow-gold block mb-1">Resumen</strong>
+                Levea todos los personajes con las profesiones de la hoja 2.
+                Sube reputación con <strong class="text-gray-200">misiones varias y diarias</strong> para tener mejores
+                <strong class="text-gray-200">tesoros secretos y recetas</strong>.
+            </div>
+        </div>
+
     </main>
+
     <div id="footer-placeholder"></div>
 
-    
     <script>
-        // Load Header
         fetch('/components/header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-container').innerHTML = data;
-                const scripts = document.getElementById('header-container').getElementsByTagName('script');
-                for(let i=0; i<scripts.length; i++) {
-                    eval(scripts[i].innerText);
-                }
+            .then(r => r.text()).then(d => {
+                document.getElementById('header-container').innerHTML = d;
+                [...document.getElementById('header-container').getElementsByTagName('script')].forEach(s => eval(s.innerText));
             });
-
-        // Load Footer
         fetch('/components/footer.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('footer-placeholder').innerHTML = data;
-            });
+            .then(r => r.text()).then(d => { document.getElementById('footer-placeholder').innerHTML = d; });
     </script>
 </body>
 </html>
+
+
+
 

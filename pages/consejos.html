@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consejos Generales - Farmers de Azeroth</title>
+    <title>Consejos para Empezar - Farmers de Azeroth</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -19,9 +19,7 @@
                 success: "#22c55e",
               },
             },
-            fontFamily: {
-              sans: ["Inter", "sans-serif"],
-            },
+            fontFamily: { sans: ["Inter", "sans-serif"] },
           },
         },
       };
@@ -31,19 +29,16 @@
     <link rel="stylesheet" href="/style.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .notebook-line {
-            background-image: linear-gradient(#333 1px, transparent 1px);
-            background-size: 100% 2em;
-            line-height: 2em;
-        }
+        .tip-card { transition: border-color 0.2s, box-shadow 0.2s; }
+        .tip-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body class="bg-wow-dark text-gray-300 min-h-screen flex flex-col">
 
-    <!-- Header Container -->
     <div id="header-container" class="sticky top-0 z-50"></div>
 
-    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20">
+    <main class="flex-grow container mx-auto px-4 py-8 mt-10 mb-20 max-w-4xl">
+
         <!-- Back Button -->
         <a href="primeros-pasos.html" class="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors group">
             <div class="w-8 h-8 rounded-full bg-wow-card border border-wow-border flex items-center justify-center group-hover:border-wow-gold transition-colors">
@@ -52,60 +47,164 @@
             <span class="font-medium">Volver a Primeros Pasos</span>
         </a>
 
-                        <section id="consejos" class="content-section  fade-in">
-                    <header class="mb-8 border-b border-wow-border pb-6 flex items-center justify-between">
-                        <div>
-                            <div class="inline-flex items-center gap-2 px-3 py-1 bg-orange-500/10 border border-orange-500/20 rounded-full mb-3">
-                                <span class="text-xs text-orange-400 font-bold uppercase tracking-wider">Mindset</span>
+        <!-- Header -->
+        <header class="mb-10 border-b border-wow-border pb-6 flex items-center justify-between">
+            <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-gray-600/20 rounded-full mb-3">
+                    <span class="text-xs text-gray-400 font-bold uppercase tracking-wider">Guía de inicio</span>
+                </div>
+                <h1 class="text-4xl font-bold text-white mb-2">Consejos para Empezar</h1>
+                <p class="text-gray-400">Cómo equiparte y prepararte para farmear oro desde el primer día.</p>
+            </div>
+            <i class="fas fa-lightbulb text-6xl text-gray-500/20 hidden md:block"></i>
+        </header>
+
+        <!-- ── DECISIÓN INICIAL: Solo o Grupal ── -->
+        <div class="tip-card bg-wow-card border border-wow-border rounded-xl p-6 mb-6">
+            <div class="flex items-start gap-4">
+                <div class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <i class="fas fa-code-branch text-gray-200"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold text-gray-200 text-lg mb-2">¿Vas a farmear solo o en grupo?</h2>
+                    <div class="grid sm:grid-cols-2 gap-4 mt-3 text-sm">
+                        <div class="bg-white/5 border border-wow-border rounded-lg p-4">
+                            <div class="flex items-center gap-2 font-bold text-gray-300 mb-2">
+                                <i class="fas fa-user"></i> Solo
                             </div>
-                            <h1 class="text-4xl font-bold text-white mb-2">Consejos Generales</h1>
-                            <p class="text-gray-400">La mentalidad necesaria para acumular riqueza en Azeroth.</p>
+                            <p class="text-gray-300">Primero sube <strong class="text-white">Herboristería + Minería</strong></p>
                         </div>
-                        <i class="fas fa-lightbulb text-6xl text-orange-500/20"></i>
-                    </header>
-                    <div class="bg-wow-card border border-wow-border rounded-xl p-8">
-                        <ul class="space-y-6">
-                            <li class="p-4 bg-orange-900/10 border-l-4 border-orange-500 rounded flex gap-4">
-                                <i class="fas fa-quote-left text-orange-500 text-xl mt-1"></i>
-                                <div>
-                                    <p class="text-lg italic text-gray-200">"No pongas todos los huevos en la misma cesta. Diversifica tus mercados."</p>
-                                    <p class="text-sm text-gray-500 mt-2">No dependas solo de una profesión o un item. Si el mercado cae, necesitas respaldo.</p>
-                                </div>
-                            </li>
-                            <li class="p-4 bg-orange-900/10 border-l-4 border-orange-500 rounded flex gap-4">
-                                <i class="fas fa-quote-left text-orange-500 text-xl mt-1"></i>
-                                <div>
-                                    <p class="text-lg italic text-gray-200">"El tiempo es oro. Si un farmeo da menos de 10k/hora, busca otro."</p>
-                                    <p class="text-sm text-gray-500 mt-2">Calcula tu Gold Per Hour (GPH). No pierdas tiempo en rutas muertas.</p>
-                                </div>
-                            </li>
-                             <li class="p-4 bg-orange-900/10 border-l-4 border-orange-500 rounded flex gap-4">
-                                <i class="fas fa-quote-left text-orange-500 text-xl mt-1"></i>
-                                <div>
-                                    <p class="text-lg italic text-gray-200">"Revisa la casa de subastas en horas pico (fines de semana, noches)."</p>
-                                    <p class="text-sm text-gray-500 mt-2">Vende cuando hay demanda. Compra cuando hay exceso de oferta (mañanas/madrugadas).</p>
-                                </div>
-                            </li>
-                        </ul>
+                        <div class="bg-white/5 border border-wow-border rounded-lg p-4">
+                            <div class="flex items-center gap-2 font-bold text-gray-300 mb-2">
+                                <i class="fas fa-users"></i> Farmeos Grupales
+                            </div>
+                            <p class="text-gray-300"><strong class="text-white">Sastrería / Inscripción / Desuello / Encantamiento</strong></p>
+                            <p class="text-xs text-gray-500 mt-1">Sastrería + Desuello no se recomiendan juntos, pero si quieres, adelante.</p>
+                        </div>
                     </div>
-                </section>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── EQUIPAMIENTO ── -->
+        <div class="tip-card bg-wow-card border border-wow-border hover:border-white/10 rounded-xl p-6 mb-4">
+            <div class="flex items-start gap-4">
+                <div class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <i class="fas fa-shield-alt text-gray-500"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold text-white text-lg mb-2">Equipamiento</h2>
+                    <p class="text-sm text-gray-300 leading-relaxed">
+                        Si no tienes ningún personaje a <strong class="text-gray-500">ilvl 700</strong>, equípalos por cualquier medio con la
+                        <strong class="text-white">Warband</strong> o con piezas de
+                        <strong class="text-white">Abismos</strong>
+                        <span class="text-gray-500">(la ropa que obtengas de tesoros, enemigos y demás)</span>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── PROFESIONES ── -->
+        <div class="tip-card bg-wow-card border border-wow-border hover:border-white/20 rounded-xl p-6 mb-4 transition-all">
+            <div class="flex items-start gap-5">
+                <div class="w-12 h-12 bg-white/5 border border-white/5 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 shadow-inner">
+                    <i class="fas fa-hammer text-gray-200 text-xl"></i>
+                </div>
+                <div class="flex-grow">
+                    <h2 class="font-bold text-white text-xl mb-4">Profesiones</h2>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <i class="fas fa-check-circle text-gray-600 mt-1 flex-shrink-0"></i>
+                            <div class="leading-relaxed">
+                                Consigue la <strong class="text-gray-100 font-semibold">ropa de profesión</strong> para mejorar tu recolección y stats, siguiendo las guías recomendadas.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <i class="fas fa-check-circle text-gray-600 mt-1 flex-shrink-0"></i>
+                            <div class="leading-relaxed">
+                                Cámbialas por las <strong class="text-wow-gold">moradas (épicas)</strong> — no te olvides de buscar los <strong class="text-gray-100">tesoros</strong> de cada profesión y completar las semanales.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <i class="fas fa-check-circle text-gray-600 mt-1 flex-shrink-0"></i>
+                            <div class="leading-relaxed">
+                                Completa los <strong class="text-gray-100">pedidos de Craft NPC</strong> para ganar puntos extras.
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 text-sm text-gray-300">
+                            <i class="fas fa-check-circle text-gray-600 mt-1 flex-shrink-0"></i>
+                            <div class="leading-relaxed">
+                                Cada profesión tiene su propia <strong class="text-white">agudeza de artesano</strong> 
+                                <span class="text-gray-500 text-xs ml-1">(ahora tiene un nombre diferente, búscalo en la interfaz)</span>.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── NOTAS ── -->
+        <h2 class="text-lg font-bold text-white mt-8 mb-4 flex items-center gap-2">
+            <span class="w-1 h-5 bg-gray-600 rounded-full inline-block"></span>
+            Notas Importantes
+        </h2>
+
+        <!-- Nota 2 -->
+        <div class="tip-card bg-wow-card border border-wow-border hover:border-white/10 rounded-xl p-5 mb-4">
+            <div class="flex items-start gap-4">
+                <div class="w-9 h-9 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-gray-500 text-sm">2</div>
+                <div>
+                    <h3 class="font-bold text-white mb-1">Especialidades de clase</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Las especialidades de clase sirven para levear rápido en estancias y contenido de tanque.
+                        A partir del <strong class="text-white">5to personaje</strong> tienen un buff de mayor XP que escala por la <strong class="text-white">Warband</strong> o el <strong class="text-white">Banco de la Tropa</strong>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nota 3 -->
+        <div class="tip-card bg-wow-card border border-wow-border hover:border-white/10 rounded-xl p-5 mb-4">
+            <div class="flex items-start gap-4">
+                <div class="w-9 h-9 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-gray-500 text-sm">3</div>
+                <div>
+                    <h3 class="font-bold text-white mb-1">Reputaciones — súbelas rápido</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Subir la reputación y repetir misiones que la den hará que consigas todas las <strong class="text-white">recetas, equipo y mejoras útiles</strong> más rápido.
+                        Asegúrate de subirlas lo antes posible — <strong class="text-gray-200">entre más personajes, mejor</strong>, por las misiones de mundo, el rawgold de ellas y más.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nota 4 -->
+        <div class="tip-card bg-wow-card border border-wow-border hover:border-white/10 rounded-xl p-5 mb-4">
+            <div class="flex items-start gap-4">
+                <div class="w-9 h-9 bg-white/5 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-gray-500 text-sm">4</div>
+                <div>
+                    <h3 class="font-bold text-white mb-1">¿Quieres hacer carrys o vender recetas de raid?</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Ve con otras profesiones acorde, por ejemplo un personaje con
+                        <strong class="text-white">Joyería + Encantamiento</strong> para sacar recetas de la primera banda que quizás sean más costosas.
+                        Y <strong class="text-gray-300">usa clases META</strong> — consulta
+                        <a href="https://www.archon.gg/" target="_blank" class="text-gray-300 underline hover:text-gray-300">Archon.gg</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <div id="footer-placeholder"></div>
 
     <script>
-        // Load Header
         fetch('/components/header.html')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('header-container').innerHTML = data;
                 const scripts = document.getElementById('header-container').getElementsByTagName('script');
-                for(let i=0; i<scripts.length; i++) {
-                    eval(scripts[i].innerText);
-                }
+                for(let i=0; i<scripts.length; i++) eval(scripts[i].innerText);
             });
-
-        // Load Footer
         fetch('/components/footer.html')
             .then(response => response.text())
             .then(data => {
@@ -114,3 +213,5 @@
     </script>
 </body>
 </html>
+
+

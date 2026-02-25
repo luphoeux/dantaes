@@ -59,10 +59,11 @@
 
                 <!-- Tabs de Especialización -->
                 <div class="flex gap-1 bg-wow-card border border-wow-border p-1 rounded-xl flex-wrap">
-                    <button onclick="changeSpec(0)" class="spec-tab active px-4 py-2 rounded-lg text-xs font-bold transition-all bg-wow-gold text-wow-dark">BOCETOS</button>
-                    <button onclick="changeSpec(1)" class="spec-tab px-4 py-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">MANOS CALMAS</button>
-                    <button onclick="changeSpec(2)" class="spec-tab px-4 py-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">PERFECCIONADOS</button>
-                    <button onclick="changeSpec(3)" class="spec-tab px-4 py-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">LUNA NEGRA</button>
+                    <button onclick="changeSpec(0)" class="spec-tab active px-4 py-2 rounded-lg text-xs font-bold transition-all bg-wow-gold text-wow-dark">Árbol 1</button>
+                    <button onclick="changeSpec(1)" class="spec-tab px-4 py-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">Árbol 2</button>
+                    <button onclick="changeSpec(2)" class="spec-tab px-4 py-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">Árbol 3</button>
+                    <button onclick="changeSpec(3)" class="spec-tab px-4 py-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">Árbol 4</button>
+                    <button onclick="changeSpec(4)" class="spec-tab px-4 py-2 rounded-lg text-xs font-bold transition-all text-gray-400 hover:text-white">Árbol 5</button>
                 </div>
             </div>
 
@@ -70,16 +71,9 @@
                 <!-- PANEL DE CONTROL -->
                 <div class="space-y-4">
                     <div class="bg-wow-card border border-wow-border rounded-xl p-5 shadow-inner">
-                        <h4 id="spec-title" class="text-lg font-bold text-white mb-2 italic tracking-tight">Bocetos (Blueprints)</h4>
+                        <h4 id="spec-title" class="text-lg font-bold text-white mb-4 italic tracking-tight">Bocetos (Blueprints)</h4>
 
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between text-[10px] uppercase font-bold tracking-wider">
-                                <span class="text-gray-500">Estado Operativo</span>
-                                <span class="text-green-500 animate-pulse">Online</span>
-                            </div>
-                        </div>
-
-                        <div class="mt-6 pt-6 border-t border-wow-border space-y-3">
+                        <div class="pt-2 border-t border-wow-border space-y-3">
                             <!-- Info de la spec -->
                             <div class="space-y-2">
                                 <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest block">Enfoque Principal</span>
@@ -87,21 +81,16 @@
                                     Cargando información...
                                 </p>
                             </div>
-
-                            <!-- Rentabilidad -->
-                            <div class="space-y-1.5 mt-4">
-                                <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest block">Rentabilidad Gold</span>
-                                <div id="spec-rating" class="flex gap-1">
-                                    <!-- Estrellas dinámicas -->
-                                </div>
-                            </div>
-
-                            <!-- Dificultad -->
-                            <div class="space-y-1.5">
-                                <span class="text-[9px] font-bold text-gray-500 uppercase tracking-widest block">Dificultad de Setup</span>
-                                <div id="spec-difficulty" class="text-[11px] font-bold"></div>
-                            </div>
                         </div>
+                    </div>
+
+                    <!-- NOTAS DEL ÁRBOL (dinámicas) -->
+                    <div class="bg-wow-card border border-wow-border rounded-xl p-5">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-1 h-4 bg-wow-gold rounded-full"></div>
+                            <h3 id="fichas-title" class="text-sm font-bold text-white">Notas del Árbol — Bocetos</h3>
+                        </div>
+                        <div id="fichas-grid"></div>
                     </div>
                 </div>
 
@@ -140,18 +129,83 @@
             </div>
         </section>
 
+
         <!-- ══════════════════════════════════════ -->
-        <!-- SECCIÓN: FICHAS EXPLICATIVAS           -->
+        <!-- SECCIÓN: NOTAS IMPORTANTES             -->
         <!-- ══════════════════════════════════════ -->
-        <section id="fichas" class="mb-12">
+        <section id="notas" class="mb-12">
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-1 h-6 bg-wow-gold rounded-full"></div>
-                <h3 id="fichas-title" class="text-xl font-bold text-white">Puntos Clave — Bocetos</h3>
+                <h3 class="text-xl font-bold text-white">Notas Importantes</h3>
             </div>
 
-            <div id="fichas-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Fichas dinámicas según spec activa -->
+            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                <!-- Nota 1 -->
+                <div class="bg-wow-card border border-wow-border rounded-xl p-5 hover:border-wow-gold/30 transition-all">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-black/40 border border-wow-border flex items-center justify-center shrink-0">
+                            <i class="fas fa-magnifying-glass text-green-400 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white mb-1">Addon RareScanner</h4>
+                            <p class="text-[12px] text-gray-500 leading-relaxed">Los tesoros y puntos de profesión están disponibles con el addon <span class="text-green-400 font-bold">RareScanner</span>. También hay algunas formas de conseguir más puntos de conocimiento que iremos documentando.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nota 2 -->
+                <div class="bg-wow-card border border-wow-border rounded-xl p-5 hover:border-wow-gold/30 transition-all">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-black/40 border border-wow-border flex items-center justify-center shrink-0">
+                            <i class="fas fa-cards-blank text-cyan-400 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white mb-1">Fabricación de Cartas</h4>
+                            <p class="text-[12px] text-gray-500 leading-relaxed">Las cartas se fabricarán con <span class="text-cyan-400 font-bold">tintas de rango alto</span> o con un material especial que se consigue en el mundo derrotando enemigos.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nota 3 -->
+                <div class="bg-wow-card border border-wow-border rounded-xl p-5 hover:border-wow-gold/30 transition-all">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-black/40 border border-wow-border flex items-center justify-center shrink-0">
+                            <i class="fas fa-house text-yellow-400 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white mb-1">Housing (Vivienda)</h4>
+                            <p class="text-[12px] text-gray-500 leading-relaxed">Como toda profesión, tendrá nuevos ítems de <span class="text-yellow-400 font-bold">housing</span>. Si sabes de subastas, al principio serán caros, pero recuerda que el tiempo de venta es aleatorio — paciencia.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nota 4 -->
+                <div class="bg-wow-card border border-wow-border rounded-xl p-5 hover:border-wow-gold/30 transition-all">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-black/40 border border-wow-border flex items-center justify-center shrink-0">
+                            <i class="fas fa-map-location-dot text-green-400 text-sm"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white mb-1">WowProfession — Tesoros</h4>
+                            <p class="text-[12px] text-gray-500 leading-relaxed">En la página <a href="https://www.wowprofession.com" target="_blank" class="text-green-400 font-bold hover:underline">wowprofession.com</a> tienen las ubicaciones de todos los <span class="text-green-400 font-bold">tesoros</span> para los puntos de conocimiento.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Video Guía -->
+            <a href="https://www.youtube.com/watch?v=2mFa9Gr_oD0" target="_blank"
+               class="flex items-center gap-4 bg-wow-card border border-wow-border hover:border-red-500/40 rounded-xl p-5 transition-all group">
+                <div class="w-12 h-12 rounded-xl bg-red-600/10 border border-red-500/20 flex items-center justify-center shrink-0 group-hover:bg-red-600/20 transition-colors">
+                    <i class="fab fa-youtube text-red-500 text-xl"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-0.5">Guía en Video</p>
+                    <p class="text-sm font-bold text-white group-hover:text-red-400 transition-colors">ORO INSANO con INSCRIPCIÓN en Midnight — Ver en YouTube</p>
+                    <p class="text-[11px] text-gray-500 mt-0.5">youtube.com/watch?v=2mFa9Gr_oD0</p>
+                </div>
+                <i class="fas fa-arrow-up-right-from-square text-gray-600 group-hover:text-red-400 transition-colors"></i>
+            </a>
         </section>
 
     </main>
@@ -164,113 +218,46 @@
                 name: "Bocetos (Blueprints)",
                 badge: "BOCETOS",
                 img: "/public/images/inscripcion/bocetos.png",
-                focus: "Fabricación de armas marciales, bastones y herramientas de profesión. Ideal para el mercado de equipamiento de progresión.",
+                focus: "Fabricación de armas y herramientas de profesión. Elige tu lado según lo que quieras craftar.",
                 rating: 4,
                 difficulty: { label: "Media", color: "text-yellow-400" },
-                fichas: [
-                    {
-                        icon: "fa-staff",
-                        iconColor: "text-purple-400",
-                        title: "Armas Marciales",
-                        desc: "Los bastones e inscritos de Midnight tienen alta demanda en la primera semana del parche. Prioriza fabricar antes que el mercado se sature."
-                    },
-                    {
-                        icon: "fa-toolbox",
-                        iconColor: "text-blue-400",
-                        title: "Herramientas de Profesión",
-                        desc: "Pico, pluma y utillaje de oficio. Siempre hay demanda constante ya que cada jugador nuevo necesita sus herramientas."
-                    },
-                    {
-                        icon: "fa-coins",
-                        iconColor: "text-wow-gold",
-                        title: "Timing de Venta",
-                        desc: "Vende el primer día del parche a precio máximo. Pasada la semana 1, bajan los precios un 60-70%. Guarda stock para re-vender en siguiente tier."
-                    }
-                ]
+                nota: "Subir una rama entera te permite crear: del lado <strong class='text-white'>izquierdo armas</strong>, y del lado <strong class='text-white'>derecho herramientas de ALQUIMIA, COCINA o INSCRIPCIÓN</strong>. Si quieres crear armas sube la izquierda; si quieres herramientas y pedidos, sube la derecha.<br><br><span class='text-wow-gold font-bold'>→ Revisa el Video Guía para más detalle.</span>"
             },
             {
-                name: "Manos Calmas (Calm Hands)",
+                name: "Manos Calmas — Sigilos",
                 badge: "MANOS CALMAS",
                 img: "/public/images/inscripcion/manos-calmas.png",
-                focus: "Multicrafteo e Ingenio. La base de toda build rentable de Inscripción. Se recomienda como primer árbol a maxear.",
+                focus: "Build orientada a sigilos con Fabricación Múltiple. Cada alt sube puntos de profesión semanalmente.",
                 rating: 5,
                 difficulty: { label: "Baja", color: "text-green-400" },
-                fichas: [
-                    {
-                        icon: "fa-layer-group",
-                        iconColor: "text-wow-gold",
-                        title: "Prioridad #1",
-                        desc: "Manos Calmas es el árbol más importante. El Multicrafteo permite fabricar múltiples ítems con los mismos materiales, multiplicando las ganancias."
-                    },
-                    {
-                        icon: "fa-book",
-                        iconColor: "text-blue-400",
-                        title: "Tratados Especializados",
-                        desc: "Desbloquea recetas de Tratados que otorgan conocimiento extra semanal. Esenciales para escalar rápido el árbol de cualquier otro inscriptor."
-                    },
-                    {
-                        icon: "fa-brain",
-                        iconColor: "text-purple-400",
-                        title: "Ingenio",
-                        desc: "El bono de Ingenio aumenta la probabilidad de crear ítems de mayor calidad sin consumir materiales extra. ROI directo en cada producción."
-                    }
-                ]
+                nota: "Tener activo el talento de <strong class='text-white'>arriba</strong> te permite crear el artículo que sube <strong class='text-white'>1 PUNTO DE PROFESIÓN POR PROFESIÓN</strong> — así tus alts subirán sus puntos semanales porque se liga al banco de la tropa.<br><br>El punto de <strong class='text-white'>abajo</strong> señalado es para un stat concreto: <span class='text-wow-gold font-bold'>FABRICACIÓN MÚLTIPLE</span> — útil para sigilos."
+            },
+            {
+                name: "Manos Calmas — Cartas",
+                badge: "MANOS CALMAS (CARTAS)",
+                img: "/public/images/inscripcion/manos-calmas.png",
+                focus: "Build orientada a cartas con INCENTIVA. Ideal si tu objetivo principal son los mazos de la Luna Negra.",
+                rating: 4,
+                difficulty: { label: "Media", color: "text-yellow-400" },
+                nota: "Tener activo el talento de <strong class='text-white'>arriba</strong> te permite crear el artículo que sube <strong class='text-white'>1 PUNTO DE PROFESIÓN POR PROFESIÓN</strong> — así tus alts subirán sus puntos semanales porque se liga al banco de la tropa.<br><br>El punto de <strong class='text-white'>abajo</strong> señalado es para un stat concreto: <span class='text-wow-gold font-bold'>INCENTIVA</span> — útil para cartas."
             },
             {
                 name: "Productos Perfeccionados",
                 badge: "PERFECCIONADOS",
                 img: "/public/images/inscripcion/perfeccionados.png",
-                focus: "Procesado de tintas, molienda avanzada y pergaminos tácticos. La rama más técnica pero la más lucrativa a largo plazo.",
+                focus: "Contratos, misivas, vantus y tintas. Alta rentabilidad al inicio de la expansión.",
                 rating: 5,
                 difficulty: { label: "Alta", color: "text-red-400" },
-                fichas: [
-                    {
-                        icon: "fa-mortar-pestle",
-                        iconColor: "text-amber-400",
-                        title: "Molienda Avanzada",
-                        desc: "Obtén más pigmentos de nivel 3 al moler plantas de Midnight. Los pigmentos raros son el cuello de botella de toda la economía de inscripción."
-                    },
-                    {
-                        icon: "fa-scroll",
-                        iconColor: "text-yellow-300",
-                        title: "Runas Vantus",
-                        desc: "Las Runas Vantus son consumibles de raid con demanda semanal garantizada. Cada gremio las necesita por boss en mythic. Mercado estable."
-                    },
-                    {
-                        icon: "fa-envelope-open-text",
-                        iconColor: "text-blue-300",
-                        title: "Misivas de Stats",
-                        desc: "Las misivas de estadísticas secundarias tienen venta masiva al inicio de cada tier. Cada jugador necesita reoptimizar su stat weight."
-                    }
-                ]
+                nota: "Subir esta rama te permite crear <strong class='text-white'>CONTRATOS</strong> — caros al inicio de la expansión, luego bajan en picada.<br><br>• Lado <strong class='text-white'>izquierdo</strong>: otros escritos como <span class='text-wow-gold'>misivas y vantus</span><br>• Lado <strong class='text-white'>derecho</strong>: <span class='text-wow-gold'>tintas claves y pigmentos</span> — úsalo si quieres crear materiales"
             },
             {
                 name: "Curiosidad de la Luna Negra",
                 badge: "LUNA NEGRA",
                 img: "/public/images/inscripcion/luna-negra.png",
-                focus: "Cartas y Mazos de la Luna Negra de Midnight. Inversión de alto riesgo, alta recompensa. Solo viable para inscriptores con mucho capital.",
+                focus: "Cartas y Mazos de la Luna Negra. Alto riesgo, alta recompensa.",
                 rating: 3,
                 difficulty: { label: "Muy Alta", color: "text-red-500" },
-                fichas: [
-                    {
-                        icon: "fa-cards-blank",
-                        iconColor: "text-purple-300",
-                        title: "Cartas de la Luna Negra",
-                        desc: "Cada carta es aleatoria. Se venden individualmente o agrupadas en mazos completos (x8). Un mazo completo puede valer 10x más que sus cartas sueltas."
-                    },
-                    {
-                        icon: "fa-dice",
-                        iconColor: "text-red-400",
-                        title: "Riesgo RNG",
-                        desc: "Las cartas son aleatorias por diseño. Puedes necesitar muchos materiales hasta completar un mazo. Requiere capital inicial alto y paciencia."
-                    },
-                    {
-                        icon: "fa-calendar",
-                        iconColor: "text-wow-gold",
-                        title: "Feria de la Luna Negra",
-                        desc: "Solo se pueden canjear mazos durante la semana de la Feria. Planifica tu producción para tener mazos listos justo antes del evento mensual."
-                    }
-                ]
+                nota: "Tener <strong class='text-white'>20 puntos en el centro</strong> (o al menos algunos) desbloquea la creación de cartas. Con esto podrás fabricarlas y, si subes más, <strong class='text-white'>transformar cartas o crear sigilos</strong>.<br><br>Mira cuál es la más rentable en páginas como <span class='text-wow-gold font-bold'>Warcraftlog</span> o <span class='text-wow-gold font-bold'>Icyveins</span>."
             }
         ];
 
@@ -297,23 +284,12 @@
             document.getElementById('spec-title').innerText = spec.name;
             document.getElementById('spec-badge').innerText = spec.badge;
             document.getElementById('spec-focus').innerText = spec.focus;
-            document.getElementById('spec-difficulty').innerHTML =
-                `<span class="${spec.difficulty.color}">${spec.difficulty.label}</span>`;
-
-            // Estrellas
-            const stars = document.getElementById('spec-rating');
-            stars.innerHTML = '';
-            for (let i = 0; i < 5; i++) {
-                const star = document.createElement('i');
-                star.className = `fas fa-star text-sm ${i < spec.rating ? 'text-wow-gold' : 'text-gray-700'}`;
-                stars.appendChild(star);
-            }
 
             // Fichas
             renderFichas(spec);
 
             // Título de fichas
-            document.getElementById('fichas-title').innerText = `Puntos Clave — ${spec.badge}`;
+            document.getElementById('fichas-title').innerText = `Notas del Árbol — ${spec.badge}`;
 
             // Cargar imagen con onload
             specImg.onload = () => {
@@ -329,23 +305,11 @@
 
         function renderFichas(spec) {
             const grid = document.getElementById('fichas-grid');
-            grid.innerHTML = '';
-            spec.fichas.forEach(f => {
-                const card = document.createElement('div');
-                card.className = 'bg-wow-card border border-wow-border rounded-xl p-5 hover:border-wow-gold/30 transition-all group';
-                card.innerHTML = `
-                    <div class="flex items-start gap-4">
-                        <div class="w-10 h-10 rounded-lg bg-black/40 border border-wow-border flex items-center justify-center shrink-0 group-hover:border-wow-gold/20 transition-colors">
-                            <i class="fas ${f.icon} ${f.iconColor}"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-bold text-white mb-2">${f.title}</h4>
-                            <p class="text-[12px] text-gray-500 leading-relaxed">${f.desc}</p>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
+            grid.innerHTML = `
+                <div class="bg-wow-card border border-wow-border rounded-xl p-5">
+                    <p class="text-[13px] text-gray-400 leading-relaxed">${spec.nota}</p>
+                </div>
+            `;
         }
 
         // Inicialización
